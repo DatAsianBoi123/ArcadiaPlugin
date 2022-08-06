@@ -1,0 +1,61 @@
+name: Arcadia
+version: '${project.version}'
+main: com.datasiqn.arcadia.Arcadia
+api-version: 1.18
+commands:
+  arcadia:
+    description: Base Arcadia command
+    usage: "§cIncorrect command format!"
+    permission: arcadia.command
+permissions:
+  arcadia.heal:
+    description: Allows the player to use the heal command (/arcadia heal)
+    default: false
+  arcadia.item:
+    description: Allows the player to use the i command (/arcadia i <item>)
+    default: op
+  arcadia.enchant:
+    description: Allows the player to use the enchant command (/arcadia enchant)
+    default: op
+  arcadia.summon:
+    description: Allows the player to use the summon command (/arcadia summon)
+    default: op
+  arcadia.loot:
+    description: Allows the player to use the loot command (/arcadia loot)
+    default: op
+  arcadia.debug:
+    description: Allows the player to use the debug command (/arcadia debug)
+    default: op
+  arcadia.gui:
+    description: Allows the player to use the opengui command (/arcadia opengui)
+    default: op
+  arcadia.recipe:
+    description: Allows the player to view any recipe (/arcadia viewrecipe)
+    default: true
+  arcadia.help:
+    description: Allows the player to use the help command (/arcadia help)
+    default: true
+  arcadia.command:
+    description: Allows the player to use the default arcadia command
+    default: true
+
+  arcadia.player:
+    description: Allows the player to use all default player commands
+    default: true
+    children:
+      arcadia.help: true
+      arcadia.command: true
+      arcadia.recipe: true
+
+  arcadia.admin:
+    description: Allows the player to use all admin commands
+    default: op
+    children:
+      arcadia.heal: true
+      arcadia.item: true
+      arcadia.summon: true
+      arcadia.gui: true
+      arcadia.player: true
+      arcadia.debug: true
+      arcadia.loot: true
+      arcadia.enchant: true
