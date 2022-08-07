@@ -12,7 +12,6 @@ import com.datasiqn.arcadia.managers.CommandManager;
 import com.datasiqn.arcadia.managers.PlayerManager;
 import com.datasiqn.arcadia.players.ArcadiaSender;
 import com.datasiqn.arcadia.players.PlayerStats;
-import com.datasiqn.arcadia.util.TabCompleteUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
@@ -22,9 +21,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -137,7 +136,10 @@ public final class Arcadia extends JavaPlugin implements CommandExecutor, TabCom
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull [] args) {
         if (args.length >= 1) {
             ArcadiaCommand cmd = commandManager.getCommand(args[0]);
-            if (cmd == null) return false;
+            if (cmd == null) {
+                sendHelpMenu(sender);
+                return true;
+            }
             if (cmd.getPermissionString() != null && !sender.hasPermission(cmd.getPermissionString())) {
                 sender.sendMessage(ArcadiaPermission.MISSING_PERMISSIONS);
                 return true;
@@ -160,27 +162,26 @@ public final class Arcadia extends JavaPlugin implements CommandExecutor, TabCom
         return true;
     }
 
-    @Nullable
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String @NotNull [] args) {
+    public @NotNull List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String @NotNull [] args) {
+        List<String> tabComplete = new ArrayList<>();
         if (args.length == 1) {
-            List<String> tabComplete = new ArrayList<>();
             commandManager.allCommands().forEach((s, command1) -> {
                 if (command1.getPermissionString() == null || sender.hasPermission(command1.getPermissionString())) tabComplete.add(s);
             });
-            TabCompleteUtil.filterStartsWith(tabComplete, args[0]);
-            TabCompleteUtil.sort(tabComplete);
-            return tabComplete;
         } else {
             ArcadiaCommand cmd = commandManager.getCommand(args[0]);
             if (cmd == null || (cmd.getPermissionString() != null && !sender.hasPermission(cmd.getPermissionString()))) return new ArrayList<>();
             List<String> listArgs = new ArrayList<>(Arrays.asList(args));
             listArgs.remove(0);
-            List<String> tabComplete = cmd.tabComplete(new ArcadiaSender<>(this, sender), new Arguments(listArgs));
-            TabCompleteUtil.filterStartsWith(tabComplete, args[args.length - 1]);
-            TabCompleteUtil.sort(tabComplete);
-            return tabComplete;
+            tabComplete.addAll(cmd.tabComplete(new ArcadiaSender<>(this, sender), new Arguments(listArgs)));
         }
+
+        List<String> partialMatches = new ArrayList<>();
+        StringUtil.copyPartialMatches(args[args.length - 1], tabComplete, partialMatches);
+        partialMatches.sort(Comparator.naturalOrder());
+
+        return partialMatches;
     }
 
     public CommandManager getCommandManager() {
