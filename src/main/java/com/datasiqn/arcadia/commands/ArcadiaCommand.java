@@ -19,7 +19,7 @@ public interface ArcadiaCommand {
 
     List<String> getUsages();
 
-    @Nullable
+    @NotNull
     default List<String> tabComplete(@NotNull ArcadiaSender<?> sender, @NotNull Arguments args) {
         return new ArrayList<>();
     }

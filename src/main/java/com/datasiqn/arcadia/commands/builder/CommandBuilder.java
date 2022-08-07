@@ -72,7 +72,7 @@ public class CommandBuilder<S extends CommandSender> {
             }
 
             @Override
-            public @Nullable List<String> tabComplete(@NotNull ArcadiaSender<?> sender, @NotNull Arguments args) {
+            public @NotNull List<String> tabComplete(@NotNull ArcadiaSender<?> sender, @NotNull Arguments args) {
                 if (args.size() >= 1) {
                     List<String> tabComplete = new ArrayList<>();
                     CommandNode<S, ?> currentNode = findCurrentNode(args, args.size() - 1);
