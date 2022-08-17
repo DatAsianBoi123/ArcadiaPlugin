@@ -14,9 +14,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,6 +24,7 @@ import java.util.Objects;
 public class PlayerStats {
     @SuppressWarnings("FieldCanBeLocal")
     private final double HEALTH_PRECISION = 0.00001;
+    private final PlayerEquipment equipment = new PlayerEquipment();
 
     private final ArcadiaSender<Player> player;
     private final Arcadia plugin;
@@ -34,6 +33,7 @@ public class PlayerStats {
     private double maxHealth;
     private double defense;
     private double strength;
+    private double attackSpeed;
 
     private BukkitTask regenHealthRunnable;
 
@@ -51,13 +51,10 @@ public class PlayerStats {
         double totalDefense = 0;
         double totalHealth = defaultHealth;
         double totalStrength = 0;
+        double totalAttackSpeed = 0;
 
         for (EquipmentSlot slot : EquipmentSlot.values()) {
-            EntityEquipment equipment = player.get().getEquipment();
-            if (equipment == null) continue;
-
-            ItemStack itemStack = equipment.getItem(slot);
-            ArcadiaItem arcadiaItem = new ArcadiaItem(itemStack);
+            ArcadiaItem arcadiaItem = equipment.getItem(slot);
 
             if (arcadiaItem.getItemData().getItemType().getSlot() == slot) {
                 ItemStats itemStats = arcadiaItem.getItemMeta().getItemStats();
@@ -69,12 +66,16 @@ public class PlayerStats {
 
                 AttributeInstance strengthAttribute = itemStats.getAttribute(ItemAttribute.STRENGTH);
                 totalStrength += strengthAttribute == null ? 0 : strengthAttribute.getValue();
+
+                AttributeInstance attackSpeedAttribute = itemStats.getAttribute(ItemAttribute.ATTACK_SPEED);
+                totalAttackSpeed += attackSpeedAttribute == null ? 0 : attackSpeedAttribute.getValue();
             }
         }
 
         defense = totalDefense;
         maxHealth = totalHealth;
         strength = totalStrength;
+        attackSpeed = totalAttackSpeed;
         if (regenHealth) health = maxHealth;
         if (health > maxHealth) health = maxHealth;
         Objects.requireNonNull(player.get().getAttribute(Attribute.GENERIC_MAX_HEALTH)).setBaseValue(getMaxHearts());
@@ -158,8 +159,16 @@ public class PlayerStats {
                 new TextComponent(displayHealth + " " + displayDefense + " " + displayStrength));
     }
 
+    public PlayerEquipment getEquipment() {
+        return equipment;
+    }
+
     public double getStrength() {
         return strength;
+    }
+
+    public double getAttackSpeed() {
+        return attackSpeed;
     }
 
     public static @NotNull PlayerStats create(@NotNull ArcadiaSender<Player> player, Arcadia plugin) {

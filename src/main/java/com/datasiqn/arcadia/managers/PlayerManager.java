@@ -3,6 +3,7 @@ package com.datasiqn.arcadia.managers;
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.players.ArcadiaSender;
 import com.datasiqn.arcadia.players.PlayerStats;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,6 +21,11 @@ public class PlayerManager {
 
     public PlayerData getPlayerData(@NotNull ArcadiaSender<Player> player) {
         return getPlayerData(player.get());
+    }
+    public PlayerData getPlayerData(@NotNull UUID uuid) {
+        Player player = Bukkit.getPlayer(uuid);
+        if (player == null) return null;
+        return getPlayerData(player);
     }
     public PlayerData getPlayerData(@NotNull Player player) {
         if (playerMap.containsKey(player.getUniqueId())) return playerMap.get(player.getUniqueId());

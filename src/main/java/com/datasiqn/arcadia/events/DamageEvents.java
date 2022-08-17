@@ -25,7 +25,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
@@ -64,14 +63,13 @@ public class DamageEvents implements Listener {
             entity.damage(damage, event);
             spawnDamageIndicator(event.getEntity().getLocation(), damage);
 
-            if (!(event.getDamager() instanceof LivingEntity livingEntity)) return;
-            EntityEquipment equipment = livingEntity.getEquipment();
-            if (equipment == null) return;
-            ArcadiaItem arcadiaItem = new ArcadiaItem(equipment.getItemInMainHand());
-            if (arcadiaItem.getItemData().getItemType() != ItemType.SWORD) return;
-            AttributeInstance attribute = arcadiaItem.getItemMeta().getItemStats().getAttribute(ItemAttribute.ATTACK_SPEED);
-            if (attribute == null) return;
-            double attackSpeed = attribute.getValue();
+            if (!(event.getDamager() instanceof Player player)) return;
+
+            PlayerStats playerStats = plugin.getPlayerManager().getPlayerData(player).playerStats();
+            ArcadiaItem itemInMainHand = playerStats.getEquipment().getItemInMainHand();
+            if (itemInMainHand.getItemData().getItemType() != ItemType.SWORD) return;
+
+            double attackSpeed = playerStats.getAttackSpeed();
             plugin.runAfterOneTick(() -> {
                 Entity eventEntity = event.getEntity();
                 if (!(eventEntity instanceof LivingEntity living)) return;
@@ -123,11 +121,10 @@ public class DamageEvents implements Listener {
             return arrowDamage;
         }
 
-        if (!(event.getDamager() instanceof LivingEntity livingEntity)) return damage;
+        if (!(event.getDamager() instanceof Player player)) return damage;
 
-        EntityEquipment equipment = livingEntity.getEquipment();
-        if (equipment == null) return damage;
-        ArcadiaItem item = new ArcadiaItem(equipment.getItemInMainHand());
+        PlayerManager.PlayerData playerData = plugin.getPlayerManager().getPlayerData(player);
+        ArcadiaItem item = playerData.playerStats().getEquipment().getItemInMainHand();
 
         if (item.getItemData().getItemType() != ItemType.SWORD) return damage;
         ArcadiaItemMeta itemMeta = item.getItemMeta();
@@ -136,13 +133,8 @@ public class DamageEvents implements Listener {
 
         double finalDamage;
 
-        double strength = 0;
-
-        if (event.getDamager() instanceof Player player) {
-            PlayerManager.PlayerData playerData = plugin.getPlayerManager().getPlayerData(player);
-            PlayerStats playerStats = playerData.playerStats();
-            strength = playerStats.getStrength();
-        }
+        PlayerStats playerStats = playerData.playerStats();
+        double strength = playerStats.getStrength();
 
         double additiveBonus = 1;
         double multiplicativeBonus = 1;
@@ -165,11 +157,8 @@ public class DamageEvents implements Listener {
 
         finalDamage = damageAttribute.getValue() * DamageHelper.getStrengthMultiplier(strength) * (additiveBonus * multiplicativeBonus);
 
-        if (event.getDamager() instanceof Player player) {
-            if (plugin.inDebugMode(player.getUniqueId())) {
-                PlayerManager.PlayerData playerData = plugin.getPlayerManager().getPlayerData(player);
-                sendDebugInfo(playerData.player(), damageAttribute.getValue(), strength, finalDamage, additiveBonus, multiplicativeBonus);
-            }
+        if (plugin.inDebugMode(player.getUniqueId())) {
+            sendDebugInfo(playerData.player(), damageAttribute.getValue(), strength, finalDamage, additiveBonus, multiplicativeBonus);
         }
 
         return finalDamage;
