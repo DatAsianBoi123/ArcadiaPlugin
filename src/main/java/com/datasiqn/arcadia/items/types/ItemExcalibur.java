@@ -4,10 +4,8 @@ import com.datasiqn.arcadia.items.ItemRarity;
 import com.datasiqn.arcadia.items.ItemType;
 import com.datasiqn.arcadia.items.data.ItemData;
 import com.datasiqn.arcadia.items.meta.MetaBuilder;
-import com.datasiqn.arcadia.items.stats.AttributeInstance;
 import com.datasiqn.arcadia.items.stats.AttributeRange;
 import com.datasiqn.arcadia.items.stats.ItemAttribute;
-import com.datasiqn.arcadia.items.stats.ItemStats;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,7 +20,7 @@ public final class ItemExcalibur implements CustomMaterial {
             ItemType.SWORD);
 
     private final MetaBuilder metaBuilder = new MetaBuilder()
-            .setAttribute(ItemAttribute.DAMAGE, new AttributeRange(3000, 4000))
+            .setAttribute(ItemAttribute.DAMAGE, new AttributeRange(2000, 3500))
             .setAttribute(ItemAttribute.DEFENSE, 200)
             .setAttribute(ItemAttribute.ATTACK_SPEED, 100);
 
