@@ -3,7 +3,9 @@ package com.datasiqn.arcadia.util;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class ParseUtil {
+public final class ParseUtil {
+    private ParseUtil() {}
+
     @Nullable
     public static Integer parseInt(String str) {
         try {

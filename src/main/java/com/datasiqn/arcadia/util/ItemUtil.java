@@ -13,7 +13,9 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class ItemUtil {
+public final class ItemUtil {
+    private ItemUtil() {}
+
     @Contract("_ -> new")
     public static @NotNull ItemData fromDefaultItem(Material type) {
         return new MaterialItemData(type);
