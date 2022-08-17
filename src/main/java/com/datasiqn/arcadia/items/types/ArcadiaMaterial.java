@@ -1,11 +1,14 @@
 package com.datasiqn.arcadia.items.types;
 
 import com.datasiqn.arcadia.items.ItemRarity;
+import com.datasiqn.arcadia.items.ItemType;
 import com.datasiqn.arcadia.items.data.ItemData;
 import com.datasiqn.arcadia.items.meta.ArcadiaItemMeta;
 import com.datasiqn.arcadia.items.meta.MetaBuilder;
 import com.datasiqn.arcadia.items.modifiers.LoreItemModifier;
 import com.datasiqn.arcadia.items.modifiers.SkullItemModifier;
+import com.datasiqn.arcadia.items.stats.AttributeRange;
+import com.datasiqn.arcadia.items.stats.ItemAttribute;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
@@ -35,6 +38,9 @@ public enum ArcadiaMaterial {
     BERSERK_BOOTS(new ItemBerserkBoots()),
     ULTIMATUM(new ItemUltimatum()),
     EXCALIBUR(new ItemExcalibur()),
+    HAMMER(new ItemData("War Hammer", "HAMMER", Material.GOLDEN_AXE, ItemRarity.LEGENDARY, true, false, null, ItemType.SWORD), new MetaBuilder()
+            .setAttribute(ItemAttribute.DAMAGE, new AttributeRange(5000, 7000))
+            .setAttribute(ItemAttribute.ATTACK_SPEED, -50)),
     BOW(new ItemBow());
 
     private final ItemData data;
