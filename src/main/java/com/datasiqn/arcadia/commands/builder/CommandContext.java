@@ -1,6 +1,5 @@
 package com.datasiqn.arcadia.commands.builder;
 
-import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.commands.arguments.ArgumentType;
 import com.datasiqn.arcadia.players.ArcadiaSender;
 import org.bukkit.command.CommandSender;
