@@ -2,6 +2,7 @@ package com.datasiqn.arcadia.guis;
 
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.ArcadiaKeys;
+import com.datasiqn.arcadia.enchants.EnchantType;
 import com.datasiqn.arcadia.items.ArcadiaItem;
 import com.datasiqn.arcadia.items.meta.ArcadiaItemMeta;
 import com.datasiqn.arcadia.items.types.ArcadiaMaterial;
@@ -18,6 +19,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
 
 public class AnvilGUI extends ArcadiaGUI {
     private static final ItemStack MISSING_RECIPE = new ItemStack(Material.BARRIER);
@@ -133,12 +136,22 @@ public class AnvilGUI extends ArcadiaGUI {
         ArcadiaItemMeta originalMeta = originalArcadiaItem.getItemMeta();
         ArcadiaItemMeta addedMeta = addedArcadiaItem.getItemMeta();
         if (addedArcadiaItem.getMaterial() == ArcadiaMaterial.ENCHANTED_BOOK || originalArcadiaItem.isSimilar(addedArcadiaItem)) {
-            addedMeta.getEnchants().forEach((enchantType, level) -> {
+            boolean canAddEnchants = false;
+            for (Map.Entry<EnchantType, Integer> enchant : addedMeta.getEnchants().entrySet()) {
+                EnchantType enchantType = enchant.getKey();
+                Integer level = enchant.getValue();
+                boolean canEnchant = enchantType.getEnchantment().canEnchant(originalArcadiaItem);
+                if (canEnchant) canAddEnchants = true;
                 int originalEnchant = originalMeta.getEnchantLevel(enchantType);
                 int combinedLevel = Math.max(level, originalEnchant);
                 if (level == originalEnchant) combinedLevel++;
-                if (originalArcadiaItem.getMaterial() == ArcadiaMaterial.ENCHANTED_BOOK || enchantType.getEnchantment().canEnchant(originalArcadiaItem)) originalMeta.addEnchant(enchantType, combinedLevel);
-            });
+                if (originalArcadiaItem.getMaterial() == ArcadiaMaterial.ENCHANTED_BOOK || canEnchant) originalMeta.addEnchant(enchantType, combinedLevel);
+            }
+
+            if (!canAddEnchants) {
+                inv.setItem(31, MISSING_RECIPE);
+                return;
+            }
 
             if (originalArcadiaItem.isSimilar(addedArcadiaItem)) {
                 double newBonus = originalMeta.getItemQualityBonus() + addedMeta.getItemQuality();
