@@ -147,10 +147,11 @@ public final class Arcadia extends JavaPlugin implements CommandExecutor, TabCom
             }
             List<String> listArgs = new ArrayList<>(Arrays.asList(args));
             listArgs.remove(0);
-            if (!cmd.execute(new ArcadiaSender<>(this, sender), new Arguments(listArgs))) {
-                sender.sendMessage(ChatColor.RED + "Incorrect usage!",
+            CommandOutput output = cmd.execute(new ArcadiaSender<>(this, sender), new Arguments(listArgs));
+            if (output.getResult() == CommandResult.FAILURE) {
+                sender.sendMessage(ChatColor.RED + output.getMessage(),
                         ChatColor.GRAY + "Usage(s):");
-                cmd.getUsages().forEach(usage -> sender.sendMessage(ChatColor.BLUE + " /arcadia " + args[0] + " " + usage));
+                sender.sendMessage(getUsagesFor(args[0], 1).toArray(new String[0]));
             }
             return true;
         }
@@ -207,7 +208,7 @@ public final class Arcadia extends JavaPlugin implements CommandExecutor, TabCom
         sender.sendMessage(ChatColor.GOLD + "Command " + commandName,
                 ChatColor.GRAY + " Description: " + ChatColor.WHITE + command.getDescription(),
                 ChatColor.GRAY + " Usage(s):");
-        command.getUsages().forEach(usage -> sender.sendMessage(ChatColor.BLUE + "  /arcadia " + commandName + " " + usage));
+        sender.sendMessage(getUsagesFor(commandName, 2).toArray(new String[0]));
     }
 
     public PlayerManager getPlayerManager() {
@@ -229,5 +230,17 @@ public final class Arcadia extends JavaPlugin implements CommandExecutor, TabCom
     @Contract("_ -> new")
     public static @NotNull NamespacedKey getNK(String key) {
         return new NamespacedKey(Arcadia.getPlugin(Arcadia.class), key);
+    }
+
+    private @NotNull List<String> getUsagesFor(String commandName, int spaces) {
+        if (!commandManager.hasCommand(commandName)) throw new RuntimeException("Command " + commandName + " does not exist");
+        List<String> usages = new ArrayList<>();
+        ArcadiaCommand command = commandManager.getCommand(commandName);
+        command.getUsages().forEach(usage -> {
+            String addedUsage = " ".repeat(Math.max(0, spaces));
+            addedUsage = addedUsage.concat(ChatColor.YELLOW + "/arcadia " + ChatColor.WHITE + commandName + " " + usage);
+            usages.add(addedUsage);
+        });
+        return usages;
     }
 }

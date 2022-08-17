@@ -1,6 +1,7 @@
 package com.datasiqn.arcadia.commands.builder;
 
 import com.datasiqn.arcadia.commands.arguments.ArgumentType;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -28,8 +29,13 @@ public class ArgumentBuilder<S extends CommandSender, T> extends CommandNode<S, 
     }
 
     @Override
-    protected String getUsageArgument() {
-        return "<" + argName + ">";
+    protected String getUsageArgument(boolean isOptional) {
+        return isOptional ? ChatColor.GREEN + "[" + argName + "]" : ChatColor.GOLD + "<" + argName + ">";
+    }
+
+    @Override
+    protected boolean canBeOptional() {
+        return true;
     }
 
     @Override

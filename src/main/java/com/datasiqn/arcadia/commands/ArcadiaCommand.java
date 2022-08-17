@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface ArcadiaCommand {
-    boolean execute(@NotNull ArcadiaSender<?> sender, @NotNull Arguments args);
+    CommandOutput execute(@NotNull ArcadiaSender<?> sender, @NotNull Arguments args);
 
     @Nullable
     String getPermissionString();

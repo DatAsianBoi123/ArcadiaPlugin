@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 public abstract class CommandNode<S extends CommandSender, This extends CommandNode<S, This>> {
@@ -24,8 +25,10 @@ public abstract class CommandNode<S extends CommandSender, This extends CommandN
         return getThis();
     }
 
-    public final void executeWith(ArcadiaSender<S> sender, List<String> args) {
-        if (executor != null) executor.accept(new CommandContext<>(sender, args));
+    public final boolean executeWith(ArcadiaSender<S> sender, List<String> args) {
+        if (executor == null) return false;
+        executor.accept(new CommandContext<>(sender, args));
+        return true;
     }
 
     @NotNull
@@ -40,14 +43,23 @@ public abstract class CommandNode<S extends CommandSender, This extends CommandN
 
     public abstract boolean isApplicable(String arg);
 
-    protected List<String> getUsages() {
+    protected List<String> getUsages(boolean isOptional) {
         List<String> usages = new ArrayList<>();
-        if (executor != null) usages.add(getUsageArgument());
-        children.forEach(node -> usages.addAll(node.getUsages().stream().map(str -> getUsageArgument() + " " + str).toList()));
+        if (executor != null) usages.add(getUsageArgument(isOptional));
+        AtomicBoolean hasOptional = new AtomicBoolean(false);
+        children.forEach(node -> {
+            if (node.executor != null) hasOptional.set(true);
+            usages.addAll(node.getUsages(node.executor != null).stream().map(str -> getUsageArgument(node.executor != null) + " " + str).toList());
+        });
+        if (executor != null && hasOptional.get() && canBeOptional()) usages.remove(0);
         return usages;
     }
 
-    protected abstract String getUsageArgument();
+    protected abstract String getUsageArgument(boolean isOptional);
+
+    protected boolean canBeOptional() {
+        return false;
+    }
 
     @NotNull
     protected abstract This getThis();

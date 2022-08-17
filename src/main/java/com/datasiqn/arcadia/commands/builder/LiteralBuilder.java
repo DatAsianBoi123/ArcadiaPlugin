@@ -1,5 +1,6 @@
 package com.datasiqn.arcadia.commands.builder;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -27,8 +28,8 @@ public class LiteralBuilder<S extends CommandSender> extends CommandNode<S, Lite
     }
 
     @Override
-    protected String getUsageArgument() {
-        return literal;
+    protected String getUsageArgument(boolean isOptional) {
+        return ChatColor.WHITE + literal;
     }
 
     @Override
