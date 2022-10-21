@@ -47,4 +47,19 @@ public final class ArcadiaKeys {
      * byte
      */
     public static final NamespacedKey ANVIL_RESULT = Arcadia.getNK("anvil_result");
+
+    /**
+     * byte
+     */
+    public static final NamespacedKey UPGRADE_CHEST = Arcadia.getNK("upgrade_chest");
+    /**
+     * byte
+     */
+    public static final NamespacedKey CHEST_OPENED = Arcadia.getNK("opened");
+    /**
+     * int[]
+     */
+    public static final NamespacedKey CHEST_LOC = Arcadia.getNK("chest_loc");
+
+    public static final NamespacedKey LOOT_CHEST_LOOT_TABLE = Arcadia.getNK("loot_chest");
 }
