@@ -1,6 +1,5 @@
 package com.datasiqn.arcadia.items.modifiers;
 
-import com.datasiqn.arcadia.items.data.ItemData;
 import org.bukkit.Color;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -17,10 +16,9 @@ public class LeatherArmorItemModifier implements ItemModifier {
     }
 
     @Override
-    public @Nullable ItemMeta modify(@NotNull ItemData itemData, @NotNull UUID uuid, @Nullable ItemMeta metaCopy) {
-        if (!(metaCopy instanceof LeatherArmorMeta armorMeta)) return null;
+    public void modify(@NotNull UUID uuid, @Nullable ItemMeta metaCopy) {
+        if (!(metaCopy instanceof LeatherArmorMeta armorMeta)) return;
 
         armorMeta.setColor(color);
-        return armorMeta;
     }
 }

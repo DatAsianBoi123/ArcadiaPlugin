@@ -2,7 +2,7 @@ package com.datasiqn.arcadia.enchants;
 
 import com.datasiqn.arcadia.enchants.modifiers.DamageEnchantModifier;
 import com.datasiqn.arcadia.items.ArcadiaItem;
-import com.datasiqn.arcadia.items.ItemType;
+import com.datasiqn.arcadia.items.type.ItemType;
 import org.jetbrains.annotations.NotNull;
 
 public class EnchantmentSharpness extends Enchantment {

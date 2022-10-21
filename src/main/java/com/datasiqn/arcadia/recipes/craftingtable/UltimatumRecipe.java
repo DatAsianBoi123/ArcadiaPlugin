@@ -1,7 +1,7 @@
 package com.datasiqn.arcadia.recipes.craftingtable;
 
 import com.datasiqn.arcadia.items.ArcadiaItem;
-import com.datasiqn.arcadia.items.types.ArcadiaMaterial;
+import com.datasiqn.arcadia.items.materials.ArcadiaMaterial;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -13,9 +13,9 @@ public class UltimatumRecipe implements CraftingRecipe {
     private static final ItemStack ITEM_STACK_RESULT = RESULT.asCraftingResult();
 
     static {
-        ItemStack netheriteIngot = new ArcadiaItem(Material.NETHERITE_INGOT).build(16);
+        ItemStack netheriteIngot = new ArcadiaItem(Material.NETHERITE_INGOT, 16).build();
 
-        ItemStack diamondBlock = new ArcadiaItem(Material.DIAMOND_BLOCK).build(32);
+        ItemStack diamondBlock = new ArcadiaItem(Material.DIAMOND_BLOCK, 32).build();
 
         RECIPE[0] = netheriteIngot;
         RECIPE[1] = netheriteIngot;

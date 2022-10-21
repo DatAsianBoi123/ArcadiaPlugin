@@ -1,19 +1,21 @@
-package com.datasiqn.arcadia.items.data;
+package com.datasiqn.arcadia.items.materials.data;
 
 import com.datasiqn.arcadia.ArcadiaKeys;
-import com.datasiqn.arcadia.items.ItemRarity;
+import com.datasiqn.arcadia.items.type.ItemType;
+import com.datasiqn.arcadia.items.type.data.NoneItemData;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public class MaterialItemData extends ItemData {
-    public MaterialItemData(Material material) {
-        super(null, material.name(), material, ItemRarity.COMMON, false, true);
+public class DefaultMaterialData extends MaterialData<@Nullable NoneItemData> {
+    public DefaultMaterialData(@NotNull Material material) {
+        super(new Builder<>(ItemType.NONE, material.name()).material(material));
     }
 
     @Override

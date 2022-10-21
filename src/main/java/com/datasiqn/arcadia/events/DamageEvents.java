@@ -11,11 +11,10 @@ import com.datasiqn.arcadia.enchants.modifiers.EntityEnchantModifier;
 import com.datasiqn.arcadia.entities.ArcadiaHostileEntity;
 import com.datasiqn.arcadia.entities.ArcadiaMinecraftEntity;
 import com.datasiqn.arcadia.items.ArcadiaItem;
-import com.datasiqn.arcadia.items.ItemType;
 import com.datasiqn.arcadia.items.meta.ArcadiaItemMeta;
 import com.datasiqn.arcadia.items.stats.AttributeInstance;
 import com.datasiqn.arcadia.items.stats.ItemAttribute;
-import com.datasiqn.arcadia.managers.PlayerManager;
+import com.datasiqn.arcadia.items.type.ItemType;
 import com.datasiqn.arcadia.players.ArcadiaSender;
 import com.datasiqn.arcadia.players.PlayerData;
 import org.bukkit.*;
@@ -44,13 +43,17 @@ public class DamageEvents implements Listener {
 
     @EventHandler
     public void onEntityDamage(@NotNull EntityDamageEvent event) {
+        if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK) {
+            event.setCancelled(true);
+            return;
+        }
         if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK || event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) return;
 
         if (((CraftEntity) event.getEntity()).getHandle() instanceof ArcadiaMinecraftEntity entity) {
             entity.damage(event.getDamage(), event);
             spawnDamageIndicator(event.getEntity().getLocation(), event.getDamage());
         } else if (event.getEntity() instanceof Player player) {
-            plugin.getPlayerManager().getPlayerData(player).playerStats().damage(event, event.getCause() == EntityDamageEvent.DamageCause.FALL);
+            plugin.getPlayerManager().getPlayerData(player).damage(event, event.getCause() == EntityDamageEvent.DamageCause.FALL);
         }
     }
 

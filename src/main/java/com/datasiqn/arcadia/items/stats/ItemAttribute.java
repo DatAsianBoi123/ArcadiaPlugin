@@ -1,13 +1,15 @@
 package com.datasiqn.arcadia.items.stats;
 
-import org.bukkit.ChatColor;
+import net.md_5.bungee.api.ChatColor;
 
 public enum ItemAttribute {
     HEALTH("Health", ChatColor.RED, StatIcon.HEALTH),
     DEFENSE("Defense", ChatColor.GREEN, StatIcon.DEFENSE),
     DAMAGE("Damage", ChatColor.RED, StatIcon.DAMAGE),
     STRENGTH("Strength", ChatColor.DARK_RED, StatIcon.STRENGTH),
-    ATTACK_SPEED("Attack Speed", ChatColor.YELLOW, StatIcon.ATTACK_SPEED);
+    ATTACK_SPEED("Attack Speed", ChatColor.YELLOW, StatIcon.ATTACK_SPEED),
+    HUNGER("Hunger", ChatColor.of("#743600"), StatIcon.HUNGER),
+    ;
 
     private final String displayName;
     private final ChatColor color;

@@ -2,22 +2,21 @@ package com.datasiqn.arcadia.items;
 
 import com.datasiqn.arcadia.ArcadiaKeys;
 import com.datasiqn.arcadia.datatypes.EnchantsDataType;
-import com.datasiqn.arcadia.items.data.ItemData;
-import com.datasiqn.arcadia.items.data.MaterialItemData;
+import com.datasiqn.arcadia.items.materials.ArcadiaMaterial;
+import com.datasiqn.arcadia.items.materials.data.DefaultMaterialData;
+import com.datasiqn.arcadia.items.materials.data.MaterialData;
 import com.datasiqn.arcadia.items.meta.ArcadiaItemMeta;
-import com.datasiqn.arcadia.items.meta.MetaBuilder;
 import com.datasiqn.arcadia.items.stats.AttributeInstance;
 import com.datasiqn.arcadia.items.stats.AttributeRange;
 import com.datasiqn.arcadia.items.stats.ItemAttribute;
-import com.datasiqn.arcadia.items.types.ArcadiaMaterial;
 import com.datasiqn.arcadia.util.ItemUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,9 +24,9 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.*;
 
-public class ArcadiaItem {
-    private final ItemData itemData;
-    private ArcadiaItemMeta itemMeta;
+public class ArcadiaItem implements ConfigurationSerializable {
+    private final @NotNull MaterialData<?> itemData;
+    private final @NotNull ArcadiaItemMeta itemMeta;
 
     private @Nullable ArcadiaMaterial material;
     private int amount = 1;
@@ -37,8 +36,9 @@ public class ArcadiaItem {
         this.material = original.material;
         this.amount = original.amount;
 
-        this.itemMeta = original.material == null ? new MetaBuilder().build(UUID.randomUUID()) : original.material.createItemMeta(UUID.randomUUID());
+        this.itemMeta = original.material == null ? new ArcadiaItemMeta(UUID.randomUUID()) : original.material.createItemMeta(UUID.randomUUID());
     }
+
     public ArcadiaItem(@NotNull Material material) {
         this(material, 1);
     }
@@ -46,89 +46,72 @@ public class ArcadiaItem {
         this(ItemUtil.fromDefaultItem(material));
         this.amount = amount;
     }
+
     public ArcadiaItem(@NotNull ArcadiaMaterial material) {
         this(material, 1);
     }
     public ArcadiaItem(@NotNull ArcadiaMaterial material, int amount) {
-        this(material.getItemData());
+        this(material.getData(), material.createItemMeta(UUID.randomUUID()));
         this.material = material;
-        this.itemMeta = material.createItemMeta(UUID.randomUUID());
         if (!itemData.isStackable()) this.amount = amount;
     }
+
     public ArcadiaItem(@NotNull ItemStack itemStack) {
         this.amount = itemStack.getAmount();
         ArcadiaMaterial arcadiaMaterial = ItemUtil.getFrom(itemStack);
         if (arcadiaMaterial == null) {
-            ItemData data;
+            MaterialData<?> data;
             try {
                 arcadiaMaterial = ArcadiaMaterial.valueOf(itemStack.getType().name());
-                data = arcadiaMaterial.getItemData();
+                data = arcadiaMaterial.getData();
             } catch (IllegalArgumentException ignored) {
                 data = ItemUtil.fromDefaultItem(itemStack.getType());
             }
             this.itemData = data;
             this.material = arcadiaMaterial;
-            this.itemMeta = arcadiaMaterial == null ? new MetaBuilder().build(UUID.randomUUID()) : arcadiaMaterial.createItemMeta(UUID.randomUUID());
+            this.itemMeta = arcadiaMaterial == null ? new ArcadiaItemMeta(UUID.randomUUID()) : arcadiaMaterial.createItemMeta(UUID.randomUUID());
             return;
         }
         this.material = arcadiaMaterial;
-        this.itemData = arcadiaMaterial.getItemData();
+        this.itemData = arcadiaMaterial.getData();
         if (!itemData.isStackable()) this.amount = 1;
         ItemMeta meta = itemStack.getItemMeta();
         assert meta != null;
-        UUID uuid = UUID.randomUUID();
-        PersistentDataContainer pdc = meta.getPersistentDataContainer();
-        String strUuid = pdc.get(ArcadiaKeys.ITEM_UUID, PersistentDataType.STRING);
-        if (strUuid != null) uuid = UUID.fromString(strUuid);
-        this.itemMeta = arcadiaMaterial.createItemMeta(uuid);
+        ArcadiaItemMeta meta1 = new ArcadiaItemMeta(meta);
+        this.itemMeta = arcadiaMaterial.createItemMeta(meta1.getUuid());
 
-        itemMeta.setItemQualityBonus(pdc.getOrDefault(ArcadiaKeys.ITEM_QUALITY_BONUS, PersistentDataType.DOUBLE, 0d));
-
-        EnchantsDataType.EnchantData[] enchantArray = pdc.get(ArcadiaKeys.ITEM_ENCHANTS, new EnchantsDataType());
-        if (enchantArray == null) return;
-        for (EnchantsDataType.EnchantData data : enchantArray) {
-            itemMeta.addEnchant(data.enchantType(), data.level());
-        }
+        itemMeta.setItemQualityBonus(meta1.getItemQualityBonus());
+        meta1.getEnchants().forEach(itemMeta::addEnchant);
     }
-    public ArcadiaItem(@NotNull ItemData itemData) {
+
+    public ArcadiaItem(@NotNull MaterialData<?> itemData) {
+        this(itemData, new ArcadiaItemMeta(UUID.randomUUID()));
+    }
+    public ArcadiaItem(@NotNull MaterialData<?> itemData, @NotNull ArcadiaItemMeta meta) {
         this.itemData = itemData;
-        this.itemMeta = new MetaBuilder().build(UUID.randomUUID());
+        this.itemMeta = meta;
     }
 
     public ItemStack build() {
-        return build(amount);
-    }
-    public ItemStack build(int amount) {
-        ItemStack itemStack = itemData.buildWithModifiers(amount, itemMeta.getUuid());
+        ItemStack itemStack = itemData.toItemStack(amount, itemMeta.getUuid());
         ItemMeta meta = itemStack.getItemMeta();
         if (meta == null) return itemStack;
         List<String> lore = meta.getLore();
         assert lore != null;
 
-        PersistentDataContainer pdc = meta.getPersistentDataContainer();
-
         if (itemMeta.hasEnchants()) {
             meta.addEnchant(Enchantment.DURABILITY, 0, true);
 
             List<String> enchantLore = new ArrayList<>();
-            List<EnchantsDataType.EnchantData> enchantData = new ArrayList<>();
 
             itemMeta.getEnchants().forEach((type, level) -> {
                 NumberFormat numberFormat = NumberFormat.getInstance(Locale.ENGLISH);
                 enchantLore.add(ChatColor.BLUE + type.getEnchantment().getName() + " " + numberFormat.format(level));
-                enchantData.add(new EnchantsDataType.EnchantData(type, level));
             });
             enchantLore.sort(Comparator.naturalOrder());
             lore.add(0, " ");
             lore.add(0, String.join(", ", enchantLore));
-
-            pdc.set(ArcadiaKeys.ITEM_ENCHANTS, new EnchantsDataType(), enchantData.toArray(enchantData.toArray(new EnchantsDataType.EnchantData[0])));
         }
-
-        if (itemMeta.getItemStats().hasAttributes()) {
-            pdc.set(ArcadiaKeys.ITEM_QUALITY_BONUS, PersistentDataType.DOUBLE, itemMeta.getItemQualityBonus());
-        }
-
         if (itemMeta.getItemStats().hasAttributes()) {
             lore.addAll(0, itemMeta.getItemStats().asLore());
             if (itemMeta.getItemStats().hasRandomizedAttributes()) {
@@ -139,6 +122,8 @@ public class ArcadiaItem {
                 lore.add(0, ChatColor.DARK_GRAY + "Item Quality: " + ChatColor.GRAY + "100% (never has randomized stats)");
             }
         }
+
+        itemMeta.addToPdc(meta.getPersistentDataContainer());
 
         meta.setLore(lore);
         itemStack.setItemMeta(meta);
@@ -206,10 +191,10 @@ public class ArcadiaItem {
     }
 
     public boolean isDefaultMaterial() {
-        return itemData instanceof MaterialItemData;
+        return itemData instanceof DefaultMaterialData;
     }
 
-    public ItemData getItemData() {
+    public @NotNull MaterialData<?> getItemData() {
         return itemData;
     }
 
@@ -219,6 +204,37 @@ public class ArcadiaItem {
 
     public @NotNull ArcadiaItemMeta getItemMeta() {
         return itemMeta;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
+
+    @NotNull
+    @Override
+    public Map<String, Object> serialize() {
+        Map<String, Object> objectMap = new HashMap<>();
+        objectMap.put("id", itemData.getID());
+        objectMap.put("amount", amount);
+        return objectMap;
+    }
+
+    public static @NotNull ArcadiaItem deserialize(@NotNull Map<String, Object> data) {
+        String id = data.get("id") instanceof String string ? string : "STONE";
+        ArcadiaItem item;
+        try {
+            item = new ArcadiaItem(ArcadiaMaterial.valueOf(id));
+        } catch (IllegalArgumentException e) {
+            Material matchMaterial = Material.matchMaterial(id);
+            if (matchMaterial == null) matchMaterial = Material.STONE;
+            item = new ArcadiaItem(ItemUtil.fromDefaultItem(matchMaterial));
+        }
+        item.amount = data.get("amount") instanceof Integer integer ? integer : 1;
+        return item;
     }
 
     public static @NotNull ItemStack from(@NotNull Material material, int amount) {

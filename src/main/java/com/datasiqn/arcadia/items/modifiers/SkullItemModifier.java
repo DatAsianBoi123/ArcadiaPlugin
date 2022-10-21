@@ -1,6 +1,5 @@
 package com.datasiqn.arcadia.items.modifiers;
 
-import com.datasiqn.arcadia.items.data.ItemData;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -20,14 +19,13 @@ public class SkullItemModifier implements ItemModifier {
     }
 
     @Override
-    public @Nullable ItemMeta modify(@NotNull ItemData itemData, @NotNull UUID uuid, @Nullable ItemMeta metaCopy) {
-        if (!(metaCopy instanceof SkullMeta skullMeta)) return null;
+    public void modify(@NotNull UUID uuid, @Nullable ItemMeta metaCopy) {
+        if (!(metaCopy instanceof SkullMeta skullMeta)) return;
 
         PlayerProfile playerProfile = Bukkit.getServer().createPlayerProfile(uuid);
         try {
             playerProfile.getTextures().setSkin(new URL("https://textures.minecraft.net/texture/" + skinId));
         } catch (MalformedURLException ignored) {}
         skullMeta.setOwnerProfile(playerProfile);
-        return skullMeta;
     }
 }

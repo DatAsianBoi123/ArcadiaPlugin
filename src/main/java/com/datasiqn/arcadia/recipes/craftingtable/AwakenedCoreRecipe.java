@@ -1,7 +1,7 @@
 package com.datasiqn.arcadia.recipes.craftingtable;
 
 import com.datasiqn.arcadia.items.ArcadiaItem;
-import com.datasiqn.arcadia.items.types.ArcadiaMaterial;
+import com.datasiqn.arcadia.items.materials.ArcadiaMaterial;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -13,10 +13,10 @@ public class AwakenedCoreRecipe implements CraftingRecipe {
     private static final ItemStack ITEM_STACK_RESULT = RESULT.asCraftingResult();
 
     static {
-        ItemStack amethystShard = new ArcadiaItem(Material.AMETHYST_SHARD).build(64);
+        ItemStack amethystShard = new ArcadiaItem(Material.AMETHYST_SHARD, 64).build();
 
         // 0
-        RECIPE[1] = new ArcadiaItem(Material.NETHERITE_BLOCK).build(8);
+        RECIPE[1] = new ArcadiaItem(Material.NETHERITE_BLOCK, 8).build();
         // 2
 
         RECIPE[3] = amethystShard;
