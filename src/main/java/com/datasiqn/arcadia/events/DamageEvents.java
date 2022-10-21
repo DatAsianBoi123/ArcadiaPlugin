@@ -17,7 +17,7 @@ import com.datasiqn.arcadia.items.stats.AttributeInstance;
 import com.datasiqn.arcadia.items.stats.ItemAttribute;
 import com.datasiqn.arcadia.managers.PlayerManager;
 import com.datasiqn.arcadia.players.ArcadiaSender;
-import com.datasiqn.arcadia.players.PlayerStats;
+import com.datasiqn.arcadia.players.PlayerData;
 import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_19_R1.entity.CraftEntity;
 import org.bukkit.entity.*;
@@ -65,11 +65,11 @@ public class DamageEvents implements Listener {
 
             if (!(event.getDamager() instanceof Player player)) return;
 
-            PlayerStats playerStats = plugin.getPlayerManager().getPlayerData(player).playerStats();
-            ArcadiaItem itemInMainHand = playerStats.getEquipment().getItemInMainHand();
+            PlayerData playerData = plugin.getPlayerManager().getPlayerData(player);
+            ArcadiaItem itemInMainHand = playerData.getEquipment().getItemInMainHand();
             if (itemInMainHand.getItemData().getItemType() != ItemType.SWORD) return;
 
-            double attackSpeed = playerStats.getAttackSpeed();
+            double attackSpeed = playerData.getAttackSpeed();
             plugin.runAfterOneTick(() -> {
                 Entity eventEntity = event.getEntity();
                 if (!(eventEntity instanceof LivingEntity living)) return;
@@ -77,7 +77,7 @@ public class DamageEvents implements Listener {
             });
         } else if (event.getEntity() instanceof Player player) {
             event.setDamage(calcPlayerDamage(event));
-            plugin.getPlayerManager().getPlayerData(player).playerStats().damage(event);
+            plugin.getPlayerManager().getPlayerData(player).damage(event);
         }
     }
 
@@ -114,7 +114,7 @@ public class DamageEvents implements Listener {
             double arrowDamage = calcArrowDamage(arrow, damage);
             if (arrow.getShooter() instanceof Player player) {
                 if (plugin.inDebugMode(player.getUniqueId())) {
-                    ArcadiaSender<Player> playerSender = plugin.getPlayerManager().getPlayerData(player).player();
+                    ArcadiaSender<Player> playerSender = plugin.getPlayerManager().getPlayerData(player).getPlayer();
                     sendDebugInfo(playerSender, arrowDamage, -1, arrowDamage, 1, 1);
                 }
             }
@@ -123,8 +123,8 @@ public class DamageEvents implements Listener {
 
         if (!(event.getDamager() instanceof Player player)) return damage;
 
-        PlayerManager.PlayerData playerData = plugin.getPlayerManager().getPlayerData(player);
-        ArcadiaItem item = playerData.playerStats().getEquipment().getItemInMainHand();
+        PlayerData playerData = plugin.getPlayerManager().getPlayerData(player);
+        ArcadiaItem item = playerData.getEquipment().getItemInMainHand();
 
         if (item.getItemData().getItemType() != ItemType.SWORD) return damage;
         ArcadiaItemMeta itemMeta = item.getItemMeta();
@@ -133,8 +133,7 @@ public class DamageEvents implements Listener {
 
         double finalDamage;
 
-        PlayerStats playerStats = playerData.playerStats();
-        double strength = playerStats.getStrength();
+        double strength = playerData.getStrength();
 
         double additiveBonus = 1;
         double multiplicativeBonus = 1;
@@ -158,7 +157,7 @@ public class DamageEvents implements Listener {
         finalDamage = damageAttribute.getValue() * DamageHelper.getStrengthMultiplier(strength) * (additiveBonus * multiplicativeBonus);
 
         if (plugin.inDebugMode(player.getUniqueId())) {
-            sendDebugInfo(playerData.player(), damageAttribute.getValue(), strength, finalDamage, additiveBonus, multiplicativeBonus);
+            sendDebugInfo(playerData.getPlayer(), damageValue, strength, finalDamage, additiveBonus, multiplicativeBonus);
         }
 
         return finalDamage;

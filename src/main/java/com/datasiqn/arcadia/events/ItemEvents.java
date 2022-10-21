@@ -4,7 +4,7 @@ import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.items.ArcadiaItem;
 import com.datasiqn.arcadia.items.abilities.AbilityExecutor;
 import com.datasiqn.arcadia.items.abilities.ItemAbility;
-import com.datasiqn.arcadia.managers.PlayerManager;
+import com.datasiqn.arcadia.players.PlayerData;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -39,7 +39,6 @@ public class ItemEvents implements Listener {
     @EventHandler
     public void onPlayerInteract(@NotNull PlayerInteractEvent event) {
         if (event.getAction() == Action.PHYSICAL) return;
-        assert event.getHand() != null;
         if (event.getHand() == EquipmentSlot.OFF_HAND) return;
         if (event.getItem() == null) return;
 
@@ -57,7 +56,7 @@ public class ItemEvents implements Listener {
             Long lastUsed = playerCooldowns.getOrDefault(arcadiaItem.getItemData().getID(), -1L);
             if (lastUsed + itemAbility.getCooldown() * 50L > currentTime && lastUsed != -1L) {
                 DecimalFormat decimalFormat = new DecimalFormat("#.#");
-                executor.playerData().player().sendMessageRaw(ChatColor.RED + "This ability is on cooldown for " + decimalFormat.format((itemAbility.getCooldown() * 50 - (currentTime - lastUsed)) / 1000d) + "s");
+                executor.playerData().getPlayer().sendMessageRaw(ChatColor.RED + "This ability is on cooldown for " + decimalFormat.format((itemAbility.getCooldown() * 50 - (currentTime - lastUsed)) / 1000d) + "s");
                 return;
             }
             COOLDOWNS.get(id).put(arcadiaItem.getItemData().getID(), currentTime);
@@ -66,20 +65,6 @@ public class ItemEvents implements Listener {
         }
     }
 
-    private record DefaultExecutor(PlayerManager.PlayerData playerData, ItemAbility ability) implements AbilityExecutor {
-            private DefaultExecutor(@NotNull PlayerManager.PlayerData playerData, ItemAbility ability) {
-                this.playerData = playerData;
-                this.ability = ability;
-            }
-
-            @Override
-            public @NotNull PlayerManager.PlayerData playerData() {
-                return playerData;
-            }
-
-            @Override
-            public @NotNull ItemAbility ability() {
-                return ability;
-            }
-        }
+    private record DefaultExecutor(PlayerData playerData, ItemAbility ability) implements AbilityExecutor {
+    }
 }

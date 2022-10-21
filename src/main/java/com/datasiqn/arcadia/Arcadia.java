@@ -115,16 +115,16 @@ public final class Arcadia extends JavaPlugin implements CommandExecutor, TabCom
 
         // Update Players
         Bukkit.getScheduler().runTaskTimer(this, () -> {
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                PlayerStats playerStats = playerManager.getPlayerData(p).playerStats();
-                playerStats.updateActionbar();
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                PlayerData playerData = playerManager.getPlayerData(player);
+                playerData.updateActionbar();
 
-                ItemStack itemStack = p.getInventory().getItemInMainHand();
-                if (itemStack.equals(playerStats.getEquipment().getItemInMainHand().build())) return;
+                ItemStack itemStack = player.getInventory().getItemInMainHand();
+                if (itemStack.equals(playerData.getEquipment().getItemInMainHand().build())) return;
                 ArcadiaItem arcadiaItem = new ArcadiaItem(itemStack);
                 ItemStack newItem = arcadiaItem.build();
-                if (!newItem.equals(p.getInventory().getItemInMainHand())) p.getInventory().setItemInMainHand(newItem);
-                playerStats.getEquipment().setItemInMainHand(arcadiaItem);
+                if (!newItem.equals(player.getInventory().getItemInMainHand())) player.getInventory().setItemInMainHand(newItem);
+                playerData.getEquipment().setItemInMainHand(arcadiaItem);
             }
         }, 0, 20);
     }

@@ -1,7 +1,6 @@
 package com.datasiqn.arcadia.items.stats;
 
 import org.bukkit.ChatColor;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
@@ -12,6 +11,7 @@ import java.util.Map;
 
 public class ItemStats {
     private final Map<ItemAttribute, AttributeInstance> itemAttributes = new HashMap<>();
+    private double itemQuality;
 
     public List<String> asLore() {
         return asLore(true);
@@ -21,7 +21,7 @@ public class ItemStats {
         DecimalFormat decimalFormat = new DecimalFormat("#,###.#");
         if (hasAttributes()) {
             for (ItemAttribute attribute : ItemAttribute.values()) {
-                AttributeInstance attributeInstance = itemAttributes.get(attribute);
+                AttributeInstance attributeInstance = getAttribute(attribute);
                 if (attributeInstance == null) continue;
                 lore.add(ChatColor.GRAY + "" + attribute + ": +" + attribute.getColor() + decimalFormat.format(attributeInstance.getValue()) + attribute.getIcon());
             }
@@ -32,13 +32,20 @@ public class ItemStats {
 
     @Nullable
     public AttributeInstance getAttribute(ItemAttribute attribute) {
-        return itemAttributes.get(attribute);
+        AttributeInstance instance = itemAttributes.get(attribute);
+        if (instance == null) return null;
+        instance.setItemQuality(itemQuality);
+        return instance;
     }
 
-    @Contract("_, _ -> this")
-    public ItemStats setAttribute(ItemAttribute attribute, AttributeInstance instance) {
+    public void setAttribute(ItemAttribute attribute, double value) {
+        setAttribute(attribute, new AttributeInstance(value));
+    }
+    public void setAttribute(ItemAttribute attribute, AttributeRange range) {
+        setAttribute(attribute, new AttributeInstance(range));
+    }
+    public void setAttribute(ItemAttribute attribute, AttributeInstance instance) {
         itemAttributes.put(attribute, instance);
-        return this;
     }
 
     public boolean hasRandomizedAttributes() {
@@ -50,7 +57,7 @@ public class ItemStats {
     }
 
     public void setItemQuality(double itemQuality) {
-        itemAttributes.forEach((attribute, instance) -> instance.setItemQuality(itemQuality));
+        this.itemQuality = itemQuality;
     }
 
     public boolean hasAttributes() {

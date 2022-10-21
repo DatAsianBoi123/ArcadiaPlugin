@@ -2,21 +2,26 @@ package com.datasiqn.arcadia.managers;
 
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.players.ArcadiaSender;
-import com.datasiqn.arcadia.players.PlayerStats;
+import com.datasiqn.arcadia.players.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 public class PlayerManager {
     private final Map<UUID, PlayerData> playerMap = new HashMap<>();
+    private final File dataFolder;
     private final Arcadia plugin;
 
-    public PlayerManager(Arcadia plugin) {
+    public PlayerManager(@NotNull Arcadia plugin) {
         this.plugin = plugin;
+        this.dataFolder = new File(plugin.getDataFolder().getPath() + File.separatorChar + "player-data");
     }
 
     public PlayerData getPlayerData(@NotNull ArcadiaSender<Player> player) {
@@ -27,10 +32,12 @@ public class PlayerManager {
         if (player == null) return null;
         return getPlayerData(player);
     }
-    public PlayerData getPlayerData(@NotNull Player player) {
+    @Contract("null -> null; !null -> !null")
+    public PlayerData getPlayerData(@Nullable Player player) {
+        if (player == null) return null;
         if (playerMap.containsKey(player.getUniqueId())) return playerMap.get(player.getUniqueId());
-        ArcadiaSender<Player> sender = new ArcadiaSender<>(plugin, player);
-        PlayerData playerData = new PlayerData(sender, PlayerStats.create(sender, plugin));
+        ArcadiaSender<Player> sender = new ArcadiaSender<>(player);
+        PlayerData playerData = PlayerData.create(sender, plugin);
         playerMap.put(player.getUniqueId(), playerData);
         return playerData;
     }
@@ -39,5 +46,7 @@ public class PlayerManager {
         playerMap.remove(player.getUniqueId());
     }
 
-    public record PlayerData(ArcadiaSender<Player> player, PlayerStats playerStats) {}
+    public File getDataFolder() {
+        return dataFolder;
+    }
 }

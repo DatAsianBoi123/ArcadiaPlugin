@@ -1,9 +1,9 @@
 package com.datasiqn.arcadia.items.abilities;
 
-import com.datasiqn.arcadia.managers.PlayerManager;
+import com.datasiqn.arcadia.players.PlayerData;
 import org.jetbrains.annotations.NotNull;
 
 public interface AbilityExecutor {
-    @NotNull PlayerManager.PlayerData playerData();
+    @NotNull PlayerData playerData();
     @NotNull ItemAbility ability();
 }
