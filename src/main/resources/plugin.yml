@@ -1,7 +1,7 @@
+main: com.datasiqn.arcadia.Arcadia
 name: Arcadia
 version: '${project.version}'
-main: com.datasiqn.arcadia.Arcadia
-api-version: 1.18
+api-version: 1.19
 commands:
   arcadia:
     description: Base Arcadia command
