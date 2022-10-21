@@ -4,17 +4,21 @@ import com.datasiqn.arcadia.Arcadia;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.Function;
+
 public enum GUIType {
-    CRAFTING(new CraftingGUI(Arcadia.getPlugin(Arcadia.class))),
-    ANVIL(new AnvilGUI(Arcadia.getPlugin(Arcadia.class)));
+    ANVIL(AnvilGUI::new),
+    CRAFTING(CraftingGUI::new),
+    AMULET(AmuletGUI::new),
+    ;
 
-    private final ArcadiaGUI gui;
+    private final Function<Arcadia, ArcadiaGUI> guiFunction;
 
-    GUIType(ArcadiaGUI gui) {
-        this.gui = gui;
+    GUIType(Function<Arcadia, ArcadiaGUI> guiFunction) {
+        this.guiFunction = guiFunction;
     }
 
-    public @NotNull Inventory getInventory() {
-        return gui.getInventory();
+    public @NotNull Inventory createInventory(Arcadia plugin) {
+        return guiFunction.apply(plugin).getInventory();
     }
 }

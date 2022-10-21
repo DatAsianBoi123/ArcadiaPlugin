@@ -5,7 +5,8 @@ import com.datasiqn.arcadia.ArcadiaKeys;
 import com.datasiqn.arcadia.enchants.EnchantType;
 import com.datasiqn.arcadia.items.ArcadiaItem;
 import com.datasiqn.arcadia.items.meta.ArcadiaItemMeta;
-import com.datasiqn.arcadia.items.types.ArcadiaMaterial;
+import com.datasiqn.arcadia.items.materials.ArcadiaMaterial;
+import com.datasiqn.arcadia.util.ItemUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -13,7 +14,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -45,22 +45,15 @@ public class AnvilGUI extends ArcadiaGUI {
     private ItemStack originalItem;
     private ItemStack addedItem;
     private ItemStack result;
-    private Inventory inv;
 
     public AnvilGUI(Arcadia plugin) {
         super(54, "Anvil");
         this.plugin = plugin;
+        init();
     }
 
-    @Override
-    public void init(Inventory inv) {
-        this.inv = inv;
-
-        ItemStack emptyItem = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
-        ItemMeta meta = emptyItem.getItemMeta();
-        assert meta != null;
-        meta.setDisplayName(" ");
-        emptyItem.setItemMeta(meta);
+    public void init() {
+        ItemStack emptyItem = ItemUtil.createEmpty(Material.GRAY_STAINED_GLASS_PANE);
         for (int i = 0; i < 54; i++) {
             this.inv.setItem(i, emptyItem);
         }
@@ -136,7 +129,7 @@ public class AnvilGUI extends ArcadiaGUI {
         ArcadiaItemMeta originalMeta = originalArcadiaItem.getItemMeta();
         ArcadiaItemMeta addedMeta = addedArcadiaItem.getItemMeta();
         if (addedArcadiaItem.getMaterial() == ArcadiaMaterial.ENCHANTED_BOOK || originalArcadiaItem.isSimilar(addedArcadiaItem)) {
-            boolean canAddEnchants = false;
+            boolean canAddEnchants = !originalArcadiaItem.getItemMeta().hasEnchants() && !addedArcadiaItem.getItemMeta().hasEnchants();
             for (Map.Entry<EnchantType, Integer> enchant : addedMeta.getEnchants().entrySet()) {
                 EnchantType enchantType = enchant.getKey();
                 Integer level = enchant.getValue();
@@ -154,7 +147,7 @@ public class AnvilGUI extends ArcadiaGUI {
             }
 
             if (originalArcadiaItem.isSimilar(addedArcadiaItem)) {
-                double newBonus = originalMeta.getItemQualityBonus() + addedMeta.getItemQuality();
+                double newBonus = originalMeta.getItemQualityBonus() + addedMeta.getItemQuality() + addedMeta.getItemQualityBonus();
                 originalMeta.setItemQualityBonus(newBonus);
             }
         }

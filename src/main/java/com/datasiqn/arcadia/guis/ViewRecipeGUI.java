@@ -3,7 +3,6 @@ package com.datasiqn.arcadia.guis;
 import com.datasiqn.arcadia.recipes.ArcadiaRecipe;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryInteractEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -17,10 +16,10 @@ public class ViewRecipeGUI extends ArcadiaGUI {
     public ViewRecipeGUI(@NotNull ArcadiaRecipe recipe) {
         super(54, recipe.name().toLowerCase(Locale.ROOT));
         this.recipe = recipe;
+        init();
     }
 
-    @Override
-    public void init(Inventory inv) {
+    public void init() {
         ItemStack emptyItem = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
         ItemMeta meta = emptyItem.getItemMeta();
         assert meta != null;

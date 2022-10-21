@@ -9,7 +9,6 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.*;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -35,17 +34,14 @@ public class CraftingGUI extends ArcadiaGUI {
 
     @Nullable
     private CraftingRecipe currentRecipe = null;
-    private Inventory inv;
 
     public CraftingGUI(Arcadia plugin) {
         super(54, "Crafting Menu");
         this.plugin = plugin;
+        init();
     }
 
-    @Override
-    public void init(Inventory inv) {
-        this.inv = inv;
-
+    public void init() {
         ItemStack emptyItem = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
         ItemMeta meta = emptyItem.getItemMeta();
         assert meta != null;
