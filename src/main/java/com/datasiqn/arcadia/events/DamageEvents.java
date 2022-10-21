@@ -8,8 +8,8 @@ import com.datasiqn.arcadia.enchants.EnchantType;
 import com.datasiqn.arcadia.enchants.modifiers.DamageEnchantModifier;
 import com.datasiqn.arcadia.enchants.modifiers.EnchantModifier;
 import com.datasiqn.arcadia.enchants.modifiers.EntityEnchantModifier;
+import com.datasiqn.arcadia.entities.ArcadiaEntity;
 import com.datasiqn.arcadia.entities.ArcadiaHostileEntity;
-import com.datasiqn.arcadia.entities.ArcadiaMinecraftEntity;
 import com.datasiqn.arcadia.items.ArcadiaItem;
 import com.datasiqn.arcadia.items.meta.ArcadiaItemMeta;
 import com.datasiqn.arcadia.items.stats.AttributeInstance;
@@ -49,7 +49,7 @@ public class DamageEvents implements Listener {
         }
         if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK || event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) return;
 
-        if (((CraftEntity) event.getEntity()).getHandle() instanceof ArcadiaMinecraftEntity entity) {
+        if (((CraftEntity) event.getEntity()).getHandle() instanceof ArcadiaEntity entity) {
             entity.damage(event.getDamage(), event);
             spawnDamageIndicator(event.getEntity().getLocation(), event.getDamage());
         } else if (event.getEntity() instanceof Player player) {
@@ -60,8 +60,7 @@ public class DamageEvents implements Listener {
     @EventHandler
     public void onEntityDamageByEntity(@NotNull EntityDamageByEntityEvent event) {
         if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK) return;
-
-        if (((CraftEntity) event.getEntity()).getHandle() instanceof ArcadiaMinecraftEntity entity) {
+        if (((CraftEntity) event.getEntity()).getHandle() instanceof ArcadiaEntity entity) {
             double damage = calcDamage(event, entity);
             entity.damage(damage, event);
             spawnDamageIndicator(event.getEntity().getLocation(), damage);
@@ -110,7 +109,7 @@ public class DamageEvents implements Listener {
         return hostileEntity.getDamage();
     }
 
-    private double calcDamage(@NotNull EntityDamageByEntityEvent event, ArcadiaMinecraftEntity entity) {
+    private double calcDamage(@NotNull EntityDamageByEntityEvent event, ArcadiaEntity entity) {
         double damage = event.getDamage();
 
         if (event.getDamager() instanceof Arrow arrow) {
@@ -157,7 +156,8 @@ public class DamageEvents implements Listener {
             }
         }
 
-        finalDamage = damageAttribute.getValue() * DamageHelper.getStrengthMultiplier(strength) * (additiveBonus * multiplicativeBonus);
+        double damageValue = damageAttribute.getValue();
+        finalDamage = (damageValue + DamageHelper.getStrengthBonus(strength, damageValue)) * (additiveBonus * multiplicativeBonus);
 
         if (plugin.inDebugMode(player.getUniqueId())) {
             sendDebugInfo(playerData.getPlayer(), damageValue, strength, finalDamage, additiveBonus, multiplicativeBonus);
@@ -178,7 +178,7 @@ public class DamageEvents implements Listener {
         sender.sendDebugMessage("Raw damage dealt: " + ChatColor.RED + format.format(rawDamage));
         if (strength >= 0) {
             sender.sendDebugMessage("Strength: " + ChatColor.RED + format.format(strength));
-            sender.sendDebugMessage("Strength Multiplier: " + ChatColor.RED + format.format(DamageHelper.getStrengthMultiplier(strength)) + "x");
+            sender.sendDebugMessage("Strength Bonus: " + ChatColor.RED + format.format(DamageHelper.getStrengthBonus(strength, rawDamage)));
         }
         sender.sendDebugMessage("Multiplier: " + ChatColor.RED + format.format(additiveMultiplier * multiplicativeMultiplier) + " (" + format.format(additiveMultiplier) + " * " + format.format(multiplicativeMultiplier) + ")");
         sender.sendDebugMessage("Final damage: " + ChatColor.RED + format.format(finalDamage));

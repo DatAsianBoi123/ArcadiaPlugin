@@ -1,8 +1,10 @@
 package com.datasiqn.arcadia;
 
-public abstract class DamageHelper {
-    public static double getStrengthMultiplier(double strength) {
-        return (10 + strength) / 10;
+public final class DamageHelper {
+    private DamageHelper() {}
+
+    public static double getStrengthBonus(double damage, double strength) {
+        return 5 * (damage / 100) * Math.pow(strength, 2);
     }
 
     public static double getFinalDamageWithDefense(double finalDamage, double defense) {
