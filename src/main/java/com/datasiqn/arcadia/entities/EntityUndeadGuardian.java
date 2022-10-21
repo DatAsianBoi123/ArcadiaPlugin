@@ -13,17 +13,22 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
-public class EntityUndeadGuardian implements ArcadiaEntity {
+public class EntityUndeadGuardian implements ArcadiaEntitySummoner {
+    private final String id;
+
+    public EntityUndeadGuardian(String id) {
+        this.id = id;
+    }
 
     @Override
     public void summonEntity(@NotNull Location location) {
         if (location.getWorld() == null) return;
-        new CustomEntity(location.getWorld()).summon(location);
+        new CustomEntity(location.getWorld(), id).summon(location);
     }
 
     private static class CustomEntity extends ArcadiaHostileEntity {
-        public CustomEntity(World world) {
-            super(EntityType.SKELETON, world, "Undead Guardian", 200, 250);
+        public CustomEntity(World world, String id) {
+            super(EntityType.SKELETON, world, "Undead Guardian", id, 200, 250);
 
             Objects.requireNonNull(getAttribute(Attributes.MOVEMENT_SPEED)).setBaseValue(0.4);
             Objects.requireNonNull(getAttribute(Attributes.KNOCKBACK_RESISTANCE)).setBaseValue(1);

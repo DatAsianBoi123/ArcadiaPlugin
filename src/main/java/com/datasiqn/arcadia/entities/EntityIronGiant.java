@@ -19,18 +19,24 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
-public class EntityIronGiant implements ArcadiaEntity {
+public class EntityIronGiant implements ArcadiaEntitySummoner {
+    private final String id;
+
+    public EntityIronGiant(String id) {
+        this.id = id;
+    }
+
     @Override
     public void summonEntity(@NotNull Location location) {
         if (location.getWorld() == null) return;
-        new CustomEntity(location.getWorld()).summon(location);
+        new CustomEntity(location.getWorld(), id).summon(location);
     }
 
     private static class CustomEntity extends ArcadiaHostileEntity {
         private int attackAnimationTick;
 
-        public CustomEntity(@NotNull World world) {
-            super(EntityType.IRON_GOLEM, world, "Iron Giant", 100000, 3000);
+        public CustomEntity(@NotNull World world, String id) {
+            super(EntityType.IRON_GOLEM, world, "Iron Giant", id, 100000, 3000);
         }
 
         @Override

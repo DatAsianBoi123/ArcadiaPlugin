@@ -1,18 +1,18 @@
 package com.datasiqn.arcadia.entities;
 
 public enum EntityType {
-    ZOMBIE(new EntityZombie()),
-    UNDEAD_GUARDIAN(new EntityUndeadGuardian()),
-    IRON_GIANT(new EntityIronGiant()),
-    DUMMY(new EntityDummy());
+    ZOMBIE(new EntityZombie("ZOMBIE")),
+    UNDEAD_GUARDIAN(new EntityUndeadGuardian("UNDEAD_GUARDIAN")),
+    IRON_GIANT(new EntityIronGiant("IRON_GIANT")),
+    DUMMY(new EntityDummy("DUMMY"));
 
-    private final ArcadiaEntity entity;
+    private final ArcadiaEntitySummoner entity;
 
-    EntityType(ArcadiaEntity entity) {
-        this.entity = entity;
+    EntityType(ArcadiaEntitySummoner summoner) {
+        this.entity = summoner;
     }
 
-    public ArcadiaEntity getEntity() {
+    public ArcadiaEntitySummoner getSummoner() {
         return entity;
     }
 }

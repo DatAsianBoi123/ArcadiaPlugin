@@ -14,17 +14,22 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
-public class EntityZombie implements ArcadiaEntity {
+public class EntityZombie implements ArcadiaEntitySummoner {
+    private final String id;
+
+    public EntityZombie(String id) {
+        this.id = id;
+    }
 
     @Override
     public void summonEntity(@NotNull Location location) {
         if (location.getWorld() == null) return;
-        new CustomEntity(location.getWorld()).summon(location);
+        new CustomEntity(location.getWorld(), id).summon(location);
     }
 
     private static class CustomEntity extends ArcadiaHostileEntity {
-        public CustomEntity(@NotNull World world) {
-            super(EntityType.ZOMBIE, world, "Zombie", 10, 1.5);
+        public CustomEntity(@NotNull World world, String id) {
+            super(EntityType.ZOMBIE, world, "Zombie", id, 10, 1.5);
             setItemInHand(InteractionHand.MAIN_HAND, new net.minecraft.world.item.ItemStack(Items.WOODEN_SWORD));
             setItemSlot(EquipmentSlot.HEAD, new net.minecraft.world.item.ItemStack(Items.LEATHER_HELMET));
         }

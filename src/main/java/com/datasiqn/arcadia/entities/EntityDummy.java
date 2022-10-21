@@ -9,22 +9,33 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public class EntityDummy implements ArcadiaEntity {
+public class EntityDummy implements ArcadiaEntitySummoner {
+    private final String id;
+
+    public EntityDummy(String id) {
+        this.id = id;
+    }
+
     @Override
     public void summonEntity(@NotNull Location location) {
         if (location.getWorld() == null) return;
-        new CustomEntity(location.getWorld()).summon(location);
+        new CustomEntity(location.getWorld(), id).summon(location);
     }
 
-    public static class CustomEntity extends ArcadiaMinecraftEntity {
-        public CustomEntity(@NotNull World world) {
-            super(EntityType.ZOMBIE, world, "Dummy", 1_000_000);
-
+    public static class CustomEntity extends ArcadiaEntity {
+        public CustomEntity(@NotNull World world, String id) {
+            super(EntityType.ZOMBIE, world, "Dummy", id, 1_000_000);
             Objects.requireNonNull(getAttribute(Attributes.KNOCKBACK_RESISTANCE)).setBaseValue(1);
         }
 
         @Override
         protected void registerGoals() { }
+
+        @Override
+        public void dropExperience() {
+            expToDrop = 100;
+            super.dropExperience();
+        }
 
         @Override
         protected @NotNull LootTables getArcadiaLootTable() {

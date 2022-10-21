@@ -17,11 +17,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumSet;
 
-public abstract class ArcadiaHostileEntity extends ArcadiaMinecraftEntity {
+public abstract class ArcadiaHostileEntity extends ArcadiaEntity {
     private final double damage;
 
-    public ArcadiaHostileEntity(EntityType<? extends PathfinderMob> entityType, @NotNull World world, String name, int maxHealth, double damage) {
-        super(entityType, world, name, maxHealth);
+    public ArcadiaHostileEntity(EntityType<? extends PathfinderMob> entityType, @NotNull World world, String name, String id, int maxHealth, double damage) {
+        super(entityType, world, name, id, maxHealth);
         this.damage = damage;
     }
 
