@@ -2,10 +2,10 @@ package com.datasiqn.arcadia.commands;
 
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.ArcadiaPermission;
-import com.datasiqn.arcadia.commands.arguments.PlayerArgumentType;
-import com.datasiqn.arcadia.commands.builder.ArgumentBuilder;
-import com.datasiqn.arcadia.commands.builder.CommandBuilder;
-import com.datasiqn.arcadia.managers.PlayerManager;
+import com.datasiqn.commandcore.arguments.ArgumentType;
+import com.datasiqn.commandcore.commands.Command;
+import com.datasiqn.commandcore.commands.builder.ArgumentBuilder;
+import com.datasiqn.commandcore.commands.builder.CommandBuilder;
 import org.bukkit.entity.Player;
 
 public class CommandHeal {
@@ -15,13 +15,13 @@ public class CommandHeal {
         this.plugin = plugin;
     }
 
-    public ArcadiaCommand getCommand() {
+    public Command getCommand() {
         return new CommandBuilder<>(Player.class)
                 .permission(ArcadiaPermission.PERMISSION_USE_HEAL)
                 .description("Heals you or another player")
-                .then(ArgumentBuilder.<Player, PlayerManager.PlayerData>argument(new PlayerArgumentType(plugin), "player")
-                        .executes(context -> context.parseArgument(new PlayerArgumentType(plugin), 0).playerStats().heal()))
-                .executes(sender -> plugin.getPlayerManager().getPlayerData(sender).playerStats().heal())
+                .then(ArgumentBuilder.<Player, Player>argument(ArgumentType.PLAYER, "player")
+                        .executes(context -> plugin.getPlayerManager().getPlayerData(context.parseArgument(ArgumentType.PLAYER, 0)).heal()))
+                .executes(sender -> plugin.getPlayerManager().getPlayerData(sender).heal())
                 .build();
     }
 }
