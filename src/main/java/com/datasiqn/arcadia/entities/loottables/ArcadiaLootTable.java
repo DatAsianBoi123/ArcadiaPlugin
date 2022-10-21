@@ -12,17 +12,17 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public interface ArcadiaLootTable {
-
     void spawnItems(Random random, Consumer<ItemStack> itemConsumer);
 
     class Builder implements ArcadiaLootTable {
         private final Collection<LootTableItem> items = new HashSet<>();
 
         @Contract("_, _ -> this")
-        public Builder addItem(ArcadiaItem item, double dropChance) {
-            items.add(new LootTableItem(item, dropChance, 1));
+        public Builder addItem(Supplier<ArcadiaItem> itemSupplier, double dropChance) {
+            items.add(new LootTableItem(itemSupplier, dropChance, 1));
             return this;
         }
         @Contract("_ -> this")
@@ -40,15 +40,15 @@ public interface ArcadiaLootTable {
     }
 
     class LootTableItem {
-        private final ArcadiaItem itemStack;
+        private final Supplier<ArcadiaItem> itemSupplier;
         private final double dropChance;
         private final IntRange amounts;
 
-        public LootTableItem(ArcadiaItem itemStack, @Range(from = 0, to = 1) double dropChance, int amount) {
-            this(itemStack, dropChance, new IntRange(amount));
+        public LootTableItem(Supplier<ArcadiaItem> itemSupplier, @Range(from = 0, to = 1) double dropChance, int amount) {
+            this(itemSupplier, dropChance, new IntRange(amount));
         }
-        public LootTableItem(ArcadiaItem itemStack, @Range(from = 0, to = 1) double dropChance, IntRange amounts) {
-            this.itemStack = itemStack;
+        public LootTableItem(Supplier<ArcadiaItem> itemSupplier, @Range(from = 0, to = 1) double dropChance, IntRange amounts) {
+            this.itemSupplier = itemSupplier;
             this.dropChance = dropChance;
             this.amounts = amounts;
         }
@@ -57,7 +57,9 @@ public interface ArcadiaLootTable {
         @Nullable
         public ItemStack generateItem(@NotNull Random random) {
             if (random.nextDouble() < dropChance) {
-                return itemStack.build(random.nextInt(amounts.getMinimumInteger(), amounts.getMaximumInteger() + 1));
+                ArcadiaItem item = itemSupplier.get();
+                item.setAmount(random.nextInt(amounts.getMinimumInteger(), amounts.getMaximumInteger() + 1));
+                return item.build();
             }
 
             return null;
