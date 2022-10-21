@@ -26,26 +26,32 @@ permissions:
   arcadia.debug:
     description: Allows the player to use the debug command (/arcadia debug)
     default: op
+  arcadia.config:
+    description: Allows the player to use the config command (/arcadia config)
+    default: op
   arcadia.gui:
     description: Allows the player to use the opengui command (/arcadia opengui)
     default: op
   arcadia.recipe:
     description: Allows the player to view any recipe (/arcadia viewrecipe)
     default: true
-  arcadia.help:
-    description: Allows the player to use the help command (/arcadia help)
+  arcadia.lobby:
+    description: Allows the player to go to the lobby (/arcadia lobby)
     default: true
+  arcadia.dungeon:
+    description: Allows the player to manage dungeons (/arcadia dungeons)
+    default: op
   arcadia.command:
-    description: Allows the player to use the default arcadia command
+    description: Allows the player to use the default arcadia command (/arcadia)
     default: true
 
   arcadia.player:
     description: Allows the player to use all default player commands
     default: true
     children:
-      arcadia.help: true
-      arcadia.command: true
       arcadia.recipe: true
+      arcadia.command: true
+      arcadia.lobby: true
 
   arcadia.admin:
     description: Allows the player to use all admin commands
@@ -57,5 +63,7 @@ permissions:
       arcadia.gui: true
       arcadia.player: true
       arcadia.debug: true
+      arcadia.config: true
       arcadia.loot: true
       arcadia.enchant: true
+      arcadia.dungeons: true
