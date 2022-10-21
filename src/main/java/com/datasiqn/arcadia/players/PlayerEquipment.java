@@ -4,6 +4,7 @@ import com.datasiqn.arcadia.items.ArcadiaItem;
 import org.bukkit.Material;
 import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +13,8 @@ public class PlayerEquipment {
     private static final ArcadiaItem EMPTY_ITEM = new ArcadiaItem(Material.AIR);
 
     private final Map<EquipmentSlot, ArcadiaItem> equipment = new HashMap<>();
+
+    private final ArcadiaItem[] amulet = new ArcadiaItem[9];
 
     public void setItem(EquipmentSlot equipmentSlot, @NotNull ArcadiaItem item) {
         equipment.put(equipmentSlot, item);
@@ -65,5 +68,9 @@ public class PlayerEquipment {
     @NotNull
     public ArcadiaItem getBoots() {
         return getItem(EquipmentSlot.FEET);
+    }
+
+    public @Nullable ArcadiaItem @NotNull [] getAmulet() {
+        return amulet;
     }
 }
