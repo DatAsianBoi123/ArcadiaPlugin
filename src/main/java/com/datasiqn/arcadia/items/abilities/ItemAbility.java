@@ -13,10 +13,10 @@ public class ItemAbility {
     private final String abilityName;
     private final List<String> description;
     private final AbilityType type;
-    private final int cooldown;
+    private final double cooldown;
     private final Consumer<AbilityExecutor> executor;
 
-    public ItemAbility(String abilityName, @NotNull List<String> description, AbilityType type, int cooldown, Consumer<AbilityExecutor> executor) {
+    public ItemAbility(String abilityName, @NotNull List<String> description, AbilityType type, double cooldown, Consumer<AbilityExecutor> executor) {
         this.abilityName = abilityName;
         this.description = description.stream().map(s -> ChatColor.RESET + "" + ChatColor.GRAY + s).collect(Collectors.toList());
         this.type = type;
@@ -24,7 +24,7 @@ public class ItemAbility {
         this.executor = executor;
     }
 
-    public int getCooldown() {
+    public double getCooldown() {
         return cooldown;
     }
 
