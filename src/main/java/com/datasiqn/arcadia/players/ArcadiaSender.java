@@ -1,33 +1,38 @@
 package com.datasiqn.arcadia.players;
 
-import com.datasiqn.arcadia.Arcadia;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
 public class ArcadiaSender<T extends CommandSender> {
-    private final Arcadia plugin;
     private final T base;
 
-    public ArcadiaSender(Arcadia plugin, T base) {
-        this.plugin = plugin;
+    public ArcadiaSender(T base) {
         this.base = base;
     }
 
     public void sendMessage(String message) {
-        plugin.sendMessage(message, base);
+        sendMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + "Arcadia" + ChatColor.GRAY + "] ", message);
     }
     public void sendMessage(String prefix, String message) {
         sendMessageRaw(prefix + message);
     }
 
+    public void sendError(String error) {
+        sendMessageRaw(ChatColor.RED + error);
+    }
+
     public void sendMessageRaw(String message) {
         base.sendMessage(message);
     }
+    public void sendMessageRaw(String... messages) {
+        base.sendMessage(messages);
+    }
 
-    public void sendDebugMessage(String message) {
-        sendMessage(ChatColor.GREEN + "Debug > " + ChatColor.WHITE, message);
+    public void sendDebugMessage(@Nullable Object message) {
+        sendMessage(ChatColor.GREEN + "Debug > " + ChatColor.WHITE, message == null ? "null" : message.toString());
     }
 
     public T get() {
