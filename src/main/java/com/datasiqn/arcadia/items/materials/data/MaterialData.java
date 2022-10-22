@@ -2,9 +2,9 @@ package com.datasiqn.arcadia.items.materials.data;
 
 import com.datasiqn.arcadia.ArcadiaKeys;
 import com.datasiqn.arcadia.items.ItemRarity;
-import com.datasiqn.arcadia.items.type.ItemType;
 import com.datasiqn.arcadia.items.abilities.ItemAbility;
 import com.datasiqn.arcadia.items.modifiers.ItemModifier;
+import com.datasiqn.arcadia.items.type.ItemType;
 import com.datasiqn.arcadia.items.type.data.ExtraItemData;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
@@ -19,7 +19,9 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class MaterialData<D extends ExtraItemData> {
     private final @NotNull ItemType<D> itemType;
