@@ -79,7 +79,7 @@ public final class ItemUtil {
             } else {
                 item.setAmount(amount);
             }
-            itemSet.add(item);
+            if (item.getAmount() > 0) itemSet.add(item);
         }
         return itemSet;
     }
