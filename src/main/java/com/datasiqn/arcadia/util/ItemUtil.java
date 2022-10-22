@@ -1,6 +1,7 @@
 package com.datasiqn.arcadia.util;
 
 import com.datasiqn.arcadia.ArcadiaKeys;
+import com.datasiqn.arcadia.items.ArcadiaItem;
 import com.datasiqn.arcadia.items.materials.data.MaterialData;
 import com.datasiqn.arcadia.items.materials.data.DefaultMaterialData;
 import com.datasiqn.arcadia.items.materials.ArcadiaMaterial;
@@ -19,6 +20,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 public final class ItemUtil {
@@ -61,5 +65,22 @@ public final class ItemUtil {
         meta.addItemFlags(ItemFlag.values());
         itemStack.setItemMeta(meta);
         return itemStack;
+    }
+
+    public static @NotNull Collection<ArcadiaItem> splitItem(@NotNull ArcadiaItem original, int times) {
+        Set<ArcadiaItem> itemSet = new HashSet<>(times);
+        int amount = Math.floorDiv(original.getAmount(), times);
+        int extraAmounts = original.getAmount() % times;
+        for (int i = 0; i < times; i++) {
+            ArcadiaItem item = new ArcadiaItem(original);
+            if (extraAmounts > 0) {
+                item.setAmount(amount + 1);
+                extraAmounts -= 1;
+            } else {
+                item.setAmount(amount);
+            }
+            itemSet.add(item);
+        }
+        return itemSet;
     }
 }

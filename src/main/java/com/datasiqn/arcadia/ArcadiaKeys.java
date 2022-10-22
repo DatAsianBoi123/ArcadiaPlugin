@@ -61,5 +61,8 @@ public final class ArcadiaKeys {
      */
     public static final NamespacedKey CHEST_LOC = Arcadia.getNK("chest_loc");
 
-    public static final NamespacedKey LOOT_CHEST_LOOT_TABLE = Arcadia.getNK("loot_chest");
+    /**
+     * string
+     */
+    public static final NamespacedKey LOOT_TABLE = Arcadia.getNK("loot_chest");
 }

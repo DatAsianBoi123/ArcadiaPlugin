@@ -1,6 +1,6 @@
 package com.datasiqn.arcadia.entities;
 
-import com.datasiqn.arcadia.entities.loottables.LootTables;
+import com.datasiqn.arcadia.loottables.LootTables;
 import com.datasiqn.arcadia.items.stats.StatIcon;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -78,7 +78,7 @@ public abstract class ArcadiaEntity extends PathfinderMob {
     @Override
     protected void dropFromLootTable(@NotNull DamageSource damagesource, boolean flag) {
         if (!(damagesource.getEntity() instanceof Player)) return;
-        getArcadiaLootTable().getLootTable().spawnItems(rand, itemStack -> spawnAtLocation(CraftItemStack.asNMSCopy(itemStack)));
+        getArcadiaLootTable().getLootTable().generateItems(rand).forEach(item -> spawnAtLocation(CraftItemStack.asNMSCopy(item.build())));
     }
 
     @Override

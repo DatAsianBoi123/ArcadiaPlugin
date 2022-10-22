@@ -1,6 +1,6 @@
 package com.datasiqn.arcadia.entities;
 
-import com.datasiqn.arcadia.entities.loottables.LootTables;
+import com.datasiqn.arcadia.loottables.LootTables;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
@@ -41,7 +41,7 @@ public class EntityUndeadGuardian implements ArcadiaEntitySummoner {
 
         @Override
         protected @NotNull LootTables getArcadiaLootTable() {
-            return LootTables.UNDEAD_GUARDIAN;
+            return LootTables.ENTITY_UNDEAD_GUARDIAN;
         }
 
         @Override

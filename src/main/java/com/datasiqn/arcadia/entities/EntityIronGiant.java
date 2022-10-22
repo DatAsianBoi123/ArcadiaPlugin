@@ -1,6 +1,6 @@
 package com.datasiqn.arcadia.entities;
 
-import com.datasiqn.arcadia.entities.loottables.LootTables;
+import com.datasiqn.arcadia.loottables.LootTables;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -78,7 +78,7 @@ public class EntityIronGiant implements ArcadiaEntitySummoner {
 
         @Override
         protected @NotNull LootTables getArcadiaLootTable() {
-            return LootTables.IRON_GIANT;
+            return LootTables.ENTITY_IRON_GIANT;
         }
 
         @Override
