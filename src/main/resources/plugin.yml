@@ -20,14 +20,14 @@ permissions:
   arcadia.summon:
     description: Allows the player to use the summon command (/arcadia summon)
     default: op
+  arcadia.spawn:
+    description: Allows the player to use the spawn command (/arcadia spawn)
+    default: op
   arcadia.loot:
     description: Allows the player to use the loot command (/arcadia loot)
     default: op
   arcadia.debug:
     description: Allows the player to use the debug command (/arcadia debug)
-    default: op
-  arcadia.config:
-    description: Allows the player to use the config command (/arcadia config)
     default: op
   arcadia.gui:
     description: Allows the player to use the opengui command (/arcadia opengui)
@@ -60,6 +60,7 @@ permissions:
       arcadia.heal: true
       arcadia.item: true
       arcadia.summon: true
+      arcadia.spawn: true
       arcadia.gui: true
       arcadia.player: true
       arcadia.debug: true
