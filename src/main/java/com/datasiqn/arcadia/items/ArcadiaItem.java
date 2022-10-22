@@ -36,7 +36,14 @@ public class ArcadiaItem implements ConfigurationSerializable {
         this.material = original.material;
         this.amount = original.amount;
 
-        this.itemMeta = original.material == null ? new ArcadiaItemMeta(UUID.randomUUID()) : original.material.createItemMeta(UUID.randomUUID());
+        if (original.material == null) {
+            this.itemMeta = new ArcadiaItemMeta(UUID.randomUUID());
+        } else {
+            ArcadiaItemMeta meta = original.material.createItemMeta(UUID.randomUUID());
+            meta.setItemQualityBonus(original.itemMeta.getItemQualityBonus());
+            original.itemMeta.getEnchants().forEach(meta::addEnchant);
+            this.itemMeta = meta;
+        }
     }
 
     public ArcadiaItem(@NotNull Material material) {
