@@ -15,8 +15,8 @@ import java.util.*;
 
 public class ArcadiaItemMeta {
     private final UUID uuid;
-    private final ItemStats itemStats = new ItemStats();
     private final double itemQuality;
+    private final ItemStats itemStats = new ItemStats();
     private final Map<EnchantType, Integer> enchants = new HashMap<>();
 
     private double qualityBonus;
