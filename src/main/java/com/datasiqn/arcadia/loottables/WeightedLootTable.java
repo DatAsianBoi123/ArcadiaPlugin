@@ -13,10 +13,12 @@ import java.util.function.Supplier;
 public class WeightedLootTable implements ArcadiaLootTable {
     @Unmodifiable
     private final Collection<LootTableItem> items;
+    private final String id;
 
     @Contract(pure = true)
     public WeightedLootTable(@NotNull Builder builder) {
         this.items = Collections.unmodifiableCollection(builder.items);
+        this.id = builder.id;
     }
 
     @Override
@@ -29,8 +31,18 @@ public class WeightedLootTable implements ArcadiaLootTable {
         return Collections.unmodifiableCollection(arcadiaItems);
     }
 
+    @Override
+    public String getId() {
+        return id;
+    }
+
     public static class Builder {
         private final Collection<LootTableItem> items = new HashSet<>();
+        private final String id;
+
+        public Builder(String id) {
+            this.id = id;
+        }
 
         @Contract(mutates = "this")
         public Builder addItem(Supplier<ArcadiaItem> itemSupplier, double dropChance) {
