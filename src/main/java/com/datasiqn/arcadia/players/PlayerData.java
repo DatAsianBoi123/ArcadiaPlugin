@@ -45,6 +45,7 @@ public class PlayerData {
 
     private double health;
     private double hunger;
+    private boolean debugMode;
 
     private BukkitTask regenHealthRunnable;
     private BukkitTask getHungryRunnable;
@@ -116,7 +117,7 @@ public class PlayerData {
 
             double expectedHealth = getHearts();
             if (Math.abs(player.get().getHealth() - expectedHealth) > HEALTH_PRECISION) {
-                if (plugin.inDebugMode(player.get().getUniqueId())) player.sendDebugMessage("Invalid health! Got " + player.get().getHealth() + ", expected " + expectedHealth);
+                if (debugMode) player.sendDebugMessage("Invalid health! Got " + player.get().getHealth() + ", expected " + expectedHealth);
                 player.get().setHealth(expectedHealth);
             }
         }
@@ -147,7 +148,7 @@ public class PlayerData {
             }
         }
 
-        if (!plugin.inDebugMode(player.get().getUniqueId())) return;
+        if (!debugMode) return;
         player.sendMessageRaw("-------------------------");
         player.sendMessageRaw(ChatColor.GOLD + "Damage Summary:");
         player.sendDebugMessage("Raw damage dealt: " + ChatColor.RED + rawDamage);
@@ -284,6 +285,18 @@ public class PlayerData {
 
     public FileConfiguration getDataFile() {
         return dataConfig;
+    }
+
+    public boolean inDebugMode() {
+        return debugMode;
+    }
+
+    public void setDebugMode(boolean debugMode) {
+        this.debugMode = debugMode;
+    }
+
+    public void toggleDebugMode() {
+        setDebugMode(!debugMode);
     }
 
     public static @NotNull PlayerData create(@NotNull ArcadiaSender<Player> player, Arcadia plugin) {

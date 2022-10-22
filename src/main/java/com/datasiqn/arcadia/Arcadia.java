@@ -24,13 +24,9 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 public final class Arcadia extends JavaPlugin {
-    private static final Map<UUID, Boolean> DEBUG_MODE_MAP = new HashMap<>();
-
     private final PlayerManager playerManager = new PlayerManager(this);
     private final DungeonManager dungeonManager = new DungeonManager();
 
@@ -126,14 +122,6 @@ public final class Arcadia extends JavaPlugin {
 
     public void runAfterOneTick(@NotNull Runnable runnable) {
         Bukkit.getScheduler().runTask(this, runnable);
-    }
-
-    public void setDebugMode(UUID uuid, boolean debugMode) {
-        DEBUG_MODE_MAP.put(uuid, debugMode);
-    }
-
-    public boolean inDebugMode(UUID uuid) {
-        return DEBUG_MODE_MAP.getOrDefault(uuid, false);
     }
 
     @Contract("_ -> new")

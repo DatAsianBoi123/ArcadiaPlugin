@@ -115,10 +115,8 @@ public class DamageEvents implements Listener {
         if (event.getDamager() instanceof Arrow arrow) {
             double arrowDamage = calcArrowDamage(arrow, damage);
             if (arrow.getShooter() instanceof Player player) {
-                if (plugin.inDebugMode(player.getUniqueId())) {
-                    ArcadiaSender<Player> playerSender = plugin.getPlayerManager().getPlayerData(player).getPlayer();
-                    sendDebugInfo(playerSender, arrowDamage, -1, arrowDamage, 1, 1);
-                }
+                PlayerData playerData = plugin.getPlayerManager().getPlayerData(player);
+                if (playerData.inDebugMode()) sendDebugInfo(playerData.getPlayer(), arrowDamage, -1, arrowDamage, 1, 1);
             }
             return arrowDamage;
         }
@@ -159,7 +157,7 @@ public class DamageEvents implements Listener {
         double damageValue = damageAttribute.getValue();
         finalDamage = (damageValue + DamageHelper.getStrengthBonus(strength, damageValue)) * (additiveBonus * multiplicativeBonus);
 
-        if (plugin.inDebugMode(player.getUniqueId())) {
+        if (playerData.inDebugMode()) {
             sendDebugInfo(playerData.getPlayer(), damageValue, strength, finalDamage, additiveBonus, multiplicativeBonus);
         }
 
