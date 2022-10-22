@@ -1,33 +1,23 @@
 package com.datasiqn.arcadia;
 
 import com.datasiqn.arcadia.commands.*;
-import com.datasiqn.arcadia.commands.arguments.ArcadiaArgumentType;
-import com.datasiqn.arcadia.dungeons.DungeonInstance;
 import com.datasiqn.arcadia.events.*;
 import com.datasiqn.arcadia.items.ArcadiaItem;
-import com.datasiqn.arcadia.loottables.LootChestLootTable;
 import com.datasiqn.arcadia.managers.DungeonManager;
 import com.datasiqn.arcadia.managers.PlayerManager;
-import com.datasiqn.arcadia.players.ArcadiaSender;
 import com.datasiqn.arcadia.players.PlayerData;
 import com.datasiqn.arcadia.util.ItemUtil;
 import com.datasiqn.commandcore.CommandCore;
-import com.datasiqn.commandcore.commands.builder.ArgumentBuilder;
 import com.datasiqn.commandcore.commands.builder.CommandBuilder;
-import com.datasiqn.commandcore.commands.builder.LiteralBuilder;
 import com.datasiqn.commandcore.managers.CommandManager;
-import org.bukkit.*;
-import org.bukkit.block.Chest;
-import org.bukkit.block.EnderChest;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.Contract;
@@ -37,9 +27,8 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
-public final class Arcadia extends JavaPlugin implements CommandExecutor, TabCompleter {
+public final class Arcadia extends JavaPlugin {
     private static final Map<UUID, Boolean> DEBUG_MODE_MAP = new HashMap<>();
 
     private final PlayerManager playerManager = new PlayerManager(this);
@@ -89,141 +78,16 @@ public final class Arcadia extends JavaPlugin implements CommandExecutor, TabCom
 
     @Override
     public void onEnable() {
-        CommandCore commandCore = CommandCore.init(this, "arcadia");
+        CommandCore.init(this, "arcadia");
 
-        // Custom Commands
-        CommandManager commandManager = commandCore.getCommandManager();
-        commandManager.registerCommand("i", new CommandItem().getCommand());
-        commandManager.registerCommand("opengui", new CommandGUI(this).getCommand());
-        commandManager.registerCommand("summon", new CommandSummon().getCommand());
-        commandManager.registerCommand("heal", new CommandHeal(this).getCommand());
-        commandManager.registerCommand("debug", new CommandDebug(this).getCommand());
-        commandManager.registerCommand("config", new CommandBuilder<>(CommandSender.class)
-                .permission(ArcadiaPermission.PERMISSION_USE_CONFIG)
-                .then(LiteralBuilder.literal("reload")
-                        .executes(context -> {
-                            reloadConfig();
-                            new ArcadiaSender<>(context.getSender()).sendMessage("Successfully reloaded the config");
-                        }))
-                .build());
-        commandManager.registerCommand("viewrecipe", new CommandViewRecipe().getCommand());
-        commandManager.registerCommand("loot", new CommandLoot().getCommand());
-        commandManager.registerCommand("enchant", new CommandEnchant(this).getCommand());
-        commandManager.registerCommand("dungeons", new CommandBuilder<>(Player.class)
-                .permission(ArcadiaPermission.PERMISSION_MANAGE_DUNGEONS)
-                .description("Manages different dungeon instances")
-                .then(LiteralBuilder.<Player>literal("create")
-                        .executes(context -> {
-                            ArcadiaSender<Player> player = playerManager.getPlayerData(context.getSender()).getPlayer();
-                            DungeonInstance instance = dungeonManager.createDungeon();
-                            if (instance == null) {
-                                player.sendError("An unexpected error occurred. Please try again later");
-                                return;
-                            }
-                            player.sendMessage("Successfully created a new dungeon with the id of " + instance.id());
-                        }))
-                .then(LiteralBuilder.<Player>literal("delete")
-                        .then(ArgumentBuilder.<Player, DungeonInstance>argument(ArcadiaArgumentType.DUNGEON, "world name")
-                                .executes(context -> {
-                                    DungeonInstance instance = context.parseArgument(ArcadiaArgumentType.DUNGEON, 1);
-                                    ArcadiaSender<Player> player = playerManager.getPlayerData(context.getSender()).getPlayer();
-                                    if (!dungeonManager.deleteDungeon(instance)) {
-                                        player.sendError("An error occurred when deleting the world. Please try again later");
-                                        return;
-                                    }
-                                    player.sendMessage("Successfully deleted the dungeon " + instance.id());
-                                })))
-                .then(LiteralBuilder.<Player>literal("tp")
-                        .then(ArgumentBuilder.<Player, DungeonInstance>argument(ArcadiaArgumentType.DUNGEON, "dungeon id")
-                                .executes(context -> dungeonManager.joinDungeon(context.getSender(), context.parseArgument(ArcadiaArgumentType.DUNGEON, 1)))))
-                .build());
-        commandManager.registerCommand("lobby", new CommandBuilder<>(Player.class)
-                .permission(ArcadiaPermission.PERMISSION_USE_LOBBY)
-                .description("Sends you to the lobby")
-                .executes(dungeonManager::leaveDungeon)
-                .build());
-        commandManager.registerCommand("spawn", new CommandBuilder<>(Player.class)
-                .then(LiteralBuilder.<Player>literal("upgradechest")
-                        .executes(context -> {
-                            Player player = context.getSender();
-                            Location location = player.getLocation();
-                            World world = player.getWorld();
-                            world.setType(location, Material.ENDER_CHEST);
-                            EnderChest enderChest = (EnderChest) world.getBlockAt(location).getState();
-                            enderChest.getPersistentDataContainer().set(ArcadiaKeys.UPGRADE_CHEST, PersistentDataType.BYTE, (byte) 1);
-                            enderChest.update();
-                        }))
-                .then(LiteralBuilder.<Player>literal("lootchest")
-                        .executes(context -> {
-                            Player player = context.getSender();
-                            Location location = player.getLocation();
-                            World world = player.getWorld();
-                            world.setType(location, Material.CHEST);
-                            Chest chest = (Chest) world.getBlockAt(location).getState();
-                            chest.setLootTable(new LootChestLootTable());
-                            chest.update();
-                            System.out.println(chest.getLootTable());
-                        }))
-                .build());
-        commandManager.registerCommand("bag", new CommandBuilder<>(Player.class)
-                .executes(sender -> {
-                    ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD);
-                    SkullMeta itemMeta = (SkullMeta) itemStack.getItemMeta();
-                    ItemUtil.setHeadSkin(itemMeta, "875e79488847ba02d5e12e7042d762e87ce08fa84fb89c35d6b5cccb8b9f4bed", UUID.randomUUID());
-                    itemStack.setItemMeta(itemMeta);
-                    sender.getInventory().addItem(itemStack);
-                })
-                .build());
-        commandManager.registerCommand("test", new CommandBuilder<>(CommandSender.class)
-                .executes(sender -> {
-                    sender.sendMessage("I am waiting a few seconds, but the main thread isn't blocked!");
-                    CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-                        try {
-                            Thread.sleep(5000);
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
-                    });
-                    future.thenAccept(v -> sender.sendMessage("Future has been completed!"));
-                })
-                .build());
+        registerAllCommands();
+        registerAllListeners();
 
-        // Listeners
-        registerListener(new InventoryEvents());
-        registerListener(new ItemEvents(this));
-        registerListener(new DamageEvents(this));
-        registerListener(new PlayerEvents(this));
-        registerListener(new GUIEvents(this));
-        registerListener(new ConsumableEvents(this));
-        registerListener(new UpgradeEvents(this));
-        registerListener(new LootTableEvents(this));
+        setupConfig();
+        loadPlayerData();
 
-        // Config stuff
-        saveDefaultConfig();
-        ConfigurationSerialization.registerClass(ArcadiaItem.class);
+        setupDungeons();
 
-        Bukkit.getOnlinePlayers().forEach(player -> playerManager.getPlayerData(player).loadData());
-
-        // Load dungeons from server files
-        dungeonManager.loadDungeonsFromDisk();
-
-        // Kick everyone from a dungeon (if they're in one)
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (!player.getWorld().getName().startsWith(DungeonManager.DUNGEON_WORLD_PREFIX)) continue;
-            player.teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
-        }
-
-        // Auto Reload Server
-        new BukkitRunnable() {
-            public void run() {
-                if (getFile().lastModified() > lastModified) {
-                    cancel();
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "rl confirm");
-                }
-            }
-        }.runTaskTimer(this, 0, 20);
-
-        // Update Players
         Bukkit.getScheduler().runTaskTimer(this, () -> {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 PlayerData playerData = playerManager.getPlayerData(player);
@@ -237,6 +101,15 @@ public final class Arcadia extends JavaPlugin implements CommandExecutor, TabCom
                 playerData.getEquipment().setItemInMainHand(arcadiaItem);
             }
         }, 0, 20);
+
+        new BukkitRunnable() {
+            public void run() {
+                if (getFile().lastModified() > lastModified) {
+                    cancel();
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "rl confirm");
+                }
+            }
+        }.runTaskTimer(this, 0, 20);
     }
 
     public void registerListener(Listener listener) {
@@ -266,5 +139,59 @@ public final class Arcadia extends JavaPlugin implements CommandExecutor, TabCom
     @Contract("_ -> new")
     public static @NotNull NamespacedKey getNK(String key) {
         return new NamespacedKey(Arcadia.getPlugin(Arcadia.class), key);
+    }
+
+    private void registerAllCommands() {
+        CommandManager commandManager = CommandCore.getInstance().getCommandManager();
+        commandManager.registerCommand("i", new CommandItem().getCommand());
+        commandManager.registerCommand("opengui", new CommandGUI(this).getCommand());
+        commandManager.registerCommand("summon", new CommandSummon().getCommand());
+        commandManager.registerCommand("heal", new CommandHeal(this).getCommand());
+        commandManager.registerCommand("debug", new CommandDebug(this).getCommand());
+        commandManager.registerCommand("viewrecipe", new CommandViewRecipe().getCommand());
+        commandManager.registerCommand("loot", new CommandLoot().getCommand());
+        commandManager.registerCommand("enchant", new CommandEnchant(this).getCommand());
+        commandManager.registerCommand("dungeons", new CommandDungeons(this).getCommand());
+        commandManager.registerCommand("lobby", new CommandLobby(this).getCommand());
+        commandManager.registerCommand("spawn", new CommandSpawn().getCommand());
+        commandManager.registerCommand("bag", new CommandBuilder<>(Player.class)
+                .executes(sender -> {
+                    ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD);
+                    SkullMeta itemMeta = (SkullMeta) itemStack.getItemMeta();
+                    ItemUtil.setHeadSkin(itemMeta, "875e79488847ba02d5e12e7042d762e87ce08fa84fb89c35d6b5cccb8b9f4bed", UUID.randomUUID());
+                    itemStack.setItemMeta(itemMeta);
+                    sender.getInventory().addItem(itemStack);
+                })
+                .build());
+    }
+
+    private void registerAllListeners() {
+        registerListener(new InventoryEvents());
+        registerListener(new ItemEvents(this));
+        registerListener(new DamageEvents(this));
+        registerListener(new PlayerEvents(this));
+        registerListener(new GUIEvents(this));
+        registerListener(new ConsumableEvents(this));
+        registerListener(new UpgradeEvents(this));
+        registerListener(new LootTableEvents(this));
+    }
+
+    private void setupConfig() {
+        saveDefaultConfig();
+        ConfigurationSerialization.registerClass(ArcadiaItem.class);
+    }
+
+    private void loadPlayerData() {
+        Bukkit.getOnlinePlayers().forEach(player -> playerManager.getPlayerData(player).loadData());
+    }
+
+    private void setupDungeons() {
+        dungeonManager.loadDungeonsFromDisk();
+
+        // Kick everyone from a dungeon (if they're in one)
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (!player.getWorld().getName().startsWith(DungeonManager.DUNGEON_WORLD_PREFIX)) continue;
+            player.teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
+        }
     }
 }
