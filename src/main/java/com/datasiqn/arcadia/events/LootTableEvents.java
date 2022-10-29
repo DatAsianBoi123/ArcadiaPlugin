@@ -7,6 +7,7 @@ import com.datasiqn.arcadia.loottables.LootTables;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -24,8 +25,9 @@ public class LootTableEvents implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerOpenChest(@NotNull PlayerInteractEvent event) {
+        if (event.useInteractedBlock() == Event.Result.DENY) return;
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         Block block = event.getClickedBlock();
         if (block == null) return;
