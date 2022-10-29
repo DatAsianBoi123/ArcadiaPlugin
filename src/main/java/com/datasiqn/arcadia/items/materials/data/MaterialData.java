@@ -128,9 +128,6 @@ public class MaterialData<D extends ExtraItemData> {
         if (meta == null) return itemStack;
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
         pdc.set(ArcadiaKeys.CRAFTING_RESULT, PersistentDataType.BYTE, (byte) 1);
-
-        itemModifiers.forEach(modifier -> modifier.modify(uuid, meta));
-
         itemStack.setItemMeta(meta);
         return itemStack;
     }
