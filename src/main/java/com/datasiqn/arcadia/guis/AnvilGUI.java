@@ -2,10 +2,11 @@ package com.datasiqn.arcadia.guis;
 
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.ArcadiaKeys;
+import com.datasiqn.arcadia.datatype.ArcadiaDataType;
 import com.datasiqn.arcadia.enchants.EnchantType;
 import com.datasiqn.arcadia.items.ArcadiaItem;
-import com.datasiqn.arcadia.items.meta.ArcadiaItemMeta;
 import com.datasiqn.arcadia.items.materials.ArcadiaMaterial;
+import com.datasiqn.arcadia.items.meta.ArcadiaItemMeta;
 import com.datasiqn.arcadia.util.ItemUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -17,7 +18,6 @@ import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -163,7 +163,7 @@ public class AnvilGUI extends ArcadiaGUI {
         ItemMeta meta = result.getItemMeta();
         if (meta == null) return;
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
-        pdc.set(ArcadiaKeys.ANVIL_RESULT, PersistentDataType.BYTE, (byte) 1);
+        pdc.set(ArcadiaKeys.ANVIL_RESULT, ArcadiaDataType.BOOLEAN, true);
 
         result.setItemMeta(meta);
 

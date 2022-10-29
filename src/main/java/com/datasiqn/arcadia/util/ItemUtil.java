@@ -1,6 +1,7 @@
 package com.datasiqn.arcadia.util;
 
 import com.datasiqn.arcadia.ArcadiaKeys;
+import com.datasiqn.arcadia.datatype.ArcadiaDataType;
 import com.datasiqn.arcadia.items.ArcadiaItem;
 import com.datasiqn.arcadia.items.materials.data.MaterialData;
 import com.datasiqn.arcadia.items.materials.data.DefaultMaterialData;
@@ -28,7 +29,7 @@ import java.util.UUID;
 public final class ItemUtil {
     private ItemUtil() {}
 
-    public static void setHeadSkin(SkullMeta meta, String skinId, UUID uuid) {
+    public static void setHeadSkin(@NotNull SkullMeta meta, String skinId, UUID uuid) {
         PlayerProfile playerProfile = Bukkit.createPlayerProfile(uuid);
         try {
             playerProfile.getTextures().setSkin(new URL("https://textures.minecraft.net/texture/" + skinId));
@@ -47,11 +48,7 @@ public final class ItemUtil {
 
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
         if (!pdc.has(ArcadiaKeys.ITEM_ID, PersistentDataType.STRING)) return null;
-        if (pdc.has(ArcadiaKeys.ITEM_MATERIAL, PersistentDataType.BYTE)) {
-            Byte bool = pdc.get(ArcadiaKeys.ITEM_MATERIAL, PersistentDataType.BYTE);
-            assert bool != null;
-            if (bool == (byte) 1) return null;
-        }
+        if (pdc.getOrDefault(ArcadiaKeys.ITEM_MATERIAL, ArcadiaDataType.BOOLEAN, false)) return null;
 
         String id = pdc.get(ArcadiaKeys.ITEM_ID, PersistentDataType.STRING);
         return ArcadiaMaterial.valueOf(id);

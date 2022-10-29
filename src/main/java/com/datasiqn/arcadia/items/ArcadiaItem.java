@@ -1,7 +1,8 @@
 package com.datasiqn.arcadia.items;
 
 import com.datasiqn.arcadia.ArcadiaKeys;
-import com.datasiqn.arcadia.datatypes.EnchantsDataType;
+import com.datasiqn.arcadia.datatype.ArcadiaDataType;
+import com.datasiqn.arcadia.datatype.EnchantsDataType;
 import com.datasiqn.arcadia.items.materials.ArcadiaMaterial;
 import com.datasiqn.arcadia.items.materials.data.DefaultMaterialData;
 import com.datasiqn.arcadia.items.materials.data.MaterialData;
@@ -161,7 +162,7 @@ public class ArcadiaItem implements ConfigurationSerializable {
             lore.add(0, String.join(", ", enchantLore));
 
             PersistentDataContainer pdc = meta.getPersistentDataContainer();
-            pdc.set(ArcadiaKeys.ITEM_ENCHANTS, new EnchantsDataType(), enchantData.toArray(enchantData.toArray(new EnchantsDataType.EnchantData[0])));
+            pdc.set(ArcadiaKeys.ITEM_ENCHANTS, ArcadiaDataType.ENCHANTS, enchantData.toArray(new EnchantsDataType.EnchantData[0]));
         }
 
         if (itemMeta.getItemStats().hasAttributes()) {

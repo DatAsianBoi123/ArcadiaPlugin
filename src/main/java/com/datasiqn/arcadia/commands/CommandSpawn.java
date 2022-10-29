@@ -3,6 +3,7 @@ package com.datasiqn.arcadia.commands;
 import com.datasiqn.arcadia.ArcadiaKeys;
 import com.datasiqn.arcadia.ArcadiaPermission;
 import com.datasiqn.arcadia.commands.arguments.ArcadiaArgumentType;
+import com.datasiqn.arcadia.datatype.ArcadiaDataType;
 import com.datasiqn.arcadia.loottables.ArcadiaLootTable;
 import com.datasiqn.arcadia.loottables.LootTables;
 import com.datasiqn.commandcore.commands.Command;
@@ -30,7 +31,7 @@ public class CommandSpawn {
                             World world = player.getWorld();
                             world.setType(location, Material.ENDER_CHEST);
                             EnderChest enderChest = (EnderChest) world.getBlockAt(location).getState();
-                            enderChest.getPersistentDataContainer().set(ArcadiaKeys.UPGRADE_CHEST, PersistentDataType.BYTE, (byte) 1);
+                            enderChest.getPersistentDataContainer().set(ArcadiaKeys.UPGRADE_CHEST, ArcadiaDataType.BOOLEAN, true);
                             enderChest.update();
                         }))
                 .then(LiteralBuilder.<Player>literal("lootchest")

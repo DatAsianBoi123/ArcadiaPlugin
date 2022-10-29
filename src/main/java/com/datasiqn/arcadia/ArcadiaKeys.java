@@ -14,7 +14,7 @@ public final class ArcadiaKeys {
      */
     public static final NamespacedKey ITEM_UUID = Arcadia.getNK("uuid");
     /**
-     * byte
+     * bool
      */
     public static final NamespacedKey ITEM_MATERIAL = Arcadia.getNK("material");
     /**
@@ -40,20 +40,20 @@ public final class ArcadiaKeys {
     public static final NamespacedKey ARROW_DAMAGE = Arcadia.getNK("arrow_damage");
 
     /**
-     * byte
+     * bool
      */
     public static final NamespacedKey CRAFTING_RESULT = Arcadia.getNK("crafting");
     /**
-     * byte
+     * bool
      */
     public static final NamespacedKey ANVIL_RESULT = Arcadia.getNK("anvil_result");
 
     /**
-     * byte
+     * bool
      */
     public static final NamespacedKey UPGRADE_CHEST = Arcadia.getNK("upgrade_chest");
     /**
-     * byte
+     * bool
      */
     public static final NamespacedKey CHEST_OPENED = Arcadia.getNK("opened");
     /**

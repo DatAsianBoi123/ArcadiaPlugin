@@ -1,4 +1,4 @@
-package com.datasiqn.arcadia.datatypes;
+package com.datasiqn.arcadia.datatype;
 
 import com.datasiqn.arcadia.ArcadiaKeys;
 import com.datasiqn.arcadia.enchants.EnchantType;

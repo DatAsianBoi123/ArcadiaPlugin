@@ -1,7 +1,8 @@
 package com.datasiqn.arcadia.items.meta;
 
 import com.datasiqn.arcadia.ArcadiaKeys;
-import com.datasiqn.arcadia.datatypes.EnchantsDataType;
+import com.datasiqn.arcadia.datatype.ArcadiaDataType;
+import com.datasiqn.arcadia.datatype.EnchantsDataType;
 import com.datasiqn.arcadia.enchants.EnchantType;
 import com.datasiqn.arcadia.items.stats.ItemStats;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -46,7 +47,7 @@ public class ArcadiaItemMeta {
         this.qualityBonus = pdc.getOrDefault(ArcadiaKeys.ITEM_QUALITY_BONUS, PersistentDataType.DOUBLE, 0d);
         this.itemStats.setItemQuality(itemQuality);
 
-        EnchantsDataType.EnchantData[] enchantData = pdc.getOrDefault(ArcadiaKeys.ITEM_ENCHANTS, new EnchantsDataType(), new EnchantsDataType.EnchantData[0]);
+        EnchantsDataType.EnchantData[] enchantData = pdc.getOrDefault(ArcadiaKeys.ITEM_ENCHANTS, ArcadiaDataType.ENCHANTS, new EnchantsDataType.EnchantData[0]);
         for (EnchantsDataType.EnchantData data : enchantData) {
             enchants.put(data.enchantType(), data.level());
         }
@@ -108,7 +109,7 @@ public class ArcadiaItemMeta {
         if (hasEnchants()) {
             List<EnchantsDataType.EnchantData> dataList = new ArrayList<>();
             enchants.forEach((type, level) -> dataList.add(new EnchantsDataType.EnchantData(type, level)));
-            pdc.set(ArcadiaKeys.ITEM_ENCHANTS, new EnchantsDataType(), dataList.toArray(new EnchantsDataType.EnchantData[0]));
+            pdc.set(ArcadiaKeys.ITEM_ENCHANTS, ArcadiaDataType.ENCHANTS, dataList.toArray(new EnchantsDataType.EnchantData[0]));
         }
 
         if (itemStats.hasAttributes()) {

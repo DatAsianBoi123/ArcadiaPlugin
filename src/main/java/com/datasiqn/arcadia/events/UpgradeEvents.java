@@ -2,6 +2,7 @@ package com.datasiqn.arcadia.events;
 
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.ArcadiaKeys;
+import com.datasiqn.arcadia.datatype.ArcadiaDataType;
 import com.datasiqn.arcadia.items.ArcadiaItem;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -40,13 +41,12 @@ public class UpgradeEvents implements Listener {
         EnderChest enderChest = (EnderChest) block.getState();
         PersistentDataContainer pdc = enderChest.getPersistentDataContainer();
 
-        if (pdc.getOrDefault(ArcadiaKeys.UPGRADE_CHEST, PersistentDataType.BYTE, (byte) 0) == (byte) 0) return;
-        if (pdc.getOrDefault(ArcadiaKeys.CHEST_OPENED, PersistentDataType.BYTE, (byte) 0) == (byte) 1) {
+        if (pdc.getOrDefault(ArcadiaKeys.CHEST_OPENED, ArcadiaDataType.BOOLEAN, false)) {
             plugin.getPlayerManager().getPlayerData(event.getPlayer()).getPlayer().sendError("You have already opened this chest!");
             return;
         }
 
-        pdc.set(ArcadiaKeys.CHEST_OPENED, PersistentDataType.BYTE, (byte) 1);
+        pdc.set(ArcadiaKeys.CHEST_OPENED, ArcadiaDataType.BOOLEAN, true);
         enderChest.update();
 
         Location location = block.getLocation();
