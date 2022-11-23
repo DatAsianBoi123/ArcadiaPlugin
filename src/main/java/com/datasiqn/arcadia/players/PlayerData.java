@@ -8,8 +8,9 @@ import com.datasiqn.arcadia.items.stats.ItemAttribute;
 import com.datasiqn.arcadia.items.stats.ItemStats;
 import com.datasiqn.arcadia.items.stats.StatIcon;
 import com.datasiqn.arcadia.items.type.ItemType;
-import com.datasiqn.arcadia.util.ParseUtil;
 import com.datasiqn.arcadia.util.XPUtil;
+import com.google.common.reflect.TypeToken;
+import com.google.gson.*;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import net.md_5.bungee.api.ChatColor;
@@ -17,9 +18,6 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -27,15 +25,16 @@ import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.text.DecimalFormat;
+import java.util.Map;
 import java.util.Objects;
 
 public class PlayerData {
     public static final double HEALTH_PRECISION = 0.00001;
 
-    private final FileConfiguration dataConfig;
+    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
     private final File dataFile;
     private final PlayerEquipment equipment = new PlayerEquipment();
     private final ArcadiaSender<Player> player;
@@ -64,11 +63,9 @@ public class PlayerData {
         File dataFile = createDataFile();
         if (dataFile == null) {
             plugin.getLogger().warning("An IO error occurred when creating the data file for " + player.get().getName() + " (" + player.get().getUniqueId() + ")");
-            this.dataConfig = null;
             this.dataFile = null;
             return;
         }
-        this.dataConfig = YamlConfiguration.loadConfiguration(dataFile);
         this.dataFile = dataFile;
     }
 
@@ -209,21 +206,26 @@ public class PlayerData {
     }
 
     public void loadData() {
-        xp = dataConfig.getLong("xp");
+        JsonObject jsonObject;
+        try {
+            FileReader reader = new FileReader(dataFile);
+            JsonElement jsonElement = JsonParser.parseReader(reader);
+            jsonObject = jsonElement.getAsJsonObject();
+        } catch (FileNotFoundException e) {
+            plugin.getLogger().warning("Data file for player " + player.get().getName() + " (" + player.get().getUniqueId() + ") does not exist");
+            return;
+        }
+        xp = 0;
+        if (jsonObject.has("xp")) {
+            xp = jsonObject.get("xp").getAsLong();
+        }
 
-        ConfigurationSection amuletSection = dataConfig.getConfigurationSection("amulet");
-        if (amuletSection != null) {
-            for (String key : amuletSection.getKeys(false)) {
-                Integer index = ParseUtil.parseInt(key);
-                if (index == null) {
-                    plugin.getLogger().warning("Config error: " + key + " is not a valid index");
-                    continue;
-                }
-                ArcadiaItem item = amuletSection.getSerializable(key, ArcadiaItem.class);
-                if (item == null) {
-                    plugin.getLogger().warning("Config error: invalid arcadia item at " + key);
-                    continue;
-                }
+        if (jsonObject.has("amulet")) {
+            JsonArray amuletSection = jsonObject.get("amulet").getAsJsonArray();
+            for (JsonElement element : amuletSection) {
+                JsonObject amuletItem = element.getAsJsonObject();
+                int index = amuletItem.get("slot").getAsInt();
+                ArcadiaItem item = ArcadiaItem.deserialize(gson.fromJson(amuletItem.get("item").getAsJsonObject(), new TypeToken<Map<String, Object>>() {}.getType()));
                 equipment.getAmulet()[index] = item;
             }
         }
@@ -231,14 +233,22 @@ public class PlayerData {
     }
 
     public void saveData() {
-        dataConfig.set("xp", xp);
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.add("xp", new JsonPrimitive(xp));
         ArcadiaItem[] amulet = equipment.getAmulet();
-        for (int i = 0, amuletLength = amulet.length; i < amuletLength; i++) {
-            ArcadiaItem item = amulet[i];
-            dataConfig.set("amulet." + i, item);
+        JsonArray amuletArray = new JsonArray();
+        for (int i = 0; i < amulet.length; i++) {
+            if (amulet[i] == null) continue;
+            JsonObject amuletItem = new JsonObject();
+            amuletItem.add("slot", new JsonPrimitive(i));
+            amuletItem.add("item", gson.toJsonTree(amulet[i].serialize()));
+            amuletArray.add(amuletItem);
         }
+        jsonObject.add("amulet", amuletArray);
         try {
-            dataConfig.save(dataFile);
+            FileWriter writer = new FileWriter(dataFile);
+            gson.toJson(jsonObject, writer);
+            writer.close();
             plugin.getLogger().info("Saved data for " + player.get().getName() + " (" + player.get().getUniqueId() + ")");
         } catch (IOException e) {
             plugin.getLogger().warning("Could not save data for " + player.get().getName() + " (" + player.get().getUniqueId() + ")");
@@ -283,10 +293,6 @@ public class PlayerData {
         return player;
     }
 
-    public FileConfiguration getDataFile() {
-        return dataConfig;
-    }
-
     public boolean inDebugMode() {
         return debugMode;
     }
@@ -314,14 +320,18 @@ public class PlayerData {
     }
 
     private @Nullable File createDataFile() {
-        File file = new File(plugin.getPlayerManager().getDataFolder().getPath(), player.get().getUniqueId() + ".yml");
-        if (!file.exists()) {
-            try {
-                //noinspection ResultOfMethodCallIgnored
-                file.createNewFile();
-            } catch (IOException e) {
-                return null;
+        File file = new File(plugin.getPlayerManager().getDataFolder().getPath(), player.get().getUniqueId() + ".json");
+        try {
+            if (file.createNewFile()) {
+                FileWriter writer = new FileWriter(file);
+                JsonObject jsonObject = new JsonObject();
+                jsonObject.add("xp", new JsonPrimitive(0));
+                jsonObject.add("amulet", new JsonArray());
+                gson.toJson(jsonObject, writer);
+                writer.close();
             }
+        } catch (IOException e) {
+            return null;
         }
         return file;
     }
