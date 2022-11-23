@@ -42,6 +42,11 @@ public final class ArcadiaKeys {
     /**
      * bool
      */
+    public static final NamespacedKey UPGRADE_BAG = Arcadia.getNK("upgrade_bag");
+
+    /**
+     * bool
+     */
     public static final NamespacedKey CRAFTING_RESULT = Arcadia.getNK("crafting");
     /**
      * bool
