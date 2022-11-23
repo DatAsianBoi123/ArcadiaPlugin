@@ -28,7 +28,7 @@ public abstract class ArcadiaGUI implements InventoryHolder {
 
     @NotNull
     @Override
-    public Inventory getInventory() {
+    public final Inventory getInventory() {
         return inv;
     }
 }
