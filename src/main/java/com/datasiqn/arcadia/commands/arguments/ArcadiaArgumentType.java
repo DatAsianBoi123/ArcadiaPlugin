@@ -10,6 +10,7 @@ import com.datasiqn.arcadia.items.materials.ArcadiaMaterial;
 import com.datasiqn.arcadia.recipes.ArcadiaRecipe;
 import com.datasiqn.commandcore.ArgumentParseException;
 import com.datasiqn.commandcore.arguments.ArgumentType;
+import com.datasiqn.resultapi.Result;
 
 public interface ArcadiaArgumentType {
     ArgumentType<ArcadiaMaterial> ITEM = new ArgumentType.EnumArgumentType<>(ArcadiaMaterial.class);
@@ -24,9 +25,5 @@ public interface ArcadiaArgumentType {
 
     ArgumentType<GUIType> GUI = new ArgumentType.EnumArgumentType<>(GUIType.class);
 
-    ArgumentType<DungeonInstance> DUNGEON = new ArgumentType.CustomArgumentType<>(str -> {
-        DungeonInstance instance = Arcadia.getPlugin(Arcadia.class).getDungeonManager().getCreatedDungeon(str);
-        if (instance == null) throw new ArgumentParseException("The dungeon '" + str + "' does not exist.");
-        return instance;
-    }, () -> Arcadia.getPlugin(Arcadia.class).getDungeonManager().getAllDungeonInstances().stream().map(DungeonInstance::id).toList());
+    ArgumentType<DungeonInstance> DUNGEON = new ArgumentType.CustomArgumentType<>(str -> Result.ofNullable(Arcadia.getPlugin(Arcadia.class).getDungeonManager().getCreatedDungeon(str), new ArgumentParseException("The dungeon '" + str + "' does not exist.")), context -> Arcadia.getPlugin(Arcadia.class).getDungeonManager().getAllDungeonInstances().stream().map(DungeonInstance::getId).toList());
 }
