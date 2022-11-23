@@ -2,23 +2,22 @@ package com.datasiqn.arcadia.commands;
 
 import com.datasiqn.arcadia.ArcadiaPermission;
 import com.datasiqn.arcadia.commands.arguments.ArcadiaArgumentType;
-import com.datasiqn.arcadia.loottables.LootTables;
-import com.datasiqn.commandcore.commands.Command;
+import com.datasiqn.arcadia.items.ArcadiaItem;
 import com.datasiqn.commandcore.commands.builder.ArgumentBuilder;
 import com.datasiqn.commandcore.commands.builder.CommandBuilder;
-import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Random;
 
 public class CommandLoot {
     private static final Random random = new Random();
 
-    public Command getCommand() {
-        return new CommandBuilder<>(Player.class)
+    public CommandBuilder getCommand() {
+        return new CommandBuilder()
                 .permission(ArcadiaPermission.PERMISSION_USE_LOOT)
                 .description("Loots a specific loot table")
-                .then(ArgumentBuilder.<Player, LootTables>argument(ArcadiaArgumentType.LOOT_TABLE, "loot table")
-                        .executes(context -> context.parseArgument(ArcadiaArgumentType.LOOT_TABLE, 0).getLootTable().generateItems(random)))
-                .build();
+                .then(ArgumentBuilder.argument(ArcadiaArgumentType.LOOT_TABLE, "loot table")
+                        .requiresPlayer()
+                        .executes(context -> context.getSource().getPlayer().unwrap().getInventory().addItem(context.getArguments().get(0, ArcadiaArgumentType.LOOT_TABLE).unwrap().getLootTable().generateItems(random).stream().map(ArcadiaItem::build).toArray(ItemStack[]::new))));
     }
 }
