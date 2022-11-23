@@ -1,5 +1,6 @@
 package com.datasiqn.arcadia.managers;
 
+import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.dungeons.DungeonInstance;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -11,15 +12,17 @@ import org.jetbrains.annotations.Unmodifiable;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class DungeonManager {
+    public static final String DEFAULT_DUNGEON_NAME = "world_default_dungeon";
     public static final String DUNGEON_WORLD_PREFIX = "d_";
 
     private final Map<UUID, DungeonInstance> activeDungeonInstances = new HashMap<>();
-    private final Set<DungeonInstance> createdDungeons = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    private final Set<DungeonInstance> createdDungeons = new HashSet<>();
+    private final Arcadia plugin;
 
-    public DungeonManager() {
+    public DungeonManager(Arcadia plugin) {
+        this.plugin = plugin;
     }
 
     public void loadDungeonsFromDisk() {
@@ -31,16 +34,20 @@ public class DungeonManager {
         while (Bukkit.getWorld(DUNGEON_WORLD_PREFIX + id) != null) {
             id = RandomStringUtils.randomNumeric(5);
         }
-        Bukkit.getLogger().info("Started async future");
-        World world = Bukkit.createWorld(WorldCreator.name(DUNGEON_WORLD_PREFIX + id).type(WorldType.FLAT).generateStructures(false));
-        Bukkit.getLogger().info("Created world");
+        long before = System.currentTimeMillis();
+        World defaultDungeon = Bukkit.getWorld(DEFAULT_DUNGEON_NAME);
+        if (defaultDungeon == null) {
+            plugin.getLogger().severe("Default world does not exist!");
+            return null;
+        }
+        World world = WorldCreator.name(DUNGEON_WORLD_PREFIX + id).copy(defaultDungeon).createWorld();
         if (world == null) return null;
         world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
         world.setSpawnFlags(false, false);
+        long after = System.currentTimeMillis();
         DungeonInstance instance = new DungeonInstance(world, id);
-        Bukkit.getLogger().info("Instantiated new dungeon instance");
         createdDungeons.add(instance);
-        Bukkit.getLogger().info("Added to created dungeons set");
+        plugin.getLogger().info("Created new dungeon with the id of " + id + ". Creation took " + (after - before) + "ms");
         return instance;
     }
 
@@ -50,7 +57,7 @@ public class DungeonManager {
         return deleteDungeon(createdDungeon);
     }
     public boolean deleteDungeon(@NotNull DungeonInstance instance) {
-        World world = instance.world();
+        World world = instance.getWorld();
         if (!Bukkit.unloadWorld(world, false)) return false;
         try {
             FileUtils.deleteDirectory(world.getWorldFolder());
@@ -58,28 +65,25 @@ public class DungeonManager {
             return false;
         }
         createdDungeons.remove(instance);
+        plugin.getLogger().info("Deleted dungeon " + instance.getId());
         return true;
     }
 
-    public void joinDungeon(@NotNull Player player, @NotNull String dungeonId) {
+    public void addPlayerTo(@NotNull Player player, @NotNull String dungeonId) {
         DungeonInstance instance = getCreatedDungeon(dungeonId);
-        if (instance == null) {
-            World world = Bukkit.getWorld(DUNGEON_WORLD_PREFIX + dungeonId);
-            if (world != null) {
-                instance = new DungeonInstance(world, dungeonId);
-            }
-        }
         if (instance == null) return;
-        joinDungeon(player, instance);
+        addPlayerTo(player, instance);
     }
-    public void joinDungeon(@NotNull Player player, @NotNull DungeonInstance instance) {
-        player.teleport(instance.world().getSpawnLocation());
+    public void addPlayerTo(@NotNull Player player, @NotNull DungeonInstance instance) {
+        player.teleport(instance.getWorld().getSpawnLocation());
         activeDungeonInstances.put(player.getUniqueId(), instance);
+        plugin.getLogger().info("Player " + player.getName() + " (" + player.getUniqueId() + ") just joined the dungeon " + instance.getId());
     }
 
     public void leaveDungeon(@NotNull Player player) {
         player.teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
-        activeDungeonInstances.remove(player.getUniqueId());
+        DungeonInstance instance = activeDungeonInstances.remove(player.getUniqueId());
+        plugin.getLogger().info("Player " + player.getName() + " (" + player.getUniqueId() + ") just left the dungeon they were in (" + instance.getId());
     }
 
     public @Nullable DungeonInstance getJoinedDungeon(@NotNull Player player) {
@@ -90,7 +94,7 @@ public class DungeonManager {
     }
 
     public @Nullable DungeonInstance getCreatedDungeon(String id) {
-        return createdDungeons.stream().filter(instance -> instance.id().equals(id)).findAny().orElse(null);
+        return createdDungeons.stream().filter(instance -> instance.getId().equals(id)).findAny().orElse(null);
     }
 
     @NotNull

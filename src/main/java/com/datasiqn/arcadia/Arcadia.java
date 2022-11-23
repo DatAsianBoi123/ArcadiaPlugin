@@ -37,7 +37,7 @@ import java.util.UUID;
 
 public final class Arcadia extends JavaPlugin {
     private final PlayerManager playerManager = new PlayerManager(this);
-    private final DungeonManager dungeonManager = new DungeonManager();
+    private final DungeonManager dungeonManager = new DungeonManager(this);
 
     private final long lastModified = getFile().lastModified();
 
@@ -83,6 +83,11 @@ public final class Arcadia extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        if (Bukkit.getWorld(DungeonManager.DEFAULT_DUNGEON_NAME) == null) {
+            WorldCreator.name(DungeonManager.DEFAULT_DUNGEON_NAME).type(WorldType.FLAT).generateStructures(false).createWorld();
+            getLogger().info("Created default dungeon");
+        }
+
         CommandCore.init(this, "arcadia");
 
         registerAllCommands();
