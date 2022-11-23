@@ -1,8 +1,6 @@
 package com.datasiqn.arcadia.items.materials;
 
-import com.datasiqn.arcadia.items.type.data.ConsumableData;
 import com.datasiqn.arcadia.items.ItemRarity;
-import com.datasiqn.arcadia.items.type.ItemType;
 import com.datasiqn.arcadia.items.abilities.AbilityType;
 import com.datasiqn.arcadia.items.abilities.ItemAbility;
 import com.datasiqn.arcadia.items.materials.data.MaterialData;
@@ -13,6 +11,8 @@ import com.datasiqn.arcadia.items.modifiers.SkullItemModifier;
 import com.datasiqn.arcadia.items.stats.AttributeRange;
 import com.datasiqn.arcadia.items.stats.ItemAttribute;
 import com.datasiqn.arcadia.items.stats.ItemStats;
+import com.datasiqn.arcadia.items.type.ItemType;
+import com.datasiqn.arcadia.items.type.data.ConsumableData;
 import com.datasiqn.arcadia.players.ArcadiaSender;
 import com.datasiqn.arcadia.players.PlayerData;
 import org.bukkit.ChatColor;
@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.UUID;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 public enum ArcadiaMaterial {
     ENCHANTED_STICK(new MaterialData.Builder<>(ItemType.NONE, "ENCHANTED_STICK")
@@ -90,8 +90,7 @@ public enum ArcadiaMaterial {
                 player.playSound(player, Sound.BLOCK_AMETHYST_BLOCK_PLACE, 1, 1);
                 player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 1));
             }))
-            .build(), uuid -> {
-        ArcadiaItemMeta meta = new ArcadiaItemMeta(uuid);
+            .build(), meta -> {
         ItemStats itemStats = meta.getItemStats();
         itemStats.setAttribute(ItemAttribute.DAMAGE, new AttributeRange(3, 5));
         itemStats.setAttribute(ItemAttribute.DEFENSE, 5);
@@ -104,8 +103,7 @@ public enum ArcadiaMaterial {
             .rarity(ItemRarity.MYTHIC)
             .stackable(false)
             .addModifier(new SkullItemModifier("c74f65f9b9958a6392c8b63324d76e80d2b509c1985a00232aecce409585ae2a"))
-            .build(), uuid -> {
-        ArcadiaItemMeta meta = new ArcadiaItemMeta(uuid);
+            .build(), meta -> {
         ItemStats itemStats = meta.getItemStats();
         itemStats.setAttribute(ItemAttribute.DEFENSE, new AttributeRange(75, 150));
         itemStats.setAttribute(ItemAttribute.HEALTH, new AttributeRange(400, 800));
@@ -118,8 +116,7 @@ public enum ArcadiaMaterial {
             .rarity(ItemRarity.MYTHIC)
             .stackable(false)
             .addModifier(new LeatherArmorItemModifier(Color.fromRGB(0xdb3814)))
-            .build(), uuid -> {
-        ArcadiaItemMeta meta = new ArcadiaItemMeta(uuid);
+            .build(), meta -> {
         ItemStats itemStats = meta.getItemStats();
         itemStats.setAttribute(ItemAttribute.DEFENSE, new AttributeRange(100d, 200d));
         itemStats.setAttribute(ItemAttribute.HEALTH, new AttributeRange(500d, 1000d));
@@ -132,8 +129,7 @@ public enum ArcadiaMaterial {
             .rarity(ItemRarity.MYTHIC)
             .stackable(false)
             .addModifier(new LeatherArmorItemModifier(Color.fromRGB(0xdb3814)))
-            .build(), uuid -> {
-        ArcadiaItemMeta meta = new ArcadiaItemMeta(uuid);
+            .build(), meta -> {
         ItemStats itemStats = meta.getItemStats();
         itemStats.setAttribute(ItemAttribute.DEFENSE, new AttributeRange(100, 175));
         itemStats.setAttribute(ItemAttribute.HEALTH, new AttributeRange(450, 900));
@@ -146,8 +142,7 @@ public enum ArcadiaMaterial {
             .rarity(ItemRarity.MYTHIC)
             .stackable(false)
             .addModifier(new LeatherArmorItemModifier(Color.fromRGB(0xdb3814)))
-            .build(), uuid -> {
-        ArcadiaItemMeta meta = new ArcadiaItemMeta(uuid);
+            .build(), meta -> {
         ItemStats itemStats = meta.getItemStats();
         itemStats.setAttribute(ItemAttribute.DEFENSE, new AttributeRange(50d, 100d));
         itemStats.setAttribute(ItemAttribute.HEALTH, new AttributeRange(300d, 850d));
@@ -169,8 +164,7 @@ public enum ArcadiaMaterial {
                 playerData.updateActionbar();
                 player.get().getWorld().createExplosion(player.get().getLocation(), 8, false, false, player.get());
             }))
-            .build(), uuid -> {
-        ArcadiaItemMeta meta = new ArcadiaItemMeta(uuid);
+            .build(), meta -> {
         ItemStats itemStats = meta.getItemStats();
         itemStats.setAttribute(ItemAttribute.DAMAGE, new AttributeRange(1500, 3000));
         itemStats.setAttribute(ItemAttribute.STRENGTH, 200);
@@ -182,8 +176,7 @@ public enum ArcadiaMaterial {
             .rarity(ItemRarity.LEGENDARY)
             .enchantGlint(true)
             .stackable(false)
-            .build(), uuid -> {
-        ArcadiaItemMeta meta = new ArcadiaItemMeta(uuid);
+            .build(), meta -> {
         ItemStats itemStats = meta.getItemStats();
         itemStats.setAttribute(ItemAttribute.DAMAGE, new AttributeRange(2000, 3500));
         itemStats.setAttribute(ItemAttribute.DEFENSE, 200);
@@ -196,8 +189,7 @@ public enum ArcadiaMaterial {
             .rarity(ItemRarity.LEGENDARY)
             .enchantGlint(true)
             .stackable(false)
-            .build(), uuid -> {
-        ArcadiaItemMeta meta = new ArcadiaItemMeta(uuid);
+            .build(), meta -> {
         ItemStats itemStats = meta.getItemStats();
         itemStats.setAttribute(ItemAttribute.DAMAGE, new AttributeRange(5000, 7000));
         itemStats.setAttribute(ItemAttribute.ATTACK_SPEED, -50);
@@ -207,8 +199,7 @@ public enum ArcadiaMaterial {
             .name("Bow")
             .material(Material.BOW)
             .stackable(false)
-            .build(), uuid -> {
-        ArcadiaItemMeta meta = new ArcadiaItemMeta(uuid);
+            .build(), meta -> {
         ItemStats itemStats = meta.getItemStats();
         itemStats.setAttribute(ItemAttribute.DAMAGE, 5);
         return meta;
@@ -225,20 +216,19 @@ public enum ArcadiaMaterial {
             .name("Strength Stone")
             .material(Material.REDSTONE)
             .stackable(false)
-            .build(), uuid -> {
-        ArcadiaItemMeta meta = new ArcadiaItemMeta(uuid);
+            .build(), meta -> {
         meta.getItemStats().setAttribute(ItemAttribute.STRENGTH, 1);
         return meta;
     }),
     ;
 
     private final MaterialData<?> data;
-    private final Function<UUID, ArcadiaItemMeta> metaBuilder;
+    private final UnaryOperator<ArcadiaItemMeta> metaBuilder;
 
     ArcadiaMaterial(MaterialData<?> data) {
-        this(data, ArcadiaItemMeta::new);
+        this(data, meta -> meta);
     }
-    ArcadiaMaterial(MaterialData<?> data, Function<UUID, ArcadiaItemMeta> metaBuilder) {
+    ArcadiaMaterial(MaterialData<?> data, UnaryOperator<ArcadiaItemMeta> metaBuilder) {
         this.data = data;
         this.metaBuilder = metaBuilder;
     }
@@ -250,6 +240,6 @@ public enum ArcadiaMaterial {
 
     @NotNull
     public ArcadiaItemMeta createItemMeta(UUID uuid) {
-        return metaBuilder.apply(uuid);
+        return metaBuilder.apply(new ArcadiaItemMeta(uuid));
     }
 }
