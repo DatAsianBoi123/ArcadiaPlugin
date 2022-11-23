@@ -6,7 +6,6 @@ import com.datasiqn.arcadia.commands.arguments.ArcadiaArgumentType;
 import com.datasiqn.arcadia.datatype.ArcadiaDataType;
 import com.datasiqn.arcadia.loottables.ArcadiaLootTable;
 import com.datasiqn.arcadia.loottables.LootTables;
-import com.datasiqn.commandcore.commands.Command;
 import com.datasiqn.commandcore.commands.builder.ArgumentBuilder;
 import com.datasiqn.commandcore.commands.builder.CommandBuilder;
 import com.datasiqn.commandcore.commands.builder.LiteralBuilder;
@@ -21,12 +20,13 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 public class CommandSpawn {
-    public Command getCommand() {
-        return new CommandBuilder<>(Player.class)
+    public CommandBuilder getCommand() {
+        return new CommandBuilder()
                 .permission(ArcadiaPermission.PERMISSION_USE_SPAWN)
-                .then(LiteralBuilder.<Player>literal("upgradechest")
+                .then(LiteralBuilder.literal("upgradechest")
+                        .requiresPlayer()
                         .executes(context -> {
-                            Player player = context.getSender();
+                            Player player = context.getSource().getPlayer().unwrap();
                             Location location = player.getLocation();
                             World world = player.getWorld();
                             world.setType(location, Material.ENDER_CHEST);
@@ -34,11 +34,12 @@ public class CommandSpawn {
                             enderChest.getPersistentDataContainer().set(ArcadiaKeys.UPGRADE_CHEST, ArcadiaDataType.BOOLEAN, true);
                             enderChest.update();
                         }))
-                .then(LiteralBuilder.<Player>literal("lootchest")
-                        .then(ArgumentBuilder.<Player, LootTables>argument(ArcadiaArgumentType.LOOT_TABLE, "loot table")
-                                .executes(context -> spawnLootChest(context.getSender().getLocation(), context.parseArgument(ArcadiaArgumentType.LOOT_TABLE, 1).getLootTable())))
-                        .executes(context -> spawnLootChest(context.getSender().getLocation(), LootTables.CHEST_DEFAULT.getLootTable())))
-                .build();
+                .then(LiteralBuilder.literal("lootchest")
+                        .then(ArgumentBuilder.argument(ArcadiaArgumentType.LOOT_TABLE, "loot table")
+                                .requiresPlayer()
+                                .executes(context -> context.getArguments().get(1, ArcadiaArgumentType.LOOT_TABLE).ifOk(lootTable -> spawnLootChest(context.getSource().getPlayer().unwrap().getLocation(), lootTable.getLootTable()))))
+                        .requiresPlayer()
+                        .executes(context -> spawnLootChest(context.getSource().getPlayer().unwrap().getLocation(), LootTables.CHEST_DEFAULT.getLootTable())));
     }
 
     private void spawnLootChest(@NotNull Location location, ArcadiaLootTable lootTable) {

@@ -5,11 +5,9 @@ import com.datasiqn.arcadia.ArcadiaPermission;
 import com.datasiqn.arcadia.commands.arguments.ArcadiaArgumentType;
 import com.datasiqn.arcadia.dungeons.DungeonInstance;
 import com.datasiqn.arcadia.players.ArcadiaSender;
-import com.datasiqn.commandcore.commands.Command;
 import com.datasiqn.commandcore.commands.builder.ArgumentBuilder;
 import com.datasiqn.commandcore.commands.builder.CommandBuilder;
 import com.datasiqn.commandcore.commands.builder.LiteralBuilder;
-import org.bukkit.entity.Player;
 
 public class CommandDungeons {
     private final Arcadia plugin;
@@ -18,34 +16,33 @@ public class CommandDungeons {
         this.plugin = plugin;
     }
 
-    public Command getCommand() {
-        return new CommandBuilder<>(Player.class)
+    public CommandBuilder getCommand() {
+        return new CommandBuilder()
                 .permission(ArcadiaPermission.PERMISSION_MANAGE_DUNGEONS)
                 .description("Manages different dungeon instances")
-                .then(LiteralBuilder.<Player>literal("create")
+                .then(LiteralBuilder.literal("create")
                         .executes(context -> {
-                            ArcadiaSender<Player> player = plugin.getPlayerManager().getPlayerData(context.getSender()).getPlayer();
+                            ArcadiaSender<?> sender = context.getSource().getPlayer().matchResult(player -> plugin.getPlayerManager().getPlayerData(player).getPlayer(), err -> new ArcadiaSender<>(context.getSource().getSender()));
                             DungeonInstance instance = plugin.getDungeonManager().createDungeon();
                             if (instance == null) {
-                                player.sendError("An unexpected error occurred. Please try again later");
+                                sender.sendError("An unexpected error occurred. Please try again later");
                                 return;
                             }
-                            player.sendMessage("Successfully created a new dungeon with the id of " + instance.id());
+                            sender.sendMessage("Successfully created a new dungeon with the id of " + instance.getId());
                         }))
-                .then(LiteralBuilder.<Player>literal("delete")
-                        .then(ArgumentBuilder.<Player, DungeonInstance>argument(ArcadiaArgumentType.DUNGEON, "world name")
-                                .executes(context -> {
-                                    DungeonInstance instance = context.parseArgument(ArcadiaArgumentType.DUNGEON, 1);
-                                    ArcadiaSender<Player> player = plugin.getPlayerManager().getPlayerData(context.getSender()).getPlayer();
+                .then(LiteralBuilder.literal("delete")
+                        .then(ArgumentBuilder.argument(ArcadiaArgumentType.DUNGEON, "world name")
+                                .executes(context -> context.getArguments().get(1, ArcadiaArgumentType.DUNGEON).ifOk(instance -> {
+                                    ArcadiaSender<?> sender = context.getSource().getPlayer().matchResult(player -> plugin.getPlayerManager().getPlayerData(player).getPlayer(), err -> new ArcadiaSender<>(context.getSource().getSender()));
                                     if (!plugin.getDungeonManager().deleteDungeon(instance)) {
-                                        player.sendError("An error occurred when deleting the world. Please try again later");
+                                        sender.sendError("An error occurred when deleting the world. Please try again later");
                                         return;
                                     }
-                                    player.sendMessage("Successfully deleted the dungeon " + instance.id());
-                                })))
-                .then(LiteralBuilder.<Player>literal("tp")
-                        .then(ArgumentBuilder.<Player, DungeonInstance>argument(ArcadiaArgumentType.DUNGEON, "dungeon id")
-                                .executes(context -> plugin.getDungeonManager().joinDungeon(context.getSender(), context.parseArgument(ArcadiaArgumentType.DUNGEON, 1)))))
-                .build();
+                                    sender.sendMessage("Successfully deleted the dungeon " + instance.getId());
+                                }))))
+                .then(LiteralBuilder.literal("tp")
+                        .then(ArgumentBuilder.argument(ArcadiaArgumentType.DUNGEON, "dungeon id")
+                                .requiresPlayer()
+                                .executes(context -> plugin.getDungeonManager().addPlayerTo(context.getSource().getPlayer().unwrap(), context.getArguments().get(1, ArcadiaArgumentType.DUNGEON).unwrap()))));
     }
 }

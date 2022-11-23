@@ -1,8 +1,10 @@
 package com.datasiqn.arcadia;
 
 import com.datasiqn.arcadia.commands.*;
+import com.datasiqn.arcadia.datatype.ArcadiaDataType;
 import com.datasiqn.arcadia.events.*;
 import com.datasiqn.arcadia.items.ArcadiaItem;
+import com.datasiqn.arcadia.items.materials.ArcadiaMaterial;
 import com.datasiqn.arcadia.managers.DungeonManager;
 import com.datasiqn.arcadia.managers.PlayerManager;
 import com.datasiqn.arcadia.players.PlayerData;
@@ -10,20 +12,27 @@ import com.datasiqn.arcadia.util.ItemUtil;
 import com.datasiqn.commandcore.CommandCore;
 import com.datasiqn.commandcore.commands.builder.CommandBuilder;
 import com.datasiqn.commandcore.managers.CommandManager;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import org.bukkit.*;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public final class Arcadia extends JavaPlugin {
@@ -142,15 +151,26 @@ public final class Arcadia extends JavaPlugin {
         commandManager.registerCommand("dungeons", new CommandDungeons(this).getCommand());
         commandManager.registerCommand("lobby", new CommandLobby(this).getCommand());
         commandManager.registerCommand("spawn", new CommandSpawn().getCommand());
-        commandManager.registerCommand("bag", new CommandBuilder<>(Player.class)
-                .executes(sender -> {
+        commandManager.registerCommand("bag", new CommandBuilder()
+                .requiresPlayer()
+                .executes(context -> {
                     ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD);
-                    SkullMeta itemMeta = (SkullMeta) itemStack.getItemMeta();
-                    ItemUtil.setHeadSkin(itemMeta, "875e79488847ba02d5e12e7042d762e87ce08fa84fb89c35d6b5cccb8b9f4bed", UUID.randomUUID());
-                    itemStack.setItemMeta(itemMeta);
-                    sender.getInventory().addItem(itemStack);
-                })
-                .build());
+                    SkullMeta meta = (SkullMeta) itemStack.getItemMeta();
+                    if (meta == null) return;
+
+                    meta.setDisplayName(ChatColor.WHITE + "Item Bag");
+                    List<String> lore = new ArrayList<>();
+                    lore.add(ChatColor.GRAY + "Holds all of your upgrades in this run");
+                    lore.add("");
+                    lore.add(ChatColor.GOLD + "" + ChatColor.BOLD + "Click to open");
+                    meta.setLore(lore);
+
+                    ItemUtil.setHeadSkin(meta, "875e79488847ba02d5e12e7042d762e87ce08fa84fb89c35d6b5cccb8b9f4bed", UUID.randomUUID());
+                    PersistentDataContainer pdc = meta.getPersistentDataContainer();
+                    pdc.set(ArcadiaKeys.UPGRADE_BAG, ArcadiaDataType.BOOLEAN, true);
+                    itemStack.setItemMeta(meta);
+                    context.getSource().getPlayer().unwrap().getInventory().addItem(itemStack);
+                }));
     }
 
     private void registerAllListeners() {

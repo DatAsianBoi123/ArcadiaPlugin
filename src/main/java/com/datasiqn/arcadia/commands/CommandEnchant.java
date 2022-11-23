@@ -7,12 +7,12 @@ import com.datasiqn.arcadia.enchants.EnchantType;
 import com.datasiqn.arcadia.items.ArcadiaItem;
 import com.datasiqn.arcadia.managers.PlayerManager;
 import com.datasiqn.commandcore.arguments.ArgumentType;
-import com.datasiqn.commandcore.commands.Command;
 import com.datasiqn.commandcore.commands.builder.ArgumentBuilder;
 import com.datasiqn.commandcore.commands.builder.CommandBuilder;
 import com.datasiqn.commandcore.commands.builder.LiteralBuilder;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 public class CommandEnchant {
     private final Arcadia plugin;
@@ -21,53 +21,53 @@ public class CommandEnchant {
         this.plugin = plugin;
     }
 
-    public Command getCommand() {
+    public CommandBuilder getCommand() {
         PlayerManager playerManager = plugin.getPlayerManager();
-        return new CommandBuilder<>(Player.class)
+        return new CommandBuilder()
                 .permission(ArcadiaPermission.PERMISSION_USE_ENCHANT)
                 .description("Enchants the item in your hand")
-                .then(LiteralBuilder.<Player>literal("add")
-                        .then(ArgumentBuilder.<Player, EnchantType>argument(ArcadiaArgumentType.ENCHANT, "enchant")
-                                .then(ArgumentBuilder.<Player, Integer>argument(ArgumentType.NATURAL_NUMBER, "level")
-                                        .executes(context -> {
-                                            ItemStack itemStack = context.getSender().getInventory().getItemInMainHand();
-                                            ArcadiaItem arcadiaItem = new ArcadiaItem(itemStack);
-                                            EnchantType enchantType = context.parseArgument(ArcadiaArgumentType.ENCHANT, 1);
-                                            int level = context.parseArgument(ArgumentType.NATURAL_NUMBER, 2);
-                                            arcadiaItem.getItemMeta().addEnchant(enchantType, level);
-                                            context.getSender().getInventory().setItemInMainHand(arcadiaItem.build());
-                                            playerManager.getPlayerData(context.getSender()).getPlayer().sendMessage("Enchanted with " + enchantType.getEnchantment().getName() + " " + level);
-                                        }))
-                                .executes(context -> {
-                                    ItemStack itemStack = context.getSender().getInventory().getItemInMainHand();
-                                    ArcadiaItem arcadiaItem = new ArcadiaItem(itemStack);
-                                    EnchantType enchantType = context.parseArgument(ArcadiaArgumentType.ENCHANT, 1);
-                                    arcadiaItem.getItemMeta().addEnchant(enchantType, 1);
-                                    context.getSender().getInventory().setItemInMainHand(arcadiaItem.build());
-                                    playerManager.getPlayerData(context.getSender()).getPlayer().sendMessage("Enchanted with " + enchantType.getEnchantment().getName() + " 1");
-                                }))
-                )
+                .then(LiteralBuilder.literal("add")
+                        .then(ArgumentBuilder.argument(ArcadiaArgumentType.ENCHANT, "enchant")
+                                .then(ArgumentBuilder.argument(ArgumentType.NATURAL_NUMBER, "level")
+                                        .requiresPlayer()
+                                        .executes(context -> addEnchant(context.getSource().getPlayer().unwrap(), context.getArguments().get(1, ArcadiaArgumentType.ENCHANT).unwrap(), context.getArguments().get(2, ArgumentType.NATURAL_NUMBER).unwrap())))
+                                .requiresPlayer()
+                                .executes(context -> addEnchant(context.getSource().getPlayer().unwrap(), context.getArguments().get(1, ArcadiaArgumentType.ENCHANT).unwrap(), 1))))
                 .then(LiteralBuilder.<Player>literal("remove")
-                        .then(ArgumentBuilder.<Player, EnchantType>argument(ArcadiaArgumentType.ENCHANT, "enchant")
+                        .then(ArgumentBuilder.argument(ArcadiaArgumentType.ENCHANT, "enchant")
+                                .requiresPlayer()
                                 .executes(context -> {
-                                    ItemStack itemStack = context.getSender().getInventory().getItemInMainHand();
+                                    Player player = context.getSource().getPlayer().unwrap();
+                                    PlayerInventory inventory = player.getInventory();
+                                    ItemStack itemStack = inventory.getItemInMainHand();
                                     ArcadiaItem arcadiaItem = new ArcadiaItem(itemStack);
-                                    EnchantType enchantType = context.parseArgument(ArcadiaArgumentType.ENCHANT, 1);
+                                    EnchantType enchantType = context.getArguments().get(1, ArcadiaArgumentType.ENCHANT).unwrap();
                                     if (!arcadiaItem.getItemMeta().hasEnchant(enchantType)) {
-                                        playerManager.getPlayerData(context.getSender()).getPlayer().sendMessage("That item does not have that enchant");
+                                        playerManager.getPlayerData(player).getPlayer().sendMessage("That item does not have that enchant");
                                         return;
                                     }
                                     arcadiaItem.getItemMeta().removeEnchant(enchantType);
-                                    context.getSender().getInventory().setItemInMainHand(arcadiaItem.build());
-                                    playerManager.getPlayerData(context.getSender()).getPlayer().sendMessage("Removed enchant " + enchantType.getEnchantment().getName());
+                                    inventory.setItemInMainHand(arcadiaItem.build());
+                                    playerManager.getPlayerData(player).getPlayer().sendMessage("Removed enchant " + enchantType.getEnchantment().getName());
                                 }))
+                        .requiresPlayer()
                         .executes(context -> {
-                            ItemStack itemStack = context.getSender().getInventory().getItemInMainHand();
+                            Player player = context.getSource().getPlayer().unwrap();
+                            PlayerInventory inventory = player.getInventory();
+                            ItemStack itemStack = inventory.getItemInMainHand();
                             ArcadiaItem arcadiaItem = new ArcadiaItem(itemStack);
                             arcadiaItem.getItemMeta().clearEnchants();
-                            context.getSender().getInventory().setItemInMainHand(arcadiaItem.build());
-                            playerManager.getPlayerData(context.getSender()).getPlayer().sendMessage("Removed all enchants");
-                        }))
-                .build();
+                            inventory.setItemInMainHand(arcadiaItem.build());
+                            playerManager.getPlayerData(player).getPlayer().sendMessage("Removed all enchants");
+                        }));
+    }
+
+    private void addEnchant(Player player, EnchantType type, int level) {
+        PlayerInventory inventory = player.getInventory();
+        ItemStack itemStack = inventory.getItemInMainHand();
+        ArcadiaItem arcadiaItem = new ArcadiaItem(itemStack);
+        arcadiaItem.getItemMeta().addEnchant(type, level);
+        inventory.setItemInMainHand(arcadiaItem.build());
+        plugin.getPlayerManager().getPlayerData(player).getPlayer().sendMessage("Enchanted with " + type.getEnchantment().getName() + " " + level);
     }
 }
