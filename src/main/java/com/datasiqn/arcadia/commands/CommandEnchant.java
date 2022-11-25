@@ -33,7 +33,7 @@ public class CommandEnchant {
                                         .executes(context -> addEnchant(context.getSource().getPlayer().unwrap(), context.getArguments().get(1, ArcadiaArgumentType.ENCHANT).unwrap(), context.getArguments().get(2, ArgumentType.NATURAL_NUMBER).unwrap())))
                                 .requiresPlayer()
                                 .executes(context -> addEnchant(context.getSource().getPlayer().unwrap(), context.getArguments().get(1, ArcadiaArgumentType.ENCHANT).unwrap(), 1))))
-                .then(LiteralBuilder.<Player>literal("remove")
+                .then(LiteralBuilder.literal("remove")
                         .then(ArgumentBuilder.argument(ArcadiaArgumentType.ENCHANT, "enchant")
                                 .requiresPlayer()
                                 .executes(context -> {
@@ -43,12 +43,12 @@ public class CommandEnchant {
                                     ArcadiaItem arcadiaItem = new ArcadiaItem(itemStack);
                                     EnchantType enchantType = context.getArguments().get(1, ArcadiaArgumentType.ENCHANT).unwrap();
                                     if (!arcadiaItem.getItemMeta().hasEnchant(enchantType)) {
-                                        playerManager.getPlayerData(player).getPlayer().sendMessage("That item does not have that enchant");
+                                        playerManager.getPlayerData(player).getSender().sendMessage("That item does not have that enchant");
                                         return;
                                     }
                                     arcadiaItem.getItemMeta().removeEnchant(enchantType);
                                     inventory.setItemInMainHand(arcadiaItem.build());
-                                    playerManager.getPlayerData(player).getPlayer().sendMessage("Removed enchant " + enchantType.getEnchantment().getName());
+                                    playerManager.getPlayerData(player).getSender().sendMessage("Removed enchant " + enchantType.getEnchantment().getName());
                                 }))
                         .requiresPlayer()
                         .executes(context -> {
@@ -58,7 +58,7 @@ public class CommandEnchant {
                             ArcadiaItem arcadiaItem = new ArcadiaItem(itemStack);
                             arcadiaItem.getItemMeta().clearEnchants();
                             inventory.setItemInMainHand(arcadiaItem.build());
-                            playerManager.getPlayerData(player).getPlayer().sendMessage("Removed all enchants");
+                            playerManager.getPlayerData(player).getSender().sendMessage("Removed all enchants");
                         }));
     }
 
@@ -68,6 +68,6 @@ public class CommandEnchant {
         ArcadiaItem arcadiaItem = new ArcadiaItem(itemStack);
         arcadiaItem.getItemMeta().addEnchant(type, level);
         inventory.setItemInMainHand(arcadiaItem.build());
-        plugin.getPlayerManager().getPlayerData(player).getPlayer().sendMessage("Enchanted with " + type.getEnchantment().getName() + " " + level);
+        plugin.getPlayerManager().getPlayerData(player).getSender().sendMessage("Enchanted with " + type.getEnchantment().getName() + " " + level);
     }
 }

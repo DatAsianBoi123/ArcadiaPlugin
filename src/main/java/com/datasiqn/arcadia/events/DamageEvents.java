@@ -116,7 +116,7 @@ public class DamageEvents implements Listener {
             double arrowDamage = calcArrowDamage(arrow, damage);
             if (arrow.getShooter() instanceof Player player) {
                 PlayerData playerData = plugin.getPlayerManager().getPlayerData(player);
-                if (playerData.inDebugMode()) sendDebugInfo(playerData.getPlayer(), arrowDamage, -1, arrowDamage, 1, 1);
+                if (playerData.inDebugMode()) sendDebugInfo(playerData.getSender(), arrowDamage, -1, arrowDamage, 1, 1);
             }
             return arrowDamage;
         }
@@ -158,7 +158,7 @@ public class DamageEvents implements Listener {
         finalDamage = (damageValue + DamageHelper.getStrengthBonus(strength, damageValue)) * (additiveBonus * multiplicativeBonus);
 
         if (playerData.inDebugMode()) {
-            sendDebugInfo(playerData.getPlayer(), damageValue, strength, finalDamage, additiveBonus, multiplicativeBonus);
+            sendDebugInfo(playerData.getSender(), damageValue, strength, finalDamage, additiveBonus, multiplicativeBonus);
         }
 
         return finalDamage;

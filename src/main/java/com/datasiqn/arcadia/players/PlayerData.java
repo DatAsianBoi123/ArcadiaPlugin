@@ -29,6 +29,7 @@ import java.io.*;
 import java.text.DecimalFormat;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 public class PlayerData {
     public static final double HEALTH_PRECISION = 0.00001;
@@ -289,8 +290,16 @@ public class PlayerData {
         return attributes.getDouble(attribute);
     }
 
-    public ArcadiaSender<Player> getPlayer() {
+    public Player getPlayer() {
+        return player.get();
+    }
+
+    public ArcadiaSender<Player> getSender() {
         return player;
+    }
+
+    public UUID getUniqueId() {
+        return player.get().getUniqueId();
     }
 
     public boolean inDebugMode() {
@@ -303,6 +312,16 @@ public class PlayerData {
 
     public void toggleDebugMode() {
         setDebugMode(!debugMode);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PlayerData that = (PlayerData) o;
+
+        return getPlayer().getUniqueId().equals(that.getPlayer().getUniqueId());
     }
 
     public static @NotNull PlayerData create(@NotNull ArcadiaSender<Player> player, Arcadia plugin) {

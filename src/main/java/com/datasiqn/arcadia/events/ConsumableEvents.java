@@ -7,6 +7,7 @@ import com.datasiqn.arcadia.items.type.data.ConsumableData;
 import com.datasiqn.arcadia.players.PlayerData;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -33,12 +34,13 @@ public class ConsumableEvents implements Listener {
         ConsumableData data = (ConsumableData) arcadiaItem.getItemData().getData();
 
         if (!playerData.eat(data.hungerCost())) {
-            playerData.getPlayer().sendError("You are not hungry enough to eat this!");
+            playerData.getSender().sendError("You are not hungry enough to eat this!");
             return;
         }
         item.setAmount(item.getAmount() - 1);
-        playerData.getPlayer().get().playSound(playerData.getPlayer().get(), Sound.ENTITY_PLAYER_BURP, SoundCategory.PLAYERS, 1, (float) Math.floor(Math.random() * 0.15) + 0.85f);
+        Player player = playerData.getPlayer();
+        player.playSound(player, Sound.ENTITY_PLAYER_BURP, SoundCategory.PLAYERS, 1, (float) Math.floor(Math.random() * 0.15) + 0.85f);
         data.eat(playerData);
-        playerData.getPlayer().sendMessage("You ate one " + arcadiaItem.getItemData().getName() + ". Yum!");
+        player.sendMessage("You ate one " + arcadiaItem.getItemData().getName() + ". Yum!");
     }
 }

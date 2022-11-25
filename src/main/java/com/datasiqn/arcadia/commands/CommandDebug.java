@@ -33,6 +33,6 @@ public class CommandDebug {
     private void setDebugMode(boolean mode, Player player) {
         PlayerData playerData = plugin.getPlayerManager().getPlayerData(player);
         playerData.setDebugMode(mode);
-        playerData.getPlayer().sendMessage("Set debug mode to: " + mode);
+        playerData.getSender().sendMessage("Set debug mode to: " + mode);
     }
 }

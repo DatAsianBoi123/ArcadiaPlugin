@@ -86,7 +86,7 @@ public enum ArcadiaMaterial {
             .material(Material.WOODEN_SWORD)
             .stackable(false)
             .itemAbility(new ItemAbility("Run Away", Collections.singletonList("Gives you speed"), AbilityType.RIGHT_CLICK, 60, executor -> {
-                Player player = executor.playerData().getPlayer().get();
+                Player player = executor.playerData().getPlayer();
                 player.playSound(player, Sound.BLOCK_AMETHYST_BLOCK_PLACE, 1, 1);
                 player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 1));
             }))
@@ -157,7 +157,7 @@ public enum ArcadiaMaterial {
             .stackable(false)
             .itemAbility(new ItemAbility("Last Hope", Collections.singletonList("Does cool things"), AbilityType.RIGHT_CLICK, 4000, executor -> {
                 PlayerData playerData = executor.playerData();
-                ArcadiaSender<Player> player = executor.playerData().getPlayer();
+                ArcadiaSender<Player> player = executor.playerData().getSender();
 
                 playerData.heal();
                 playerData.updateValues();

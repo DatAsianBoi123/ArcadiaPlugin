@@ -22,7 +22,7 @@ public class CommandDungeons {
                 .description("Manages different dungeon instances")
                 .then(LiteralBuilder.literal("create")
                         .executes(context -> {
-                            ArcadiaSender<?> sender = context.getSource().getPlayer().matchResult(player -> plugin.getPlayerManager().getPlayerData(player).getPlayer(), err -> new ArcadiaSender<>(context.getSource().getSender()));
+                            ArcadiaSender<?> sender = context.getSource().getPlayer().matchResult(player -> plugin.getPlayerManager().getPlayerData(player).getSender(), err -> new ArcadiaSender<>(context.getSource().getSender()));
                             DungeonInstance instance = plugin.getDungeonManager().createDungeon();
                             if (instance == null) {
                                 sender.sendError("An unexpected error occurred. Please try again later");
@@ -33,7 +33,7 @@ public class CommandDungeons {
                 .then(LiteralBuilder.literal("delete")
                         .then(ArgumentBuilder.argument(ArcadiaArgumentType.DUNGEON, "world name")
                                 .executes(context -> context.getArguments().get(1, ArcadiaArgumentType.DUNGEON).ifOk(instance -> {
-                                    ArcadiaSender<?> sender = context.getSource().getPlayer().matchResult(player -> plugin.getPlayerManager().getPlayerData(player).getPlayer(), err -> new ArcadiaSender<>(context.getSource().getSender()));
+                                    ArcadiaSender<?> sender = context.getSource().getPlayer().matchResult(player -> plugin.getPlayerManager().getPlayerData(player).getSender(), err -> new ArcadiaSender<>(context.getSource().getSender()));
                                     if (!plugin.getDungeonManager().deleteDungeon(instance)) {
                                         sender.sendError("An error occurred when deleting the world. Please try again later");
                                         return;
