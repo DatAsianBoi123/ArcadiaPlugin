@@ -50,6 +50,4 @@ public interface ArcadiaLootTable {
             inventory.setItem(availableSlots[random.nextInt(availableSlots.length)], item.build());
         });
     }
-
-    String getId();
 }
