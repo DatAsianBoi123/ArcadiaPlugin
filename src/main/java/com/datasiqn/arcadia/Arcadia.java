@@ -37,6 +37,8 @@ public final class Arcadia extends JavaPlugin {
 
     @Override
     public void onLoad() {
+        PdcUtil.setPlugin(this);
+
         if (new File(getDataFolder().getPath() + File.separatorChar + "player-data").mkdir()) {
             getLogger().info("Created player data folder");
         }
