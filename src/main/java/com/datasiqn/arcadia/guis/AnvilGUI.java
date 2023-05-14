@@ -1,12 +1,12 @@
 package com.datasiqn.arcadia.guis;
 
 import com.datasiqn.arcadia.Arcadia;
-import com.datasiqn.arcadia.ArcadiaKeys;
-import com.datasiqn.arcadia.datatype.ArcadiaDataType;
+import com.datasiqn.arcadia.ArcadiaTag;
 import com.datasiqn.arcadia.enchants.EnchantType;
 import com.datasiqn.arcadia.items.ArcadiaItem;
 import com.datasiqn.arcadia.items.materials.ArcadiaMaterial;
 import com.datasiqn.arcadia.items.meta.ArcadiaItemMeta;
+import com.datasiqn.arcadia.util.PdcUtil;
 import com.datasiqn.arcadia.util.ItemUtil;
 import com.datasiqn.schedulebuilder.ScheduleBuilder;
 import org.bukkit.ChatColor;
@@ -164,7 +164,7 @@ public class AnvilGUI extends ArcadiaGUI {
         ItemMeta meta = result.getItemMeta();
         if (meta == null) return;
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
-        pdc.set(ArcadiaKeys.ANVIL_RESULT, ArcadiaDataType.BOOLEAN, true);
+        PdcUtil.set(pdc, ArcadiaTag.ANVIL_RESULT, true);
 
         result.setItemMeta(meta);
 
