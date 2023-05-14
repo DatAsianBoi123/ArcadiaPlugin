@@ -24,7 +24,7 @@ public class CommandItem {
                         .executes(context -> giveItem(context.getSource().getPlayer().unwrap(), context.getArguments().get(0, ArcadiaArgumentType.ITEM).unwrap(), 1)));
     }
 
-    private void giveItem(@NotNull Player player, ArcadiaMaterial material, int amount) {
+    private void giveItem(@NotNull Player player, @NotNull ArcadiaMaterial material, int amount) {
         PlayerInventory inventory = player.getInventory();
         ArcadiaItem item = new ArcadiaItem(material);
         if (item.getItemData().isStackable()) {
