@@ -1,7 +1,7 @@
 package com.datasiqn.arcadia.events;
 
 import com.datasiqn.arcadia.Arcadia;
-import com.datasiqn.arcadia.ArcadiaKeys;
+import com.datasiqn.arcadia.ArcadiaTag;
 import com.datasiqn.arcadia.DamageHelper;
 import com.datasiqn.arcadia.enchants.DamageModifierType;
 import com.datasiqn.arcadia.enchants.EnchantType;
@@ -26,7 +26,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
@@ -170,7 +169,7 @@ public class DamageEvents implements Listener {
 
     private double calcArrowDamage(@NotNull Arrow arrow, double defaultDamage) {
         PersistentDataContainer pdc = arrow.getPersistentDataContainer();
-        return pdc.getOrDefault(ArcadiaKeys.ARROW_DAMAGE, PersistentDataType.DOUBLE, defaultDamage);
+        return PdcUtil.getOrDefault(pdc, ArcadiaTag.ARROW_DAMAGE, defaultDamage);
     }
 
     private void sendDebugInfo(@NotNull ArcadiaSender<Player> sender, double rawDamage, double strength, double finalDamage, double additiveMultiplier, double multiplicativeMultiplier) {

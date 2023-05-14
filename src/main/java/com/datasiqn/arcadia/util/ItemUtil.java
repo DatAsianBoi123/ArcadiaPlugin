@@ -1,11 +1,10 @@
 package com.datasiqn.arcadia.util;
 
-import com.datasiqn.arcadia.ArcadiaKeys;
-import com.datasiqn.arcadia.datatype.ArcadiaDataType;
+import com.datasiqn.arcadia.ArcadiaTag;
 import com.datasiqn.arcadia.items.ArcadiaItem;
-import com.datasiqn.arcadia.items.materials.data.MaterialData;
-import com.datasiqn.arcadia.items.materials.data.DefaultMaterialData;
 import com.datasiqn.arcadia.items.materials.ArcadiaMaterial;
+import com.datasiqn.arcadia.items.materials.data.DefaultMaterialData;
+import com.datasiqn.arcadia.items.materials.data.MaterialData;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
@@ -13,7 +12,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.profile.PlayerProfile;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -47,10 +45,10 @@ public final class ItemUtil {
         if (meta == null) return null;
 
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
-        if (!pdc.has(ArcadiaKeys.ITEM_ID, PersistentDataType.STRING)) return null;
-        if (pdc.getOrDefault(ArcadiaKeys.ITEM_MATERIAL, ArcadiaDataType.BOOLEAN, false)) return null;
+        if (!PdcUtil.has(pdc, ArcadiaTag.ITEM_ID)) return null;
+        if (PdcUtil.getOrDefault(pdc, ArcadiaTag.ITEM_MATERIAL, false)) return null;
 
-        String id = pdc.get(ArcadiaKeys.ITEM_ID, PersistentDataType.STRING);
+        String id = PdcUtil.get(pdc, ArcadiaTag.ITEM_ID);
         return ArcadiaMaterial.valueOf(id);
     }
 

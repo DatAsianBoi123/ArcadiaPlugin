@@ -1,12 +1,12 @@
 package com.datasiqn.arcadia.datatype;
 
-import com.datasiqn.arcadia.ArcadiaKeys;
+import com.datasiqn.arcadia.ArcadiaTag;
 import com.datasiqn.arcadia.enchants.EnchantType;
+import com.datasiqn.arcadia.util.PdcUtil;
 import org.bukkit.persistence.PersistentDataAdapterContext;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class EnchantsDataType implements PersistentDataType<PersistentDataContainer[], EnchantsDataType.EnchantData[]> {
     @NotNull
@@ -26,26 +26,19 @@ public class EnchantsDataType implements PersistentDataType<PersistentDataContai
         PersistentDataContainer[] enchantArray = new PersistentDataContainer[complex.length];
         for (int i = 0; i < complex.length; i++) {
             PersistentDataContainer pdc = context.newPersistentDataContainer();
-            pdc.set(ArcadiaKeys.ENCHANT_ID, STRING, complex[i].enchantType.name());
-            pdc.set(ArcadiaKeys.ENCHANT_LEVEL, INTEGER, complex[i].level);
+            PdcUtil.set(pdc, ArcadiaTag.ENCHANT_ID, complex[i].enchantType);
+            PdcUtil.set(pdc, ArcadiaTag.ENCHANT_LEVEL, complex[i].level);
             enchantArray[i] = pdc;
         }
         return enchantArray;
     }
 
     @Override
-    public @Nullable EnchantData @NotNull [] fromPrimitive(PersistentDataContainer @NotNull [] primitive, @NotNull PersistentDataAdapterContext context) {
+    public @NotNull EnchantData @NotNull [] fromPrimitive(PersistentDataContainer @NotNull [] primitive, @NotNull PersistentDataAdapterContext context) {
         EnchantData[] enchants = new EnchantData[primitive.length];
         for (int i = 0; i < enchants.length; i++) {
             PersistentDataContainer enchantData = primitive[i];
-            if (!enchantData.has(ArcadiaKeys.ENCHANT_ID, STRING) || !enchantData.has(ArcadiaKeys.ENCHANT_LEVEL, INTEGER)) {
-                continue;
-            }
-            try {
-                enchants[i] = new EnchantData(EnchantType.valueOf(enchantData.get(ArcadiaKeys.ENCHANT_ID, STRING)), enchantData.getOrDefault(ArcadiaKeys.ENCHANT_LEVEL, INTEGER, 1));
-            } catch (IllegalArgumentException e) {
-                enchants[i] = null;
-            }
+            enchants[i] = new EnchantData(PdcUtil.get(enchantData, ArcadiaTag.ENCHANT_ID), PdcUtil.get(enchantData, ArcadiaTag.ENCHANT_LEVEL));
         }
         return enchants;
     }

@@ -1,9 +1,10 @@
 package com.datasiqn.arcadia.events;
 
 import com.datasiqn.arcadia.Arcadia;
-import com.datasiqn.arcadia.ArcadiaKeys;
-import com.datasiqn.arcadia.datatype.ArcadiaDataType;
-import com.datasiqn.arcadia.items.ArcadiaItem;
+import com.datasiqn.arcadia.ArcadiaTag;
+import com.datasiqn.arcadia.dungeons.DungeonPlayer;
+import com.datasiqn.arcadia.upgrades.UpgradeType;
+import com.datasiqn.arcadia.util.PdcUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -17,8 +18,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,12 +42,12 @@ public class UpgradeEvents implements Listener {
         EnderChest enderChest = (EnderChest) block.getState();
         PersistentDataContainer pdc = enderChest.getPersistentDataContainer();
 
-        if (pdc.getOrDefault(ArcadiaKeys.CHEST_OPENED, ArcadiaDataType.BOOLEAN, false)) {
-            plugin.getPlayerManager().getPlayerData(event.getPlayer()).getPlayer().sendError("You have already opened this chest!");
+        if (PdcUtil.getOrDefault(pdc, ArcadiaTag.CHEST_OPENED, false)) {
+            plugin.getPlayerManager().getPlayerData(event.getPlayer()).getSender().sendError("You have already opened this chest!");
             return;
         }
 
-        pdc.set(ArcadiaKeys.CHEST_OPENED, ArcadiaDataType.BOOLEAN, true);
+        PdcUtil.set(pdc, ArcadiaTag.CHEST_OPENED, true);
         enderChest.update();
 
         Location location = block.getLocation();
@@ -62,7 +63,7 @@ public class UpgradeEvents implements Listener {
             item.setCustomNameVisible(true);
 
             PersistentDataContainer itemPdc = item.getPersistentDataContainer();
-            itemPdc.set(ArcadiaKeys.CHEST_LOC, PersistentDataType.INTEGER_ARRAY, new int[]{location.getBlockX(), location.getBlockY(), location.getBlockZ()});
+            PdcUtil.set(itemPdc, ArcadiaTag.CHEST_LOC, location);
         });
         enderChest.open();
         event.getPlayer().playSound(location, Sound.BLOCK_ENDER_CHEST_OPEN, 1, 1);
@@ -73,13 +74,9 @@ public class UpgradeEvents implements Listener {
         if (!(event.getEntity() instanceof Player player)) return;
 
         PersistentDataContainer pdc = event.getItem().getPersistentDataContainer();
-        if (!pdc.has(ArcadiaKeys.CHEST_LOC, PersistentDataType.INTEGER_ARRAY)) return;
+        if (!PdcUtil.has(pdc, ArcadiaTag.CHEST_LOC)) return;
 
-        int[] locationArray = pdc.get(ArcadiaKeys.CHEST_LOC, PersistentDataType.INTEGER_ARRAY);
-        if (locationArray == null) return;
-        if (locationArray.length < 3) return;
-
-        Location chestLocation = new Location(player.getWorld(), locationArray[0], locationArray[1], locationArray[2]);
+        Location chestLocation = PdcUtil.get(pdc, ArcadiaTag.CHEST_LOC);
         Block block = player.getWorld().getBlockAt(chestLocation);
         if (block.getType() != Material.ENDER_CHEST) return;
         EnderChest enderChest = (EnderChest) block.getState();

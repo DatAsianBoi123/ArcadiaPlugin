@@ -1,9 +1,9 @@
 package com.datasiqn.arcadia.items.materials.data;
 
-import com.datasiqn.arcadia.ArcadiaKeys;
-import com.datasiqn.arcadia.datatype.ArcadiaDataType;
+import com.datasiqn.arcadia.ArcadiaTag;
 import com.datasiqn.arcadia.items.type.ItemType;
 import com.datasiqn.arcadia.items.type.data.NoneItemData;
+import com.datasiqn.arcadia.util.PdcUtil;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -24,7 +24,7 @@ public class DefaultMaterialData extends MaterialData<@Nullable NoneItemData> {
         ItemMeta meta = itemStack.getItemMeta();
         if (meta == null) return itemStack;
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
-        pdc.set(ArcadiaKeys.ITEM_MATERIAL, ArcadiaDataType.BOOLEAN, true);
+        PdcUtil.set(pdc, ArcadiaTag.ITEM_MATERIAL, true);
         itemStack.setItemMeta(meta);
         return itemStack;
     }

@@ -1,9 +1,9 @@
 package com.datasiqn.arcadia.events;
 
 import com.datasiqn.arcadia.Arcadia;
-import com.datasiqn.arcadia.ArcadiaKeys;
-import com.datasiqn.arcadia.loottables.ArcadiaLootTable;
+import com.datasiqn.arcadia.ArcadiaTag;
 import com.datasiqn.arcadia.loottables.LootTables;
+import com.datasiqn.arcadia.util.PdcUtil;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
@@ -13,7 +13,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
@@ -35,16 +34,10 @@ public class LootTableEvents implements Listener {
 
         Chest chest = (Chest) block.getState();
         PersistentDataContainer pdc = chest.getPersistentDataContainer();
-        String lootTableString = pdc.get(ArcadiaKeys.LOOT_TABLE, PersistentDataType.STRING);
-        if (lootTableString == null) return;
-        ArcadiaLootTable lootTable;
-        try {
-            lootTable = LootTables.valueOf(lootTableString).getLootTable();
-        } catch (IllegalArgumentException e) {
-            return;
-        }
-        pdc.remove(ArcadiaKeys.LOOT_TABLE);
+        LootTables lootTable = PdcUtil.get(pdc, ArcadiaTag.LOOT_TABLE);
+        if (lootTable == null) return;
+        PdcUtil.remove(pdc, ArcadiaTag.LOOT_TABLE);
         chest.update();
-        lootTable.fillInventory(chest.getInventory(), new Random(), plugin);
+        lootTable.getLootTable().fillInventory(chest.getInventory(), new Random(), plugin);
     }
 }

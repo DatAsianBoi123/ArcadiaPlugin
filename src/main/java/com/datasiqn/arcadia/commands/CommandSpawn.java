@@ -1,11 +1,10 @@
 package com.datasiqn.arcadia.commands;
 
-import com.datasiqn.arcadia.ArcadiaKeys;
 import com.datasiqn.arcadia.ArcadiaPermission;
+import com.datasiqn.arcadia.ArcadiaTag;
 import com.datasiqn.arcadia.commands.arguments.ArcadiaArgumentType;
-import com.datasiqn.arcadia.datatype.ArcadiaDataType;
-import com.datasiqn.arcadia.loottables.ArcadiaLootTable;
 import com.datasiqn.arcadia.loottables.LootTables;
+import com.datasiqn.arcadia.util.PdcUtil;
 import com.datasiqn.commandcore.commands.builder.ArgumentBuilder;
 import com.datasiqn.commandcore.commands.builder.CommandBuilder;
 import com.datasiqn.commandcore.commands.builder.LiteralBuilder;
@@ -16,7 +15,6 @@ import org.bukkit.block.Chest;
 import org.bukkit.block.EnderChest;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 public class CommandSpawn {
@@ -31,24 +29,28 @@ public class CommandSpawn {
                             World world = player.getWorld();
                             world.setType(location, Material.ENDER_CHEST);
                             EnderChest enderChest = (EnderChest) world.getBlockAt(location).getState();
-                            enderChest.getPersistentDataContainer().set(ArcadiaKeys.UPGRADE_CHEST, ArcadiaDataType.BOOLEAN, true);
+                            PersistentDataContainer pdc = enderChest.getPersistentDataContainer();
+                            PdcUtil.set(pdc, ArcadiaTag.UPGRADE_CHEST, true);
                             enderChest.update();
                         }))
                 .then(LiteralBuilder.literal("lootchest")
                         .then(ArgumentBuilder.argument(ArcadiaArgumentType.LOOT_TABLE, "loot table")
                                 .requiresPlayer()
-                                .executes(context -> context.getArguments().get(1, ArcadiaArgumentType.LOOT_TABLE).ifOk(lootTable -> spawnLootChest(context.getSource().getPlayer().unwrap().getLocation(), lootTable.getLootTable()))))
+                                .executes(context -> {
+                                    LootTables lootTable = context.getArguments().get(1, ArcadiaArgumentType.LOOT_TABLE).unwrap();
+                                    spawnLootChest(context.getSource().getPlayer().unwrap().getLocation(), lootTable);
+                                }))
                         .requiresPlayer()
-                        .executes(context -> spawnLootChest(context.getSource().getPlayer().unwrap().getLocation(), LootTables.CHEST_DEFAULT.getLootTable())));
+                        .executes(context -> spawnLootChest(context.getSource().getPlayer().unwrap().getLocation(), LootTables.CHEST_DEFAULT)));
     }
 
-    private void spawnLootChest(@NotNull Location location, ArcadiaLootTable lootTable) {
+    private void spawnLootChest(@NotNull Location location, LootTables lootTable) {
         World world = location.getWorld();
         if (world == null) return;
         world.setType(location, Material.CHEST);
         Chest chest = (Chest) world.getBlockAt(location).getState();
         PersistentDataContainer pdc = chest.getPersistentDataContainer();
-        pdc.set(ArcadiaKeys.LOOT_TABLE, PersistentDataType.STRING, lootTable.getId());
+        PdcUtil.set(pdc, ArcadiaTag.LOOT_TABLE, lootTable);
         chest.update();
     }
 }

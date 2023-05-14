@@ -1,13 +1,15 @@
 package com.datasiqn.arcadia.events;
 
 import com.datasiqn.arcadia.Arcadia;
-import com.datasiqn.arcadia.ArcadiaKeys;
+import com.datasiqn.arcadia.ArcadiaTag;
 import com.datasiqn.arcadia.DamageHelper;
 import com.datasiqn.arcadia.items.ArcadiaItem;
 import com.datasiqn.arcadia.items.stats.ItemAttribute;
 import com.datasiqn.arcadia.items.type.ItemType;
 import com.datasiqn.arcadia.players.PlayerData;
 import com.datasiqn.arcadia.players.PlayerEquipment;
+import com.datasiqn.arcadia.util.PdcUtil;
+import com.datasiqn.schedulebuilder.ScheduleBuilder;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -31,7 +33,6 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 public class PlayerEvents implements Listener {
@@ -111,7 +112,7 @@ public class PlayerEvents implements Listener {
         if (event.isCancelled()) return;
         if (event.getClickedInventory() == null) return;
         if (event.getAction() == InventoryAction.NOTHING || event.getAction() == InventoryAction.UNKNOWN) return;
-        plugin.runAfterOneTick(() -> updateArmor(event.getWhoClicked()));
+        ScheduleBuilder.create().executes(runnable -> updateArmor(event.getWhoClicked())).run(plugin);
     }
 
     @EventHandler
@@ -119,14 +120,14 @@ public class PlayerEvents implements Listener {
         if (event.useItemInHand() == Event.Result.DENY) return;
         if (event.getAction() == Action.PHYSICAL) return;
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
-        plugin.runAfterOneTick(() -> updateArmor(event.getPlayer()));
+        ScheduleBuilder.create().executes(runnable -> updateArmor(event.getPlayer())).run(plugin);
     }
 
     @EventHandler
     public void onDispenserEquipArmor(@NotNull BlockDispenseArmorEvent event) {
         if (event.isCancelled()) return;
         if (!(event.getTargetEntity() instanceof Player player)) return;
-        plugin.runAfterOneTick(() -> updateArmor(player));
+        ScheduleBuilder.create().executes(runnable -> updateArmor(player)).run(plugin);
     }
 
     public void updateArmor(@NotNull HumanEntity player) {
@@ -174,6 +175,7 @@ public class PlayerEvents implements Listener {
         PersistentDataContainer pdc = event.getProjectile().getPersistentDataContainer();
         com.datasiqn.arcadia.items.stats.AttributeInstance damageAttribute = bowItem.getItemMeta().getItemStats().getAttribute(ItemAttribute.DAMAGE);
         double damageValue = damageAttribute == null ? 1 : damageAttribute.getValue();
-        pdc.set(ArcadiaKeys.ARROW_DAMAGE, PersistentDataType.DOUBLE, damageValue + DamageHelper.getStrengthBonus(playerData.getStrength(), damageValue) * event.getForce());
+        double damage = damageValue + DamageHelper.getStrengthBonus(playerData.getStrength(), damageValue) * event.getForce();
+        PdcUtil.set(pdc, ArcadiaTag.ARROW_DAMAGE, damage);
     }
 }

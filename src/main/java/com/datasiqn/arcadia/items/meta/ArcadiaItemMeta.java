@@ -1,13 +1,12 @@
 package com.datasiqn.arcadia.items.meta;
 
-import com.datasiqn.arcadia.ArcadiaKeys;
-import com.datasiqn.arcadia.datatype.ArcadiaDataType;
+import com.datasiqn.arcadia.ArcadiaTag;
 import com.datasiqn.arcadia.datatype.EnchantsDataType;
 import com.datasiqn.arcadia.enchants.EnchantType;
 import com.datasiqn.arcadia.items.stats.ItemStats;
+import com.datasiqn.arcadia.util.PdcUtil;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
@@ -31,23 +30,12 @@ public class ArcadiaItemMeta {
         this(meta.getPersistentDataContainer());
     }
     public ArcadiaItemMeta(@NotNull PersistentDataContainer pdc) {
-        String strUuid = pdc.get(ArcadiaKeys.ITEM_UUID, PersistentDataType.STRING);
-        UUID metaUuid;
-        if (strUuid == null) {
-            metaUuid = UUID.randomUUID();
-        } else {
-            try {
-                metaUuid = UUID.fromString(strUuid);
-            } catch (IllegalArgumentException e) {
-                metaUuid = UUID.randomUUID();
-            }
-        }
-        this.uuid = metaUuid;
+        this.uuid = PdcUtil.getOrDefault(pdc, ArcadiaTag.ITEM_UUID, UUID.randomUUID());
         this.itemQuality = new Random(uuid.getMostSignificantBits()).nextDouble();
-        this.qualityBonus = pdc.getOrDefault(ArcadiaKeys.ITEM_QUALITY_BONUS, PersistentDataType.DOUBLE, 0d);
+        this.qualityBonus = PdcUtil.getOrDefault(pdc, ArcadiaTag.ITEM_QUALITY_BONUS, 0d);
         this.itemStats.setItemQuality(itemQuality);
 
-        EnchantsDataType.EnchantData[] enchantData = pdc.getOrDefault(ArcadiaKeys.ITEM_ENCHANTS, ArcadiaDataType.ENCHANTS, new EnchantsDataType.EnchantData[0]);
+        EnchantsDataType.EnchantData[] enchantData = PdcUtil.getOrDefault(pdc, ArcadiaTag.ITEM_ENCHANTS, new EnchantsDataType.EnchantData[0]);
         for (EnchantsDataType.EnchantData data : enchantData) {
             enchants.put(data.enchantType(), data.level());
         }
@@ -109,11 +97,11 @@ public class ArcadiaItemMeta {
         if (hasEnchants()) {
             List<EnchantsDataType.EnchantData> dataList = new ArrayList<>();
             enchants.forEach((type, level) -> dataList.add(new EnchantsDataType.EnchantData(type, level)));
-            pdc.set(ArcadiaKeys.ITEM_ENCHANTS, ArcadiaDataType.ENCHANTS, dataList.toArray(new EnchantsDataType.EnchantData[0]));
+            PdcUtil.set(pdc, ArcadiaTag.ITEM_ENCHANTS, dataList.toArray(EnchantsDataType.EnchantData[]::new));
         }
 
         if (itemStats.hasAttributes()) {
-            pdc.set(ArcadiaKeys.ITEM_QUALITY_BONUS, PersistentDataType.DOUBLE, qualityBonus);
+            PdcUtil.set(pdc, ArcadiaTag.ITEM_QUALITY_BONUS, qualityBonus);
         }
     }
 }

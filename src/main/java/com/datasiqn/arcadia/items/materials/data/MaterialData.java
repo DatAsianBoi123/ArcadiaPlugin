@@ -1,11 +1,12 @@
 package com.datasiqn.arcadia.items.materials.data;
 
-import com.datasiqn.arcadia.ArcadiaKeys;
+import com.datasiqn.arcadia.ArcadiaTag;
 import com.datasiqn.arcadia.items.ItemRarity;
 import com.datasiqn.arcadia.items.abilities.ItemAbility;
 import com.datasiqn.arcadia.items.modifiers.ItemModifier;
 import com.datasiqn.arcadia.items.type.ItemType;
 import com.datasiqn.arcadia.items.type.data.ExtraItemData;
+import com.datasiqn.arcadia.util.PdcUtil;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -14,14 +15,11 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class MaterialData<D extends ExtraItemData> {
     private final @NotNull ItemType<D> itemType;
@@ -111,10 +109,10 @@ public class MaterialData<D extends ExtraItemData> {
         String finalName = name == null ? WordUtils.capitalizeFully(material.toString().replaceAll("_", " ")) : name;
         meta.setDisplayName(ChatColor.RESET + "" + rarity.getColor() + finalName);
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
-        pdc.set(ArcadiaKeys.ITEM_ID, PersistentDataType.STRING, id);
+        PdcUtil.set(pdc, ArcadiaTag.ITEM_ID, id);
 
         if (enchantGlint) addEnchantGlint(meta);
-        if (!stackable) pdc.set(ArcadiaKeys.ITEM_UUID, PersistentDataType.STRING, uuid.toString());
+        if (!stackable) PdcUtil.set(pdc, ArcadiaTag.ITEM_UUID, uuid);
 
         itemModifiers.forEach(modifier -> modifier.modify(uuid, meta));
 
@@ -127,7 +125,7 @@ public class MaterialData<D extends ExtraItemData> {
         ItemMeta meta = itemStack.getItemMeta();
         if (meta == null) return itemStack;
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
-        pdc.set(ArcadiaKeys.CRAFTING_RESULT, PersistentDataType.BYTE, (byte) 1);
+        PdcUtil.set(pdc, ArcadiaTag.CRAFTING_RESULT, true);
         itemStack.setItemMeta(meta);
         return itemStack;
     }

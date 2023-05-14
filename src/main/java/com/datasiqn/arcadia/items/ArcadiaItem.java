@@ -1,7 +1,6 @@
 package com.datasiqn.arcadia.items;
 
-import com.datasiqn.arcadia.ArcadiaKeys;
-import com.datasiqn.arcadia.datatype.ArcadiaDataType;
+import com.datasiqn.arcadia.ArcadiaTag;
 import com.datasiqn.arcadia.datatype.EnchantsDataType;
 import com.datasiqn.arcadia.items.materials.ArcadiaMaterial;
 import com.datasiqn.arcadia.items.materials.data.DefaultMaterialData;
@@ -11,6 +10,7 @@ import com.datasiqn.arcadia.items.stats.AttributeInstance;
 import com.datasiqn.arcadia.items.stats.AttributeRange;
 import com.datasiqn.arcadia.items.stats.ItemAttribute;
 import com.datasiqn.arcadia.util.ItemUtil;
+import com.datasiqn.arcadia.util.PdcUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -61,7 +61,7 @@ public class ArcadiaItem implements ConfigurationSerializable {
     public ArcadiaItem(@NotNull ArcadiaMaterial material, int amount) {
         this(material.getData(), material.createItemMeta(UUID.randomUUID()));
         this.material = material;
-        if (!itemData.isStackable()) this.amount = amount;
+        if (itemData.isStackable()) this.amount = amount;
     }
 
     public ArcadiaItem(@NotNull ItemStack itemStack) {
@@ -162,7 +162,7 @@ public class ArcadiaItem implements ConfigurationSerializable {
             lore.add(0, String.join(", ", enchantLore));
 
             PersistentDataContainer pdc = meta.getPersistentDataContainer();
-            pdc.set(ArcadiaKeys.ITEM_ENCHANTS, ArcadiaDataType.ENCHANTS, enchantData.toArray(new EnchantsDataType.EnchantData[0]));
+            PdcUtil.set(pdc, ArcadiaTag.ITEM_ENCHANTS, enchantData.toArray(EnchantsDataType.EnchantData[]::new));
         }
 
         if (itemMeta.getItemStats().hasAttributes()) {

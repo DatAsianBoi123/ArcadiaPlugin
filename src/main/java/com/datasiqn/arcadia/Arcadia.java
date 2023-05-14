@@ -1,13 +1,13 @@
 package com.datasiqn.arcadia;
 
 import com.datasiqn.arcadia.commands.*;
-import com.datasiqn.arcadia.datatype.ArcadiaDataType;
 import com.datasiqn.arcadia.events.*;
 import com.datasiqn.arcadia.items.ArcadiaItem;
 import com.datasiqn.arcadia.managers.DungeonManager;
 import com.datasiqn.arcadia.managers.PlayerManager;
 import com.datasiqn.arcadia.players.PlayerData;
 import com.datasiqn.arcadia.util.ItemUtil;
+import com.datasiqn.arcadia.util.PdcUtil;
 import com.datasiqn.commandcore.CommandCore;
 import com.datasiqn.commandcore.commands.builder.CommandBuilder;
 import com.datasiqn.commandcore.managers.CommandManager;
@@ -169,7 +169,7 @@ public final class Arcadia extends JavaPlugin {
 
                     ItemUtil.setHeadSkin(meta, "875e79488847ba02d5e12e7042d762e87ce08fa84fb89c35d6b5cccb8b9f4bed", UUID.randomUUID());
                     PersistentDataContainer pdc = meta.getPersistentDataContainer();
-                    pdc.set(ArcadiaKeys.UPGRADE_BAG, ArcadiaDataType.BOOLEAN, true);
+                    PdcUtil.set(pdc, ArcadiaTag.UPGRADE_BAG, true);
                     itemStack.setItemMeta(meta);
                     context.getSource().getPlayer().unwrap().getInventory().addItem(itemStack);
                 }));
