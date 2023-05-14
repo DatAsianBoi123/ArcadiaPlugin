@@ -34,6 +34,8 @@ public abstract class ArcadiaEntity extends PathfinderMob {
     private final String id;
     protected double health;
 
+    private final Arcadia arcadia;
+
     public ArcadiaEntity(EntityType<? extends PathfinderMob> entityType, @NotNull World world, String name, String id, int maxHealth) {
         super(entityType, ((CraftWorld) world).getHandle());
         setHealth(1f);
@@ -45,6 +47,7 @@ public abstract class ArcadiaEntity extends PathfinderMob {
         this.customName = name;
         this.maxHealth = maxHealth;
         this.health = maxHealth;
+        this.arcadia = new Arcadia(id, health, maxHealth);
 
         updateName();
     }
@@ -69,6 +72,10 @@ public abstract class ArcadiaEntity extends PathfinderMob {
     public void summon(@NotNull Location location) {
         setPos(location.getX(), location.getY(), location.getZ());
         ((CraftWorld) world).addEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM);
+    }
+
+    public Arcadia arcadia() {
+        return arcadia;
     }
 
     protected final void updateName() {
@@ -104,4 +111,6 @@ public abstract class ArcadiaEntity extends PathfinderMob {
         DecimalFormat format = new DecimalFormat("#,###");
         return format.format(Math.ceil(d));
     }
+
+    public record Arcadia(String id, double health, double maxHealth) { }
 }
