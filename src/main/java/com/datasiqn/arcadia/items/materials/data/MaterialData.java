@@ -2,6 +2,7 @@ package com.datasiqn.arcadia.items.materials.data;
 
 import com.datasiqn.arcadia.ArcadiaTag;
 import com.datasiqn.arcadia.items.ItemRarity;
+import com.datasiqn.arcadia.items.abilities.AbilityType;
 import com.datasiqn.arcadia.items.abilities.ItemAbility;
 import com.datasiqn.arcadia.items.modifiers.ItemModifier;
 import com.datasiqn.arcadia.items.type.ItemType;
@@ -67,7 +68,7 @@ public class MaterialData<D extends ExtraItemData> {
         return rarity;
     }
 
-    public boolean isEnchantGlint() {
+    public boolean hasEnchantGlint() {
         return enchantGlint;
     }
 
