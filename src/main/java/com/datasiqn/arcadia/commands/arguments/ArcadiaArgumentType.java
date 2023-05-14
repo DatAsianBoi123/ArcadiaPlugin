@@ -8,7 +8,7 @@ import com.datasiqn.arcadia.loottables.LootTables;
 import com.datasiqn.arcadia.guis.GUIType;
 import com.datasiqn.arcadia.items.materials.ArcadiaMaterial;
 import com.datasiqn.arcadia.recipes.ArcadiaRecipe;
-import com.datasiqn.commandcore.ArgumentParseException;
+import com.datasiqn.arcadia.upgrades.UpgradeType;
 import com.datasiqn.commandcore.arguments.ArgumentType;
 import com.datasiqn.resultapi.Result;
 
@@ -21,9 +21,12 @@ public interface ArcadiaArgumentType {
 
     ArgumentType<ArcadiaRecipe> RECIPE = new ArgumentType.EnumArgumentType<>(ArcadiaRecipe.class);
 
+    ArgumentType<UpgradeType> UPGRADE = new ArgumentType.EnumArgumentType<>(UpgradeType.class);
+
     ArgumentType<EntityType> ENTITY = new ArgumentType.EnumArgumentType<>(EntityType.class);
 
     ArgumentType<GUIType> GUI = new ArgumentType.EnumArgumentType<>(GUIType.class);
 
-    ArgumentType<DungeonInstance> DUNGEON = new ArgumentType.CustomArgumentType<>(str -> Result.ofNullable(Arcadia.getPlugin(Arcadia.class).getDungeonManager().getCreatedDungeon(str), new ArgumentParseException("The dungeon '" + str + "' does not exist.")), context -> Arcadia.getPlugin(Arcadia.class).getDungeonManager().getAllDungeonInstances().stream().map(DungeonInstance::getId).toList());
+    ArgumentType<DungeonInstance> DUNGEON = new ArgumentType.CustomArgumentType<>(reader -> Result.<String, String>ok(reader.nextWord())
+            .andThen(str -> Result.ofNullable(Arcadia.getPlugin(Arcadia.class).getDungeonManager().getCreatedDungeon(str), "The dungeon '" + str + "' does not exist.")), context -> Arcadia.getPlugin(Arcadia.class).getDungeonManager().getAllDungeonInstances().stream().map(DungeonInstance::getId).toList());
 }
