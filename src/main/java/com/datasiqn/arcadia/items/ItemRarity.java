@@ -1,6 +1,10 @@
 package com.datasiqn.arcadia.items;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
+import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,10 +17,24 @@ public enum ItemRarity {
 
     private final String displayName;
     private final ChatColor color;
+    private final Team team;
 
     ItemRarity(String displayName, ChatColor color) {
         this.displayName = displayName;
         this.color = color;
+        ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
+        if (scoreboardManager == null) {
+            this.team = null;
+            return;
+        }
+        Scoreboard scoreboard = scoreboardManager.getMainScoreboard();
+        Team team = scoreboard.getTeam(name());
+        if (team != null) {
+            this.team = team;
+            return;
+        }
+        this.team = scoreboard.registerNewTeam(name());
+        this.team.setColor(color);
     }
 
     @Contract(pure = true)
@@ -27,5 +45,9 @@ public enum ItemRarity {
 
     public ChatColor getColor() {
         return color;
+    }
+
+    public Team getTeam() {
+        return team;
     }
 }
