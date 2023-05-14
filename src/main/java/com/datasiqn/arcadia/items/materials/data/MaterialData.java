@@ -32,7 +32,7 @@ public class MaterialData<D extends ExtraItemData> {
     private final @NotNull ItemRarity rarity;
     private final boolean enchantGlint;
     private final boolean stackable;
-    private final @Nullable ItemAbility itemAbility;
+    private final Map<AbilityType, ItemAbility> itemAbilities;
 
     @Contract(pure = true)
     public MaterialData(@NotNull Builder<D> builder) {
@@ -45,7 +45,7 @@ public class MaterialData<D extends ExtraItemData> {
         rarity = builder.rarity;
         enchantGlint = builder.enchantGlint;
         stackable = builder.stackable;
-        itemAbility = builder.itemAbility;
+        itemAbilities = builder.itemAbilities;
     }
 
     public @NotNull ItemType<D> getItemType() {
@@ -76,8 +76,10 @@ public class MaterialData<D extends ExtraItemData> {
         return stackable;
     }
 
-    public @Nullable ItemAbility getItemAbility() {
-        return itemAbility;
+    public @NotNull List<ItemAbility> getItemAbilities() {
+        List<ItemAbility> abilityList = new ArrayList<>(itemAbilities.values());
+        abilityList.sort(Comparator.comparingInt(ability -> ability.getType().ordinal()));
+        return abilityList;
     }
 
     public @NotNull ItemStack toItemStack() {
@@ -91,9 +93,11 @@ public class MaterialData<D extends ExtraItemData> {
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_POTION_EFFECTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_DYE);
         meta.setUnbreakable(true);
         List<String> lore = new ArrayList<>();
-        if (itemAbility != null) {
-            lore.addAll(itemAbility.asLore());
-            lore.add("");
+        if (!itemAbilities.isEmpty()) {
+            for (ItemAbility ability : itemAbilities.values()) {
+                lore.addAll(ability.asLore());
+                lore.add("");
+            }
         }
         if (itemData != null) {
             lore.addAll(itemData.getLore());
@@ -131,15 +135,14 @@ public class MaterialData<D extends ExtraItemData> {
     public static final class Builder<D extends ExtraItemData> {
         private final ItemType<D> itemType;
         private final D itemData;
-        private final String id;
         private final List<ItemModifier> itemModifiers = new ArrayList<>();
+        private final Map<AbilityType, ItemAbility> itemAbilities = new HashMap<>();
 
         private String name;
         private Material material = Material.STONE;
         private ItemRarity rarity = ItemRarity.COMMON;
         private boolean enchantGlint;
         private boolean stackable = true;
-        private ItemAbility itemAbility;
 
         public Builder(ItemType<D> itemType) {
             this(itemType, null);
@@ -175,8 +178,8 @@ public class MaterialData<D extends ExtraItemData> {
             return this;
         }
 
-        public Builder<D> itemAbility(@Nullable ItemAbility itemAbility) {
-            this.itemAbility = itemAbility;
+        public Builder<D> addAbility(@NotNull ItemAbility itemAbility) {
+            this.itemAbilities.put(itemAbility.getType(), itemAbility);
             return this;
         }
 

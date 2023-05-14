@@ -13,6 +13,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -29,11 +30,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 public class ItemEvents implements Listener {
-    private static final Map<UUID, Map<String, Long>> COOLDOWNS = new HashMap<>();
+    private final Map<UUID, Map<String, Long>> cooldowns = new HashMap<>();
     private final Arcadia plugin;
 
     public ItemEvents(Arcadia plugin) {
@@ -88,23 +90,27 @@ public class ItemEvents implements Listener {
         ArcadiaItem arcadiaItem = new ArcadiaItem(event.getItem());
         if (arcadiaItem.getMaterial() == null) return;
 
-        ItemAbility itemAbility = arcadiaItem.getItemData().getItemAbility();
-        if (itemAbility == null) return;
-        DefaultExecutor executor = new DefaultExecutor(plugin.getPlayerManager().getPlayerData(event.getPlayer()), itemAbility);
-        if (itemAbility.getType().includesActions(event)) {
-            UUID id = event.getPlayer().getUniqueId();
-            if (!COOLDOWNS.containsKey(id)) COOLDOWNS.put(id, new HashMap<>());
-            long currentTime = System.currentTimeMillis();
-            Map<String, Long> playerCooldowns = COOLDOWNS.get(id);
-            Long lastUsed = playerCooldowns.getOrDefault(arcadiaItem.getItemData().getID(), -1L);
-            if (lastUsed + itemAbility.getCooldown() * 50L > currentTime && lastUsed != -1L) {
-                DecimalFormat decimalFormat = new DecimalFormat("#.#");
-                executor.playerData().getPlayer().sendMessageRaw(ChatColor.RED + "This ability is on cooldown for " + decimalFormat.format((itemAbility.getCooldown() * 50 - (currentTime - lastUsed)) / 1000d) + "s");
-                return;
+        List<ItemAbility> itemAbilities = arcadiaItem.getItemData().getItemAbilities();
+        if (itemAbilities.isEmpty()) return;
+        for (ItemAbility ability : itemAbilities) {
+            if (ability.getType().includesActions(event)) {
+                Player player = event.getPlayer();
+                PlayerData playerData = plugin.getPlayerManager().getPlayerData(player);
+                UUID id = player.getUniqueId();
+                if (!cooldowns.containsKey(id)) cooldowns.put(id, new HashMap<>());
+                long currentTime = System.currentTimeMillis();
+                Map<String, Long> playerCooldowns = cooldowns.get(id);
+                Long lastUsed = playerCooldowns.getOrDefault(arcadiaItem.getId() + "-" + ability.getType(), -1L);
+                if (lastUsed + ability.getCooldown() * 50L > currentTime && lastUsed != -1L) {
+                    DecimalFormat decimalFormat = new DecimalFormat("#.#");
+                    playerData.getSender().sendMessageRaw(ChatColor.RED + "This ability is on cooldown for " + decimalFormat.format((ability.getCooldown() * 50 - (currentTime - lastUsed)) / 1000d) + "s");
+                    return;
+                }
+                playerCooldowns.put(arcadiaItem.getId() + "-" + ability.getType(), currentTime);
+                DefaultExecutor executor = new DefaultExecutor(playerData, ability);
+                ability.execute(executor);
+                event.setCancelled(true);
             }
-            COOLDOWNS.get(id).put(arcadiaItem.getItemData().getID(), currentTime);
-            itemAbility.execute(executor);
-            event.setCancelled(true);
         }
     }
 
