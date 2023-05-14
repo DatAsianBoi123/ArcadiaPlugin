@@ -9,6 +9,7 @@ import com.datasiqn.arcadia.items.stats.ItemStats;
 import com.datasiqn.arcadia.items.stats.StatIcon;
 import com.datasiqn.arcadia.items.type.ItemType;
 import com.datasiqn.arcadia.util.XPUtil;
+import com.datasiqn.schedulebuilder.ScheduleBuilder;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.*;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
@@ -16,7 +17,6 @@ import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.ComponentBuilder;
-import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -142,7 +142,11 @@ public class PlayerData {
 
         if (health < getAttribute(PlayerAttribute.MAX_HEALTH)) {
             if (regenHealthRunnable == null || regenHealthRunnable.isCancelled()) {
-                regenHealthRunnable = Bukkit.getScheduler().runTaskTimer(plugin, () -> heal(getAttribute(PlayerAttribute.MAX_HEALTH) / 10), 80, 80);
+                regenHealthRunnable = ScheduleBuilder.create()
+                        .wait(4.0).seconds()
+                        .repeatEvery(4.0).seconds()
+                        .executes(runnable -> heal(getAttribute(PlayerAttribute.MAX_HEALTH) / 10))
+                        .run(plugin);
             }
         }
 
@@ -180,7 +184,7 @@ public class PlayerData {
     public boolean eat(double filling) {
         if (filling > hunger) return false;
         hunger -= filling;
-        if (hunger < getAttribute(PlayerAttribute.MAX_HUNGER) && (getHungryRunnable == null || getHungryRunnable.isCancelled())) getHungryRunnable = Bukkit.getScheduler().runTaskTimer(plugin, () -> hungerTick(5), 80, 80);
+        if (hunger < getAttribute(PlayerAttribute.MAX_HUNGER) && (getHungryRunnable == null || getHungryRunnable.isCancelled())) getHungryRunnable = new ScheduleBuilder().wait(4.0).seconds().repeatEvery(4.0).seconds().executes(runnable -> hungerTick(5)).run(plugin);
         updateActionbar();
         return true;
     }

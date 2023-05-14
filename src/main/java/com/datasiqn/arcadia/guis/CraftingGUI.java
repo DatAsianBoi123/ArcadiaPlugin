@@ -4,6 +4,7 @@ import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.items.ArcadiaItem;
 import com.datasiqn.arcadia.recipes.ArcadiaRecipe;
 import com.datasiqn.arcadia.recipes.craftingtable.CraftingRecipe;
+import com.datasiqn.schedulebuilder.ScheduleBuilder;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -63,10 +64,10 @@ public class CraftingGUI extends ArcadiaGUI {
 
     @Override
     public void clickEvent(@NotNull InventoryInteractEvent event) {
-        plugin.runAfterOneTick(() -> {
+        ScheduleBuilder.create().executes(runnable -> {
             updateMatrix();
             prepareCraft();
-        });
+        }).run(plugin);
 
         if (event instanceof InventoryClickEvent clickEvent) {
             if (clickEvent.getClickedInventory() == null) return;
@@ -136,10 +137,10 @@ public class CraftingGUI extends ArcadiaGUI {
         }
         if (!consumeResources(amount)) event.setCancelled(true);
         if (amount > 0) event.getWhoClicked().getWorld().playSound(event.getWhoClicked(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.7f, 2);
-        plugin.runAfterOneTick(() -> {
+        ScheduleBuilder.create().executes(runnable -> {
             updateMatrix();
             prepareCraft();
-        });
+        }).run(plugin);
     }
 
     private boolean consumeResources(int multiplier) {

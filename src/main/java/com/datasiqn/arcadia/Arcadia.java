@@ -11,6 +11,7 @@ import com.datasiqn.arcadia.util.ItemUtil;
 import com.datasiqn.commandcore.CommandCore;
 import com.datasiqn.commandcore.commands.builder.CommandBuilder;
 import com.datasiqn.commandcore.managers.CommandManager;
+import com.datasiqn.schedulebuilder.ScheduleBuilder;
 import org.bukkit.*;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
@@ -91,28 +92,31 @@ public final class Arcadia extends JavaPlugin {
 
         setupDungeons();
 
-        Bukkit.getScheduler().runTaskTimer(this, () -> {
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                PlayerData playerData = playerManager.getPlayerData(player);
-                playerData.updateActionbar();
+        ScheduleBuilder.create()
+                .repeatEvery(1).seconds()
+                .executes(runnable -> {
+                    for (Player player : Bukkit.getOnlinePlayers()) {
+                        PlayerData playerData = playerManager.getPlayerData(player);
+                        playerData.updateActionbar();
 
-                ItemStack itemStack = player.getInventory().getItemInMainHand();
-                if (itemStack.equals(playerData.getEquipment().getItemInMainHand().build())) return;
-                ArcadiaItem arcadiaItem = new ArcadiaItem(itemStack);
-                ItemStack newItem = arcadiaItem.build();
-                if (!newItem.equals(player.getInventory().getItemInMainHand())) player.getInventory().setItemInMainHand(newItem);
-                playerData.getEquipment().setItemInMainHand(arcadiaItem);
-            }
-        }, 0, 20);
+                        ItemStack itemStack = player.getInventory().getItemInMainHand();
+                        if (itemStack.equals(playerData.getEquipment().getItemInMainHand().build())) return;
+                        ArcadiaItem arcadiaItem = new ArcadiaItem(itemStack);
+                        ItemStack newItem = arcadiaItem.build();
+                        if (!newItem.equals(player.getInventory().getItemInMainHand()))
+                            player.getInventory().setItemInMainHand(newItem);
+                        playerData.getEquipment().setItemInMainHand(arcadiaItem);
+                    }
+                }).run(this);
 
-        new BukkitRunnable() {
-            public void run() {
-                if (getFile().lastModified() > lastModified) {
-                    cancel();
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "rl confirm");
-                }
-            }
-        }.runTaskTimer(this, 0, 20);
+        ScheduleBuilder.create()
+                .repeatEvery(1).seconds()
+                .executes(runnable -> {
+                    if (getFile().lastModified() > lastModified) {
+                        runnable.cancel();
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "rl confirm");
+                    }
+                }).run(this);
     }
 
     public void registerListener(Listener listener) {

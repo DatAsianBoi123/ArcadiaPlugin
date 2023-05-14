@@ -8,6 +8,7 @@ import com.datasiqn.arcadia.items.ArcadiaItem;
 import com.datasiqn.arcadia.items.materials.ArcadiaMaterial;
 import com.datasiqn.arcadia.items.meta.ArcadiaItemMeta;
 import com.datasiqn.arcadia.util.ItemUtil;
+import com.datasiqn.schedulebuilder.ScheduleBuilder;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -66,7 +67,7 @@ public class AnvilGUI extends ArcadiaGUI {
 
     @Override
     public void clickEvent(@NotNull InventoryInteractEvent event) {
-        plugin.runAfterOneTick(this::update);
+        ScheduleBuilder.create().executes(runnable -> update()).run(plugin);
 
         if (event instanceof InventoryClickEvent clickEvent) {
             if (clickEvent.getClickedInventory() == null) return;

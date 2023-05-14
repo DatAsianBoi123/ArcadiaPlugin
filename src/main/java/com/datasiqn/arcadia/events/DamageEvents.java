@@ -16,6 +16,7 @@ import com.datasiqn.arcadia.items.stats.AttributeInstance;
 import com.datasiqn.arcadia.items.stats.ItemAttribute;
 import com.datasiqn.arcadia.items.type.ItemType;
 import com.datasiqn.arcadia.players.ArcadiaSender;
+import com.datasiqn.schedulebuilder.ScheduleBuilder;
 import com.datasiqn.arcadia.players.PlayerData;
 import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_19_R1.entity.CraftEntity;
@@ -72,11 +73,11 @@ public class DamageEvents implements Listener {
             if (itemInMainHand.getItemData().getItemType() != ItemType.SWORD) return;
 
             double attackSpeed = playerData.getAttackSpeed();
-            plugin.runAfterOneTick(() -> {
+            ScheduleBuilder.create().executes(runnable -> {
                 Entity eventEntity = event.getEntity();
                 if (!(eventEntity instanceof LivingEntity living)) return;
                 living.setNoDamageTicks((int) Math.round(20 - attackSpeed / 5));
-            });
+            }).run(plugin);
         } else if (event.getEntity() instanceof Player player) {
             event.setDamage(calcPlayerDamage(event));
             plugin.getPlayerManager().getPlayerData(player).damage(event);
@@ -98,7 +99,10 @@ public class DamageEvents implements Listener {
             cloud.setCustomNameVisible(true);
             cloud.setParticle(Particle.BLOCK_CRACK, Material.AIR.createBlockData());
         });
-        Bukkit.getScheduler().runTaskLater(Arcadia.getProvidingPlugin(Arcadia.class), entity::remove, 20);
+        ScheduleBuilder.create()
+                .wait(1.0).seconds()
+                .executes(runnable -> entity.remove())
+                .run(plugin);
     }
 
     private double calcPlayerDamage(@NotNull EntityDamageByEntityEvent event) {

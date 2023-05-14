@@ -126,6 +126,11 @@
             <version>2.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
+            <groupId>com.datasiqn</groupId>
+            <artifactId>schedulebuilder</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot</artifactId>
             <version>1.19.2-R0.1-SNAPSHOT</version>
