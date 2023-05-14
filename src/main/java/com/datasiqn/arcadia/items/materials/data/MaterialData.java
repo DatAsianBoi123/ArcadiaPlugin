@@ -24,7 +24,6 @@ import java.util.*;
 public class MaterialData<D extends ExtraItemData> {
     private final @NotNull ItemType<D> itemType;
     private final D itemData;
-    private final @NotNull String id;
     private final @NotNull List<ItemModifier> itemModifiers;
 
     private final @Nullable String name;
@@ -38,7 +37,6 @@ public class MaterialData<D extends ExtraItemData> {
     public MaterialData(@NotNull Builder<D> builder) {
         itemType = builder.itemType;
         itemData = builder.itemData;
-        id = builder.id;
         itemModifiers = builder.itemModifiers;
 
         name = builder.name;
@@ -59,10 +57,6 @@ public class MaterialData<D extends ExtraItemData> {
 
     public @Nullable String getName() {
         return name;
-    }
-
-    public @NotNull String getID() {
-        return id;
     }
 
     public @NotNull Material getMaterial() {
@@ -109,7 +103,6 @@ public class MaterialData<D extends ExtraItemData> {
         String finalName = name == null ? WordUtils.capitalizeFully(material.toString().replaceAll("_", " ")) : name;
         meta.setDisplayName(ChatColor.RESET + "" + rarity.getColor() + finalName);
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
-        PdcUtil.set(pdc, ArcadiaTag.ITEM_ID, id);
 
         if (enchantGlint) addEnchantGlint(meta);
         if (!stackable) PdcUtil.set(pdc, ArcadiaTag.ITEM_UUID, uuid);
@@ -147,14 +140,13 @@ public class MaterialData<D extends ExtraItemData> {
         private boolean stackable = true;
         private ItemAbility itemAbility;
 
-        public Builder(ItemType<D> itemType, @NotNull String id) {
-            this(itemType, id, null);
+        public Builder(ItemType<D> itemType) {
+            this(itemType, null);
         }
-        public Builder(ItemType<D> itemType, @NotNull String id, D itemData) {
+        public Builder(ItemType<D> itemType, D itemData) {
             if (itemData == null && itemType.requiresData()) throw new RuntimeException("item type " + itemType + " requires data");
             this.itemType = itemType;
             this.itemData = itemData;
-            this.id = id;
         }
 
         public Builder<D> name(@Nullable String name) {

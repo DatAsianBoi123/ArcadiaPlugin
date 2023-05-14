@@ -104,6 +104,7 @@ public class ArcadiaItem implements ConfigurationSerializable {
         ItemStack itemStack = itemData.toItemStack(amount, itemMeta.getUuid());
         ItemMeta meta = itemStack.getItemMeta();
         if (meta == null) return itemStack;
+        PdcUtil.set(meta.getPersistentDataContainer(), ArcadiaTag.ITEM_ID, getId());
         List<String> lore = meta.getLore();
         assert lore != null;
 
@@ -143,6 +144,7 @@ public class ArcadiaItem implements ConfigurationSerializable {
         ItemStack craftingResult = itemData.asCraftingResult(amount, itemMeta.getUuid());
         ItemMeta meta = craftingResult.getItemMeta();
         if (meta == null) return craftingResult;
+        PdcUtil.set(meta.getPersistentDataContainer(), ArcadiaTag.ITEM_ID, getId());
         List<String> lore = meta.getLore();
         assert lore != null;
 
@@ -195,11 +197,15 @@ public class ArcadiaItem implements ConfigurationSerializable {
 
     public boolean isSimilar(@Nullable ArcadiaItem item) {
         if (item == null) return false;
-        return itemData.getID().equals(item.itemData.getID());
+        return getId().equals(item.getId());
     }
 
     public boolean isDefaultMaterial() {
         return itemData instanceof DefaultMaterialData;
+    }
+
+    public @NotNull String getId() {
+        return material == null ? itemData.getMaterial().name() : material.name();
     }
 
     public @NotNull MaterialData<?> getItemData() {
@@ -226,7 +232,7 @@ public class ArcadiaItem implements ConfigurationSerializable {
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> objectMap = new HashMap<>();
-        objectMap.put("id", itemData.getID());
+        objectMap.put("id", getId());
         objectMap.put("amount", amount);
         return objectMap;
     }
