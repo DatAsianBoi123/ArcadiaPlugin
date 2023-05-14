@@ -1,12 +1,8 @@
+load: POSTWORLD
 main: com.datasiqn.arcadia.Arcadia
 name: Arcadia
 version: '${project.version}'
 api-version: 1.19
-commands:
-  arcadia:
-    description: Base Arcadia command
-    usage: "§cIncorrect command format!"
-    permission: arcadia.command
 permissions:
   arcadia.heal:
     description: Allows the player to use the heal command (/arcadia heal)
