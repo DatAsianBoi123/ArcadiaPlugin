@@ -54,6 +54,6 @@ public class CommandDungeons {
                 .then(LiteralBuilder.literal("tp")
                         .then(ArgumentBuilder.argument(ArcadiaArgumentType.DUNGEON, "dungeon id")
                                 .requiresPlayer()
-                                .executes(context -> plugin.getDungeonManager().addPlayerTo(context.getSource().getPlayer().unwrap(), context.getArguments().get(1, ArcadiaArgumentType.DUNGEON).unwrap()))));
+                                .executes(context -> plugin.getDungeonManager().addPlayerTo(plugin.getPlayerManager().getPlayerData(context.getSource().getPlayer().unwrap()), context.getArguments().get(1, ArcadiaArgumentType.DUNGEON).unwrap()))));
     }
 }
