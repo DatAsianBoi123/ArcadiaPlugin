@@ -8,6 +8,7 @@ import com.datasiqn.arcadia.players.ArcadiaSender;
 import com.datasiqn.commandcore.commands.builder.ArgumentBuilder;
 import com.datasiqn.commandcore.commands.builder.CommandBuilder;
 import com.datasiqn.commandcore.commands.builder.LiteralBuilder;
+import org.bukkit.entity.Player;
 
 public class CommandDungeons {
     private final Arcadia plugin;
@@ -20,6 +21,16 @@ public class CommandDungeons {
         return new CommandBuilder()
                 .permission(ArcadiaPermission.PERMISSION_MANAGE_DUNGEONS)
                 .description("Manages different dungeon instances")
+                .requiresPlayer()
+                .executes(context -> {
+                    Player player = context.getSource().getPlayer().unwrap();
+                    DungeonInstance dungeon = plugin.getDungeonManager().getJoinedDungeon(player);
+                    if (dungeon == null) {
+                        player.sendMessage("You are not in a dungeon currently");
+                        return;
+                    }
+                    player.sendMessage("You are in the dungeon " + dungeon.getId() + " with " + dungeon.getPlayers() + " other people");
+                })
                 .then(LiteralBuilder.literal("create")
                         .executes(context -> {
                             ArcadiaSender<?> sender = context.getSource().getPlayer().matchResult(player -> plugin.getPlayerManager().getPlayerData(player).getSender(), err -> new ArcadiaSender<>(context.getSource().getSender()));
