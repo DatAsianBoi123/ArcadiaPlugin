@@ -3,6 +3,8 @@ package com.datasiqn.arcadia.events;
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.ArcadiaTag;
 import com.datasiqn.arcadia.DamageHelper;
+import com.datasiqn.arcadia.dungeons.DungeonInstance;
+import com.datasiqn.arcadia.dungeons.DungeonPlayer;
 import com.datasiqn.arcadia.enchants.DamageModifierType;
 import com.datasiqn.arcadia.enchants.EnchantType;
 import com.datasiqn.arcadia.enchants.modifiers.DamageEnchantModifier;
@@ -15,9 +17,13 @@ import com.datasiqn.arcadia.items.meta.ArcadiaItemMeta;
 import com.datasiqn.arcadia.items.stats.AttributeInstance;
 import com.datasiqn.arcadia.items.stats.ItemAttribute;
 import com.datasiqn.arcadia.items.type.ItemType;
+import com.datasiqn.arcadia.managers.UpgradeEventManager;
 import com.datasiqn.arcadia.players.ArcadiaSender;
-import com.datasiqn.schedulebuilder.ScheduleBuilder;
 import com.datasiqn.arcadia.players.PlayerData;
+import com.datasiqn.arcadia.upgrades.listeners.actions.DamageEnemyAction;
+import com.datasiqn.arcadia.upgrades.listeners.actions.KillEnemyAction;
+import com.datasiqn.arcadia.util.PdcUtil;
+import com.datasiqn.schedulebuilder.ScheduleBuilder;
 import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_19_R1.entity.CraftEntity;
 import org.bukkit.entity.*;
@@ -68,6 +74,16 @@ public class DamageEvents implements Listener {
             if (!(event.getDamager() instanceof Player player)) return;
 
             PlayerData playerData = plugin.getPlayerManager().getPlayerData(player);
+
+            DungeonInstance joinedDungeon = plugin.getDungeonManager().getJoinedDungeon(playerData.getUniqueId());
+            if (joinedDungeon != null) {
+                UpgradeEventManager eventManager = plugin.getUpgradeEventManager();
+                DungeonPlayer dungeonPlayer = joinedDungeon.getPlayer(playerData);
+                eventManager.emit(new DamageEnemyAction(dungeonPlayer, entity, damage));
+
+                if (entity.arcadia().health() <= damage) eventManager.emit(new KillEnemyAction(dungeonPlayer, entity));
+            }
+
             ArcadiaItem itemInMainHand = playerData.getEquipment().getItemInMainHand();
             if (itemInMainHand.getItemData().getItemType() != ItemType.SWORD) return;
 

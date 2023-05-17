@@ -2,9 +2,14 @@ package com.datasiqn.arcadia.managers;
 
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.dungeons.DungeonInstance;
+import com.datasiqn.arcadia.dungeons.DungeonPlayer;
+import com.datasiqn.arcadia.players.PlayerData;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.GameRule;
+import org.bukkit.World;
+import org.bukkit.WorldCreator;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,8 +22,8 @@ public class DungeonManager {
     public static final String DEFAULT_DUNGEON_NAME = "world_default_dungeon";
     public static final String DUNGEON_WORLD_PREFIX = "d_";
 
-    private final Map<UUID, DungeonInstance> activeDungeonInstances = new HashMap<>();
-    private final Set<DungeonInstance> createdDungeons = new HashSet<>();
+    private final Set<DungeonInstance> dungeonInstances = new HashSet<>();
+    private final Map<DungeonPlayer, DungeonInstance> playerToDungeonMap = new HashMap<>();
     private final Arcadia plugin;
 
     public DungeonManager(Arcadia plugin) {
@@ -26,7 +31,11 @@ public class DungeonManager {
     }
 
     public void loadDungeonsFromDisk() {
-        Bukkit.getWorlds().stream().filter(world -> world.getName().startsWith(DUNGEON_WORLD_PREFIX)).forEach(world -> createdDungeons.add(new DungeonInstance(world, world.getName().substring(DUNGEON_WORLD_PREFIX.length()))));
+        for (World world : Bukkit.getWorlds()) {
+            if (world.getName().startsWith(DUNGEON_WORLD_PREFIX)) {
+                dungeonInstances.add(new DungeonInstance(world, world.getName().substring(DUNGEON_WORLD_PREFIX.length())));
+            }
+        }
     }
 
     public @Nullable DungeonInstance createDungeon() {
@@ -46,7 +55,7 @@ public class DungeonManager {
         world.setSpawnFlags(false, false);
         long after = System.currentTimeMillis();
         DungeonInstance instance = new DungeonInstance(world, id);
-        createdDungeons.add(instance);
+        dungeonInstances.add(instance);
         plugin.getLogger().info("Created new dungeon with the id of " + id + ". Creation took " + (after - before) + "ms");
         return instance;
     }
@@ -64,25 +73,31 @@ public class DungeonManager {
         } catch (IOException e) {
             return false;
         }
-        createdDungeons.remove(instance);
+        dungeonInstances.remove(instance);
         plugin.getLogger().info("Deleted dungeon " + instance.getId());
         return true;
     }
 
-    public void addPlayerTo(@NotNull Player player, @NotNull String dungeonId) {
+    public void addPlayerTo(@NotNull PlayerData player, @NotNull String dungeonId) {
         DungeonInstance instance = getCreatedDungeon(dungeonId);
         if (instance == null) return;
         addPlayerTo(player, instance);
     }
-    public void addPlayerTo(@NotNull Player player, @NotNull DungeonInstance instance) {
-        player.teleport(instance.getWorld().getSpawnLocation());
-        activeDungeonInstances.put(player.getUniqueId(), instance);
-        plugin.getLogger().info("Player " + player.getName() + " (" + player.getUniqueId() + ") just joined the dungeon " + instance.getId());
+    public void addPlayerTo(@NotNull PlayerData playerData, @NotNull DungeonInstance instance) {
+        if (getJoinedDungeon(playerData.getUniqueId()) != null) return;
+        DungeonPlayer dungeonPlayer = instance.addPlayer(playerData);
+        playerToDungeonMap.put(dungeonPlayer, instance);
+        playerData.getPlayer().teleport(instance.getWorld().getSpawnLocation());
+        plugin.getLogger().info("Player " + playerData.getPlayer().getName() + " (" + playerData.getUniqueId() + ") just joined the dungeon " + instance.getId());
     }
 
     public void leaveDungeon(@NotNull Player player) {
         player.teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
-        DungeonInstance instance = activeDungeonInstances.remove(player.getUniqueId());
+        DungeonInstance instance = getJoinedDungeon(player);
+        if (instance == null) return;
+        DungeonPlayer dungeonPlayer = instance.getPlayer(player);
+        playerToDungeonMap.remove(dungeonPlayer);
+        instance.removePlayer(dungeonPlayer);
         plugin.getLogger().info("Player " + player.getName() + " (" + player.getUniqueId() + ") just left the dungeon they were in (" + instance.getId());
     }
 
@@ -90,16 +105,33 @@ public class DungeonManager {
         return getJoinedDungeon(player.getUniqueId());
     }
     public @Nullable DungeonInstance getJoinedDungeon(@NotNull UUID uuid) {
-        return activeDungeonInstances.get(uuid);
+        for (Map.Entry<DungeonPlayer, DungeonInstance> entry : playerToDungeonMap.entrySet()) {
+            if (entry.getKey().getPlayerData().getUniqueId().equals(uuid)) return entry.getValue();
+        }
+        return null;
+    }
+
+    public @Nullable DungeonPlayer getDungeonPlayer(@NotNull UUID uuid) {
+        DungeonInstance instance = getJoinedDungeon(uuid);
+        if (instance == null) return null;
+        return instance.getPlayer(uuid);
     }
 
     public @Nullable DungeonInstance getCreatedDungeon(String id) {
-        return createdDungeons.stream().filter(instance -> instance.getId().equals(id)).findAny().orElse(null);
+        Optional<DungeonInstance> dungeonInstance = dungeonInstances.stream().filter(instance -> instance.getId().equals(id)).findAny();
+        if (dungeonInstance.isEmpty()) {
+            World world = Bukkit.getWorld(DUNGEON_WORLD_PREFIX + id);
+            if (world == null) return null;
+            DungeonInstance instance = new DungeonInstance(world, id);
+            dungeonInstances.add(instance);
+            return instance;
+        }
+        return dungeonInstance.get();
     }
 
     @NotNull
     @Unmodifiable
     public Set<DungeonInstance> getAllDungeonInstances() {
-        return Set.copyOf(createdDungeons);
+        return Set.copyOf(dungeonInstances);
     }
 }

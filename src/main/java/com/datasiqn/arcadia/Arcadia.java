@@ -5,6 +5,7 @@ import com.datasiqn.arcadia.events.*;
 import com.datasiqn.arcadia.items.ArcadiaItem;
 import com.datasiqn.arcadia.managers.DungeonManager;
 import com.datasiqn.arcadia.managers.PlayerManager;
+import com.datasiqn.arcadia.managers.UpgradeEventManager;
 import com.datasiqn.arcadia.players.PlayerData;
 import com.datasiqn.arcadia.util.ItemUtil;
 import com.datasiqn.arcadia.util.PdcUtil;
@@ -20,9 +21,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,6 +30,7 @@ import java.util.UUID;
 public final class Arcadia extends JavaPlugin {
     private final PlayerManager playerManager = new PlayerManager(this);
     private final DungeonManager dungeonManager = new DungeonManager(this);
+    private final UpgradeEventManager upgradeEventManager = new UpgradeEventManager(this);
 
     private final long lastModified = getFile().lastModified();
 
@@ -133,13 +132,8 @@ public final class Arcadia extends JavaPlugin {
         return dungeonManager;
     }
 
-    public void runAfterOneTick(@NotNull Runnable runnable) {
-        Bukkit.getScheduler().runTask(this, runnable);
-    }
-
-    @Contract("_ -> new")
-    public static @NotNull NamespacedKey getNK(String key) {
-        return new NamespacedKey(Arcadia.getPlugin(Arcadia.class), key);
+    public UpgradeEventManager getUpgradeEventManager() {
+        return upgradeEventManager;
     }
 
     private void registerAllCommands() {
@@ -150,6 +144,7 @@ public final class Arcadia extends JavaPlugin {
         commandManager.registerCommand("heal", new CommandHeal(this).getCommand());
         commandManager.registerCommand("debug", new CommandDebug(this).getCommand());
         commandManager.registerCommand("viewrecipe", new CommandViewRecipe().getCommand());
+        commandManager.registerCommand("viewupgrade", new CommandViewUpgrade().getCommand());
         commandManager.registerCommand("loot", new CommandLoot().getCommand());
         commandManager.registerCommand("enchant", new CommandEnchant(this).getCommand());
         commandManager.registerCommand("dungeons", new CommandDungeons(this).getCommand());
