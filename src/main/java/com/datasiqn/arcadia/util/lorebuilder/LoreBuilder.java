@@ -8,9 +8,6 @@ import java.util.List;
 public class LoreBuilder {
     private final List<LoreComponent[]> lore = new ArrayList<>();
 
-    public LoreBuilder append(LoreComponent component) {
-        return append(new LoreComponent[] {component});
-    }
     public LoreBuilder append(LoreComponent[] component) {
         lore.add(component);
         return this;
