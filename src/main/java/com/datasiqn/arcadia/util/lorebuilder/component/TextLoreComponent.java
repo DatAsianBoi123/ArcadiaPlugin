@@ -3,7 +3,7 @@ package com.datasiqn.arcadia.util.lorebuilder.component;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-public class TextLoreComponent extends LoreComponent {
+public class TextLoreComponent implements LoreComponent {
     private final String text;
 
     private TextLoreComponent(String text) {

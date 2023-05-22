@@ -4,7 +4,7 @@ import com.datasiqn.arcadia.items.stats.ItemAttribute;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-public class AttributeLoreComponent extends LoreComponent {
+public class AttributeLoreComponent implements LoreComponent {
     private final ItemAttribute attribute;
 
     private AttributeLoreComponent(ItemAttribute attribute) {

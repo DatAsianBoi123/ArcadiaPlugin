@@ -2,8 +2,7 @@ package com.datasiqn.arcadia.util.lorebuilder.component;
 
 import org.jetbrains.annotations.NotNull;
 
-public abstract class LoreComponent {
+public interface LoreComponent {
     @Override
-    @NotNull
-    public abstract String toString();
+    @NotNull String toString();
 }
