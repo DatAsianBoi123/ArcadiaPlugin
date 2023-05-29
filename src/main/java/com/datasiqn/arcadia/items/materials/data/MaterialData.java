@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.text.DecimalFormat;
 import java.util.*;
 
 public class MaterialData<D extends ExtraItemData> {
@@ -76,10 +77,8 @@ public class MaterialData<D extends ExtraItemData> {
         return stackable;
     }
 
-    public @NotNull List<ItemAbility> getItemAbilities() {
-        List<ItemAbility> abilityList = new ArrayList<>(itemAbilities.values());
-        abilityList.sort(Comparator.comparingInt(ability -> ability.getType().ordinal()));
-        return abilityList;
+    public @NotNull Map<AbilityType, ItemAbility> getItemAbilities() {
+        return new HashMap<>(itemAbilities);
     }
 
     public @NotNull ItemStack toItemStack() {
@@ -94,13 +93,18 @@ public class MaterialData<D extends ExtraItemData> {
         meta.setUnbreakable(true);
         List<String> lore = new ArrayList<>();
         if (!itemAbilities.isEmpty()) {
-            for (ItemAbility ability : itemAbilities.values()) {
-                lore.addAll(ability.asLore());
+            for (Map.Entry<AbilityType, ItemAbility> entry : itemAbilities.entrySet()) {
+                AbilityType type = entry.getKey();
+                ItemAbility ability = entry.getValue();
+                lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "Item Ability: " + ChatColor.WHITE + ability.getName() + " " + type);
+                ability.getDescription().addTo(lore);
+                DecimalFormat decimalFormat = new DecimalFormat("#.#");
+                lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: " + ChatColor.GREEN + decimalFormat.format(ability.getCooldown() / 20) + "s");
                 lore.add("");
             }
         }
         if (itemData != null) {
-            lore.addAll(itemData.getLore());
+            itemData.getLore().addTo(lore);
             lore.add("");
         }
         lore.add(rarity + " " + itemType);
