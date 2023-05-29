@@ -58,14 +58,17 @@ public class UpgradeEvents implements Listener {
             item.setUnlimitedLifetime(true);
             item.setGlowing(true);
             item.setPickupDelay(40);
-            item.getItemStack().setType(Material.DIAMOND);
-            item.setCustomName("Some Cool Upgrade");
+            item.getItemStack().setType(UpgradeType.DRUGS.getMaterial());
+            item.setCustomName(UpgradeType.DRUGS.getRarity().getColor() + UpgradeType.DRUGS.getDisplayName());
             item.setCustomNameVisible(true);
+
+            UpgradeType.DRUGS.getRarity().getTeam().addEntry(item.getUniqueId().toString());
 
             PersistentDataContainer itemPdc = item.getPersistentDataContainer();
             PdcUtil.set(itemPdc, ArcadiaTag.CHEST_LOC, location);
         });
         enderChest.open();
+        event.getPlayer().playSound(location, Sound.ENTITY_ITEM_PICKUP, 0.2f, 1);
         event.getPlayer().playSound(location, Sound.BLOCK_ENDER_CHEST_OPEN, 1, 1);
     }
 
@@ -82,7 +85,12 @@ public class UpgradeEvents implements Listener {
         EnderChest enderChest = (EnderChest) block.getState();
         enderChest.close();
 
-        event.getItem().setItemStack(new ArcadiaItem(Material.STICK).build());
+        ItemStack itemStack = event.getItem().getItemStack();
+        itemStack.setType(Material.AIR);
+        event.getItem().setItemStack(itemStack);
+        DungeonPlayer dungeonPlayer = plugin.getDungeonManager().getDungeonPlayer(plugin.getPlayerManager().getPlayerData(player).getUniqueId());
+        if (dungeonPlayer == null) return;
+        dungeonPlayer.pickupUpgrade(UpgradeType.DRUGS);
         player.playSound(chestLocation, Sound.BLOCK_ENDER_CHEST_CLOSE, 1, 1);
     }
 }
