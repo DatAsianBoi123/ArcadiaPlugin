@@ -1,8 +1,7 @@
 package com.datasiqn.arcadia.items.materials;
 
 import com.datasiqn.arcadia.items.ItemRarity;
-import com.datasiqn.arcadia.items.abilities.AbilityType;
-import com.datasiqn.arcadia.items.abilities.ItemAbility;
+import com.datasiqn.arcadia.items.abilities.*;
 import com.datasiqn.arcadia.items.materials.data.MaterialData;
 import com.datasiqn.arcadia.items.meta.ArcadiaItemMeta;
 import com.datasiqn.arcadia.items.modifiers.LeatherArmorItemModifier;
@@ -13,18 +12,14 @@ import com.datasiqn.arcadia.items.stats.ItemAttribute;
 import com.datasiqn.arcadia.items.stats.ItemStats;
 import com.datasiqn.arcadia.items.type.ItemType;
 import com.datasiqn.arcadia.items.type.data.ConsumableData;
-import com.datasiqn.arcadia.players.ArcadiaSender;
-import com.datasiqn.arcadia.players.PlayerData;
+import com.datasiqn.arcadia.util.lorebuilder.Lore;
+import com.datasiqn.arcadia.util.lorebuilder.LoreBuilder;
+import com.datasiqn.arcadia.util.lorebuilder.component.ComponentBuilder;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
 import java.util.UUID;
 import java.util.function.UnaryOperator;
 
@@ -41,7 +36,7 @@ public enum ArcadiaMaterial {
             .enchantGlint(true)
             .stackable(false)
             .addModifier(new SkullItemModifier("843968ce4bcc31c3b35e2bcd4a5ac2e98a746b3355e5f8063c323d2ba57ab6e2"))
-            .addModifier(new LoreItemModifier("An ancient core taken from the", "heart of a mysterious beast."))
+            .addModifier(new LoreItemModifier(Lore.of("An ancient core taken from the", "heart of a mysterious beast.")))
             .build()),
     ANCIENT_CORE_AWAKENED(new MaterialData.Builder<>(ItemType.NONE)
             .name("Awakened Core")
@@ -50,7 +45,7 @@ public enum ArcadiaMaterial {
             .enchantGlint(true)
             .stackable(false)
             .addModifier(new SkullItemModifier("a4ad229d80308059fa7aed86543779cf933f91b6a437431293d0bb31a0955b71"))
-            .addModifier(new LoreItemModifier("A core brought back to its former glory."))
+            .addModifier(new LoreItemModifier(Lore.of("A core brought back to its former glory.")))
             .build()),
     GUARDIAN_KEY(new MaterialData.Builder<>(ItemType.NONE)
             .name("Guardian's Key")
@@ -66,7 +61,15 @@ public enum ArcadiaMaterial {
             .enchantGlint(true)
             .stackable(false)
             .addModifier(new SkullItemModifier("ff379212f42060ae0563c70739a7ec42ad48e70f74210b290d2307a47845ec2c"))
-            .addModifier(new LoreItemModifier("Combine with an item in an anvil", "to increase its " + ChatColor.DARK_PURPLE + "Item Quality" + ChatColor.GRAY + " by " + ChatColor.BLUE + "10%"))
+            .addModifier(new LoreItemModifier(new LoreBuilder()
+                    .append("Combine with an item in an anvil")
+                    .append(new ComponentBuilder()
+                            .text("to increase its ")
+                            .text("Item Quality", ChatColor.DARK_PURPLE)
+                            .text(" by ")
+                            .percent(0.152)
+                            .build())
+                    .build()))
             .build()),
     ESSENCE_OF_BOB(new MaterialData.Builder<>(ItemType.NONE)
             .name("Bob's Essence")
@@ -85,11 +88,7 @@ public enum ArcadiaMaterial {
             .name("Crooked Sword")
             .material(Material.WOODEN_SWORD)
             .stackable(false)
-            .addAbility(new ItemAbility("Run Away", Collections.singletonList("Gives you speed"), AbilityType.RIGHT_CLICK, 60, executor -> {
-                Player player = executor.playerData().getPlayer();
-                player.playSound(player, Sound.BLOCK_AMETHYST_BLOCK_PLACE, 1, 1);
-                player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 1));
-            }))
+            .addAbility(AbilityType.RIGHT_CLICK, new RunAwayAbility())
             .build(), meta -> {
         ItemStats itemStats = meta.getItemStats();
         itemStats.setAttribute(ItemAttribute.DAMAGE, new AttributeRange(3, 5));
@@ -155,15 +154,7 @@ public enum ArcadiaMaterial {
             .rarity(ItemRarity.MYTHIC)
             .enchantGlint(true)
             .stackable(false)
-            .addAbility(new ItemAbility("Last Hope", Collections.singletonList("Does cool things"), AbilityType.RIGHT_CLICK, 4000, executor -> {
-                PlayerData playerData = executor.playerData();
-                ArcadiaSender<Player> player = executor.playerData().getSender();
-
-                playerData.heal();
-                playerData.updateValues();
-                playerData.updateActionbar();
-                player.get().getWorld().createExplosion(player.get().getLocation(), 8, false, false, player.get());
-            }))
+            .addAbility(AbilityType.RIGHT_CLICK, new LastHopeAbility())
             .build(), meta -> {
         ItemStats itemStats = meta.getItemStats();
         itemStats.setAttribute(ItemAttribute.DAMAGE, new AttributeRange(1500, 3000));
@@ -205,7 +196,12 @@ public enum ArcadiaMaterial {
         return meta;
     }),
     FRUITY_APPLE(new MaterialData.Builder<>(ItemType.CONSUMABLE,
-            new ConsumableData(Collections.singletonList("Eating this heals you by " + ItemAttribute.HEALTH.getColor() + "10" + ItemAttribute.HEALTH.getIcon() + ChatColor.GRAY + "."),
+            new ConsumableData(new LoreBuilder()
+                    .append(new ComponentBuilder()
+                            .text("Eating this heals you by ")
+                            .stat(10, ItemAttribute.HEALTH)
+                            .build())
+                    .build(),
                     10,
                     data -> data.heal(10)))
             .name("Fruity Apple")

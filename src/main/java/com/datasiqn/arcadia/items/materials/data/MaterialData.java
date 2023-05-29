@@ -178,8 +178,8 @@ public class MaterialData<D extends ExtraItemData> {
             return this;
         }
 
-        public Builder<D> addAbility(@NotNull ItemAbility itemAbility) {
-            this.itemAbilities.put(itemAbility.getType(), itemAbility);
+        public Builder<D> addAbility(AbilityType type, @NotNull ItemAbility itemAbility) {
+            this.itemAbilities.put(type, itemAbility);
             return this;
         }
 

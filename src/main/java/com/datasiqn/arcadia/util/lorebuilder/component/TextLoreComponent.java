@@ -1,5 +1,6 @@
 package com.datasiqn.arcadia.util.lorebuilder.component;
 
+import org.bukkit.ChatColor;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,6 +18,10 @@ public class TextLoreComponent implements LoreComponent {
 
     @Contract("_ -> new")
     public static @NotNull TextLoreComponent text(String text) {
-        return new TextLoreComponent(text);
+        return text(text, ChatColor.GRAY);
+    }
+    @Contract(value = "_, _ -> new", pure = true)
+    public static @NotNull TextLoreComponent text(String text, ChatColor color) {
+        return new TextLoreComponent(ChatColor.RESET + "" + color + text);
     }
 }

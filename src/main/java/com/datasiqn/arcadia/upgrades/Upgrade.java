@@ -38,7 +38,7 @@ public class Upgrade {
                 .name(type.getDisplayName())
                 .material(type.getMaterial())
                 .rarity(type.getRarity())
-                .addModifier(new LoreItemModifier(type.getDescription().toArray(String[]::new)))
+                .addModifier(new LoreItemModifier(type.getDescription()))
                 .build();
         return materialData.toItemStack(amount, UUID.randomUUID());
     }

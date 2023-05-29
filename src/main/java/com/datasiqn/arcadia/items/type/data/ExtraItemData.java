@@ -1,12 +1,10 @@
 package com.datasiqn.arcadia.items.type.data;
 
+import com.datasiqn.arcadia.util.lorebuilder.Lore;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public interface ExtraItemData {
-    default @NotNull List<String> getLore() {
-        return new ArrayList<>();
+    default @NotNull Lore getLore() {
+        return Lore.of();
     }
 }

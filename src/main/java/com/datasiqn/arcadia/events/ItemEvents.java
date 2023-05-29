@@ -6,6 +6,7 @@ import com.datasiqn.arcadia.dungeons.DungeonPlayer;
 import com.datasiqn.arcadia.guis.StaticGUI;
 import com.datasiqn.arcadia.items.ArcadiaItem;
 import com.datasiqn.arcadia.items.abilities.AbilityExecutor;
+import com.datasiqn.arcadia.items.abilities.AbilityType;
 import com.datasiqn.arcadia.items.abilities.ItemAbility;
 import com.datasiqn.arcadia.players.PlayerData;
 import com.datasiqn.arcadia.util.ItemUtil;
@@ -32,7 +33,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -103,23 +103,26 @@ public class ItemEvents implements Listener {
         ArcadiaItem arcadiaItem = new ArcadiaItem(event.getItem());
         if (arcadiaItem.getMaterial() == null) return;
 
-        List<ItemAbility> itemAbilities = arcadiaItem.getItemData().getItemAbilities();
+        Map<AbilityType, ItemAbility> itemAbilities = arcadiaItem.getItemData().getItemAbilities();
         if (itemAbilities.isEmpty()) return;
-        for (ItemAbility ability : itemAbilities) {
-            if (ability.getType().includesActions(event)) {
+        for (Map.Entry<AbilityType, ItemAbility> entry : itemAbilities.entrySet()) {
+            AbilityType type = entry.getKey();
+            ItemAbility ability = entry.getValue();
+            if (type.includesActions(event)) {
                 Player player = event.getPlayer();
                 PlayerData playerData = plugin.getPlayerManager().getPlayerData(player);
                 UUID id = player.getUniqueId();
                 if (!cooldowns.containsKey(id)) cooldowns.put(id, new HashMap<>());
                 long currentTime = System.currentTimeMillis();
                 Map<String, Long> playerCooldowns = cooldowns.get(id);
-                Long lastUsed = playerCooldowns.getOrDefault(arcadiaItem.getId() + "-" + ability.getType(), -1L);
-                if (lastUsed + ability.getCooldown() * 50L > currentTime && lastUsed != -1L) {
+                Long lastUsed = playerCooldowns.getOrDefault(arcadiaItem.getId() + "-" + type, -1L);
+                double cooldown = ability.getCooldown();
+                if (lastUsed + cooldown * 50L > currentTime && lastUsed != -1L) {
                     DecimalFormat decimalFormat = new DecimalFormat("#.#");
-                    playerData.getSender().sendMessageRaw(ChatColor.RED + "This ability is on cooldown for " + decimalFormat.format((ability.getCooldown() * 50 - (currentTime - lastUsed)) / 1000d) + "s");
+                    playerData.getSender().sendError("This ability is on cooldown for " + decimalFormat.format((cooldown * 50 - (currentTime - lastUsed)) / 1000d) + "s");
                     return;
                 }
-                playerCooldowns.put(arcadiaItem.getId() + "-" + ability.getType(), currentTime);
+                playerCooldowns.put(arcadiaItem.getId() + "-" + type, currentTime);
                 DefaultExecutor executor = new DefaultExecutor(playerData, ability);
                 ability.execute(executor);
                 event.setCancelled(true);
