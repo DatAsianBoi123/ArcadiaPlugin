@@ -7,6 +7,8 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
@@ -51,9 +53,17 @@ public class EntityIronGiant implements ArcadiaEntitySummoner {
         public boolean doHurtTarget(@NotNull Entity entity) {
             this.attackAnimationTick = 10;
             this.level.broadcastEntityEvent(this, (byte)4);
-            boolean flag = entity.hurt(DamageSource.mobAttack(this), 0);
+            boolean flag = entity.hurt(this.damageSources().mobAttack(this), 0);
             if (flag) {
-                entity.setDeltaMovement(entity.getDeltaMovement().add(0.0, 0.4000000059604645, 0.0));
+                double d0;
+                if (entity instanceof LivingEntity living) {
+                    d0 = living.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
+                } else {
+                    d0 = 0.0;
+                }
+
+                double d2 = Math.max(0.0, 1.0 - d0);
+                entity.setDeltaMovement(entity.getDeltaMovement().add(0.0, 0.4000000059604645 * d2, 0.0));
                 this.doEnchantDamageEffects(this, entity);
             }
 
