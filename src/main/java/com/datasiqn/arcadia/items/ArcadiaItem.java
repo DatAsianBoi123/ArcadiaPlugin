@@ -204,8 +204,8 @@ public class ArcadiaItem implements ConfigurationSerializable {
         return itemData instanceof DefaultMaterialData;
     }
 
-    public @NotNull String getId() {
-        return material == null ? itemData.getMaterial().name() : material.name();
+    public @NotNull ItemId getId() {
+        return material == null ? ItemId.fromVanillaMaterial(itemData.getMaterial()) : ItemId.fromArcadiaMaterial(material);
     }
 
     public @NotNull MaterialData<?> getItemData() {

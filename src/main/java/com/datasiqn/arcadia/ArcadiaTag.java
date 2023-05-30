@@ -3,6 +3,7 @@ package com.datasiqn.arcadia;
 import com.datasiqn.arcadia.datatype.ArcadiaDataType;
 import com.datasiqn.arcadia.datatype.EnchantsDataType;
 import com.datasiqn.arcadia.enchants.EnchantType;
+import com.datasiqn.arcadia.items.ItemId;
 import com.datasiqn.arcadia.loottables.LootTables;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -11,7 +12,7 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.UUID;
 
 public final class ArcadiaTag<T> {
-    public static final ArcadiaTag<String> ITEM_ID = new ArcadiaTag<>("id", PersistentDataType.STRING);
+    public static final ArcadiaTag<ItemId> ITEM_ID = new ArcadiaTag<>("id", ArcadiaDataType.ITEM_ID);
     public static final ArcadiaTag<UUID> ITEM_UUID = new ArcadiaTag<>("uuid", ArcadiaDataType.UUID);
     public static final ArcadiaTag<Boolean> ITEM_MATERIAL = new ArcadiaTag<>("material", ArcadiaDataType.BOOLEAN);
     public static final ArcadiaTag<Double> ITEM_QUALITY_BONUS = new ArcadiaTag<>("quality_bonus", PersistentDataType.DOUBLE);

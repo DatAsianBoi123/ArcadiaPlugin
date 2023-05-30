@@ -48,8 +48,7 @@ public final class ItemUtil {
         if (!PdcUtil.has(pdc, ArcadiaTag.ITEM_ID)) return null;
         if (PdcUtil.getOrDefault(pdc, ArcadiaTag.ITEM_MATERIAL, false)) return null;
 
-        String id = PdcUtil.get(pdc, ArcadiaTag.ITEM_ID);
-        return ArcadiaMaterial.valueOf(id);
+        return PdcUtil.get(pdc, ArcadiaTag.ITEM_ID).getMaterial();
     }
 
     public static @NotNull ItemStack createEmpty(Material material) {

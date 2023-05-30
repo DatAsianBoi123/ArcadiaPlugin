@@ -1,6 +1,7 @@
 package com.datasiqn.arcadia.datatype;
 
 import com.datasiqn.arcadia.enchants.EnchantType;
+import com.datasiqn.arcadia.items.ItemId;
 import com.datasiqn.arcadia.loottables.LootTables;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -11,6 +12,8 @@ import java.util.UUID;
 
 public final class ArcadiaDataType {
     private ArcadiaDataType() {}
+
+    public static final PersistentDataType<String, ItemId> ITEM_ID = new ItemIdDataType();
 
     public static final PersistentDataType<PersistentDataContainer[], EnchantsDataType.EnchantData[]> ENCHANTS = new EnchantsDataType();
 
