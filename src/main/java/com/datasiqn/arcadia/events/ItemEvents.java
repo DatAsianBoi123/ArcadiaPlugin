@@ -95,7 +95,7 @@ public class ItemEvents implements Listener {
     }
 
     @EventHandler
-    public void onPlayerInteract(@NotNull PlayerInteractEvent event) {
+    public void onPlayerUseItemAbility(@NotNull PlayerInteractEvent event) {
         if (event.getAction() == Action.PHYSICAL) return;
         if (event.getHand() == EquipmentSlot.OFF_HAND) return;
         if (event.getItem() == null) return;
