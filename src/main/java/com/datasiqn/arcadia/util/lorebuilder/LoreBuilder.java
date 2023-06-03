@@ -2,6 +2,7 @@ package com.datasiqn.arcadia.util.lorebuilder;
 
 import com.datasiqn.arcadia.util.lorebuilder.component.LoreComponent;
 import com.datasiqn.arcadia.util.lorebuilder.component.TextLoreComponent;
+import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
