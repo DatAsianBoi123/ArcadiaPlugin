@@ -17,6 +17,10 @@ public class LoreBuilder {
         lore.add(new LoreComponent[] {TextLoreComponent.text(text)} );
         return this;
     }
+    public LoreBuilder append(String text, ChatColor... color) {
+        lore.add(new LoreComponent[] {TextLoreComponent.text(text, color)} );
+        return this;
+    }
     public LoreBuilder append(LoreComponent[] component) {
         lore.add(component);
         return this;

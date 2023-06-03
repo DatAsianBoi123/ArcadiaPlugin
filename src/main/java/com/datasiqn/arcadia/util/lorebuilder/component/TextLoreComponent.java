@@ -21,7 +21,11 @@ public class TextLoreComponent implements LoreComponent {
         return text(text, ChatColor.GRAY);
     }
     @Contract(value = "_, _ -> new", pure = true)
-    public static @NotNull TextLoreComponent text(String text, ChatColor color) {
-        return new TextLoreComponent(ChatColor.RESET + "" + color + text);
+    public static @NotNull TextLoreComponent text(String text, ChatColor @NotNull ... color) {
+        StringBuilder modifiers = new StringBuilder();
+        for (ChatColor modifier : color) {
+            modifiers.append(modifier.toString());
+        }
+        return new TextLoreComponent(ChatColor.RESET + "" + modifiers + text);
     }
 }
