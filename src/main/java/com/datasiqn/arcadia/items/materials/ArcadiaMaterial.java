@@ -68,6 +68,7 @@ public enum ArcadiaMaterial {
                             .text("Item Quality", ChatColor.DARK_PURPLE)
                             .text(" by ")
                             .percent(0.1)
+                            .text(".")
                             .build())
                     .build()))
             .build()),
