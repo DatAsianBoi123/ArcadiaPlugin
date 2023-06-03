@@ -115,14 +115,14 @@ public class ItemEvents implements Listener {
                 if (!cooldowns.containsKey(id)) cooldowns.put(id, new HashMap<>());
                 long currentTime = System.currentTimeMillis();
                 Map<String, Long> playerCooldowns = cooldowns.get(id);
-                Long lastUsed = playerCooldowns.getOrDefault(arcadiaItem.getId() + "-" + type, -1L);
+                Long lastUsed = playerCooldowns.getOrDefault(arcadiaItem.getId().getStringId() + "-" + type, -1L);
                 double cooldown = ability.getCooldown();
                 if (lastUsed + cooldown * 50L > currentTime && lastUsed != -1L) {
                     DecimalFormat decimalFormat = new DecimalFormat("#.#");
                     playerData.getSender().sendError("This ability is on cooldown for " + decimalFormat.format((cooldown * 50 - (currentTime - lastUsed)) / 1000d) + "s");
                     return;
                 }
-                playerCooldowns.put(arcadiaItem.getId() + "-" + type, currentTime);
+                playerCooldowns.put(arcadiaItem.getId().getStringId() + "-" + type, currentTime);
                 DefaultExecutor executor = new DefaultExecutor(playerData, ability);
                 ability.execute(executor);
                 event.setCancelled(true);
