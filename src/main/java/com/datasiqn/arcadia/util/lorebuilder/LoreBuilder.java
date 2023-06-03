@@ -26,6 +26,11 @@ public class LoreBuilder {
         return this;
     }
 
+    public LoreBuilder emptyLine() {
+        lore.add(new LoreComponent[] {TextLoreComponent.text("")} );
+        return this;
+    }
+
     public Lore build() {
         List<String> lore = this.lore.stream().map(components -> {
             StringBuilder stringBuilder = new StringBuilder();
