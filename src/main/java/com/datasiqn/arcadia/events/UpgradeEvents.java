@@ -58,11 +58,11 @@ public class UpgradeEvents implements Listener {
             item.setUnlimitedLifetime(true);
             item.setGlowing(true);
             item.setPickupDelay(40);
-            item.getItemStack().setType(UpgradeType.DRUGS.getMaterial());
-            item.setCustomName(UpgradeType.DRUGS.getRarity().getColor() + UpgradeType.DRUGS.getDisplayName());
+            item.getItemStack().setType(UpgradeType.BLOOD_CHALICE.getMaterial());
+            item.setCustomName(UpgradeType.BLOOD_CHALICE.getRarity().getColor() + UpgradeType.BLOOD_CHALICE.getDisplayName());
             item.setCustomNameVisible(true);
 
-            UpgradeType.DRUGS.getRarity().getTeam().addEntry(item.getUniqueId().toString());
+            UpgradeType.BLOOD_CHALICE.getRarity().getTeam().addEntry(item.getUniqueId().toString());
 
             PersistentDataContainer itemPdc = item.getPersistentDataContainer();
             PdcUtil.set(itemPdc, ArcadiaTag.CHEST_LOC, location);
@@ -90,7 +90,7 @@ public class UpgradeEvents implements Listener {
         event.getItem().setItemStack(itemStack);
         DungeonPlayer dungeonPlayer = plugin.getDungeonManager().getDungeonPlayer(plugin.getPlayerManager().getPlayerData(player).getUniqueId());
         if (dungeonPlayer == null) return;
-        dungeonPlayer.pickupUpgrade(UpgradeType.DRUGS);
+        dungeonPlayer.pickupUpgrade(UpgradeType.BLOOD_CHALICE);
         player.playSound(chestLocation, Sound.BLOCK_ENDER_CHEST_CLOSE, 1, 1);
     }
 }

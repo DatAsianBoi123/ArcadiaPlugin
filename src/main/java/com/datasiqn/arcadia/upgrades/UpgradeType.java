@@ -9,7 +9,7 @@ import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 
 public enum UpgradeType {
-    DRUGS("Blood Chalice", Lore.of("Killing enemies heal you"), Material.POTION, ItemRarity.RARE, new BloodChaliceListener()),
+    BLOOD_CHALICE("Blood Chalice", Lore.of("Killing enemies heal you"), Material.POTION, ItemRarity.RARE, new BloodChaliceListener()),
     ;
 
     private final String displayName;
