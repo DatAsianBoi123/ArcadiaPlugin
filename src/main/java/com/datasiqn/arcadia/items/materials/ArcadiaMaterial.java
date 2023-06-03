@@ -6,6 +6,7 @@ import com.datasiqn.arcadia.items.materials.data.MaterialData;
 import com.datasiqn.arcadia.items.meta.ArcadiaItemMeta;
 import com.datasiqn.arcadia.items.modifiers.LeatherArmorItemModifier;
 import com.datasiqn.arcadia.items.modifiers.LoreItemModifier;
+import com.datasiqn.arcadia.items.modifiers.PotionModifier;
 import com.datasiqn.arcadia.items.modifiers.SkullItemModifier;
 import com.datasiqn.arcadia.items.stats.AttributeRange;
 import com.datasiqn.arcadia.items.stats.ItemAttribute;
@@ -196,6 +197,73 @@ public enum ArcadiaMaterial {
         itemStats.setAttribute(ItemAttribute.DAMAGE, 5);
         return meta;
     }),
+    AIR_CANNON(new MaterialData.Builder<>(ItemType.NONE)
+            .name("Air Cannon")
+            .material(Material.DIAMOND_HOE)
+            .rarity(ItemRarity.LEGENDARY)
+            .enchantGlint(true)
+            .stackable(false)
+            .addAbility(AbilityType.LEFT_CLICK, new PullAbility())
+            .build()),
+    TEST_ITEM(new MaterialData.Builder<>(ItemType.SWORD)
+            .name("Test Sword")
+            .material(Material.NETHERITE_SWORD)
+            .rarity(ItemRarity.MYTHIC)
+            .enchantGlint(true)
+            .stackable(false)
+            .addAbility(AbilityType.RIGHT_CLICK, new MarkAbility())
+            .build()),
+    STRANGE_JOURNAL(new MaterialData.Builder<>(ItemType.NONE)
+            .name("Strange Journal")
+            .material(Material.BOOK)
+            .rarity(ItemRarity.SPECIAL)
+            .enchantGlint(true)
+            .stackable(false)
+            .addModifier(new LoreItemModifier(new LoreBuilder()
+                    .append("A strange journal with a large 3 on a")
+                    .append("6 fingered hand imprint.")
+                    .emptyLine()
+                    .append("\"If you've ever taken a road trip through the pacific northwest,", ChatColor.YELLOW, ChatColor.ITALIC)
+                    .append("you've probably seen a bumper sticker for a place called", ChatColor.YELLOW, ChatColor.ITALIC)
+                    .append("\"Gravity Falls\". It's not on any maps, and most people", ChatColor.YELLOW, ChatColor.ITALIC)
+                    .append("have never heard of it, some people think it's a myth.", ChatColor.YELLOW, ChatColor.ITALIC)
+                    .append("But if you're curious, don't wait. Take a trip.", ChatColor.YELLOW, ChatColor.ITALIC)
+                    .append("Find it. It's out there somewhere in the woods. Waiting.\"", ChatColor.YELLOW, ChatColor.ITALIC)
+                    .build()))
+            .build()),
+    CALAMITY_BOX(new MaterialData.Builder<>(ItemType.NONE)
+            .name("Calamity Box")
+            .material(Material.CHEST)
+            .rarity(ItemRarity.SPECIAL)
+            .enchantGlint(true)
+            .stackable(false)
+            .addModifier(new LoreItemModifier(new LoreBuilder()
+                    .append("A strange box with an engraving of a frog")
+                    .append("and 3 empty gem slots.")
+                    .emptyLine()
+                    .append("\"Change can be difficult, but it's how we grow.", ChatColor.GREEN, ChatColor.ITALIC)
+                    .append("It can be the hardest thing to realize you can't hold on to", ChatColor.GREEN, ChatColor.ITALIC)
+                    .append("something forever. Sometimes, you have to let it go; but, of", ChatColor.GREEN, ChatColor.ITALIC)
+                    .append("the things you let go, you'd be surprised what makes", ChatColor.GREEN, ChatColor.ITALIC)
+                    .append("its way back to you.\"", ChatColor.GREEN, ChatColor.ITALIC)
+                    .build()))
+            .build()),
+    TITAN_BLOOD(new MaterialData.Builder<>(ItemType.NONE)
+            .name("Titan's Blood")
+            .material(Material.POTION)
+            .rarity(ItemRarity.SPECIAL)
+            .enchantGlint(true)
+            .stackable(false)
+            .addModifier(new PotionModifier(Color.BLUE))
+            .addModifier(new LoreItemModifier(new LoreBuilder()
+                    .append("A vial filled with a strange blue liquid.")
+                    .emptyLine()
+                    .append("\"Look, kid, everyone wants to believe they are \"chosen\".", ChatColor.GOLD, ChatColor.ITALIC)
+                    .append("But if we all waited around for a prophecy to make us special,", ChatColor.GOLD, ChatColor.ITALIC)
+                    .append("we'd die waiting. And that's why you need to choose yourself.\"", ChatColor.GOLD, ChatColor.ITALIC)
+                    .build()))
+            .build()),
+
     FRUITY_APPLE(new MaterialData.Builder<>(ItemType.CONSUMABLE,
             new ConsumableData(new LoreBuilder()
                     .append(new ComponentBuilder()
