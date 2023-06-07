@@ -6,12 +6,12 @@ import com.datasiqn.arcadia.upgrades.UpgradeType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 public class DungeonPlayer {
-    private final Set<Upgrade> upgrades = new HashSet<>();
+    private final List<Upgrade> upgrades = new ArrayList<>();
     private final PlayerData playerData;
 
     public DungeonPlayer(PlayerData playerData) {
@@ -23,15 +23,19 @@ public class DungeonPlayer {
     }
 
     public void pickupUpgrade(UpgradeType upgradeType) {
-        if (!upgrades.add(new Upgrade(upgradeType))) {
-            upgrades.stream().filter(upgrade -> upgrade.getType() == upgradeType).findFirst().ifPresent(upgrade -> upgrade.setAmount(upgrade.getAmount() + 1));
+        for (Upgrade upgrade : upgrades) {
+            if (upgrade.getType() == upgradeType) {
+                upgrade.setAmount(upgrade.getAmount() + 1);
+                break;
+            }
         }
+        upgrades.add(new Upgrade(upgradeType));
     }
 
     @UnmodifiableView
     @NotNull
-    public Set<Upgrade> getUpgrades() {
-        return Collections.unmodifiableSet(upgrades);
+    public List<Upgrade> getUpgrades() {
+        return Collections.unmodifiableList(upgrades);
     }
 
     public int getUpgradeAmount(UpgradeType upgradeType) {
