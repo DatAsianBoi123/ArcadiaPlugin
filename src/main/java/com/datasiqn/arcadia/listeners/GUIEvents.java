@@ -1,4 +1,4 @@
-package com.datasiqn.arcadia.events;
+package com.datasiqn.arcadia.listeners;
 
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.guis.GUIType;
@@ -17,15 +17,15 @@ public class GUIEvents implements Listener {
     }
 
     @EventHandler
-    public void onOpenCraftingTable(@NotNull InventoryOpenEvent event) {
+    public void onOpenCustomMenu(@NotNull InventoryOpenEvent event) {
         if (event.getInventory().getType() == InventoryType.WORKBENCH) {
             event.setCancelled(true);
-            event.getPlayer().openInventory(GUIType.CRAFTING.createInventory(plugin));
+            GUIType.CRAFTING.openInventory(event.getPlayer(), plugin);
         }
 
         if (event.getInventory().getType() == InventoryType.ANVIL) {
             event.setCancelled(true);
-            event.getPlayer().openInventory(GUIType.ANVIL.createInventory(plugin));
+            GUIType.ANVIL.openInventory(event.getPlayer(), plugin);
         }
     }
 

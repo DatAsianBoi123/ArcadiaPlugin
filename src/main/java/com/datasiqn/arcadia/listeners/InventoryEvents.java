@@ -1,4 +1,4 @@
-package com.datasiqn.arcadia.events;
+package com.datasiqn.arcadia.listeners;
 
 import com.datasiqn.arcadia.guis.ArcadiaGUI;
 import org.bukkit.event.EventHandler;

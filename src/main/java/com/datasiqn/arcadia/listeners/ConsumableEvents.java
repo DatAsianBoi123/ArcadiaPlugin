@@ -1,4 +1,4 @@
-package com.datasiqn.arcadia.events;
+package com.datasiqn.arcadia.listeners;
 
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.items.ArcadiaItem;
