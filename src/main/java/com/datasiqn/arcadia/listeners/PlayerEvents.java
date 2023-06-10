@@ -6,6 +6,7 @@ import com.datasiqn.arcadia.DamageHelper;
 import com.datasiqn.arcadia.items.ArcadiaItem;
 import com.datasiqn.arcadia.items.stats.ItemAttribute;
 import com.datasiqn.arcadia.items.type.ItemType;
+import com.datasiqn.arcadia.managers.PlayerManager;
 import com.datasiqn.arcadia.players.PlayerData;
 import com.datasiqn.arcadia.players.PlayerEquipment;
 import com.datasiqn.arcadia.util.PdcUtil;
@@ -33,13 +34,19 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.concurrent.Executors;
 
 public class PlayerEvents implements Listener {
     private final Arcadia plugin;
+    private final PlayerManager playerManager;
 
-    public PlayerEvents(Arcadia plugin) {
+    @Contract(pure = true)
+    public PlayerEvents(@NotNull Arcadia plugin) {
         this.plugin = plugin;
+        this.playerManager = plugin.getPlayerManager();
     }
 
     @EventHandler
@@ -47,7 +54,7 @@ public class PlayerEvents implements Listener {
         AttributeInstance attribute = event.getPlayer().getAttribute(Attribute.GENERIC_ATTACK_SPEED);
         if (attribute != null) attribute.setBaseValue(16);
 
-        PlayerData playerData = plugin.getPlayerManager().getPlayerData(event.getPlayer());
+        PlayerData playerData = playerManager.getPlayerData(event.getPlayer());
         playerData.loadData();
         EntityEquipment equipment = event.getPlayer().getEquipment();
         if (equipment != null) {
@@ -68,13 +75,13 @@ public class PlayerEvents implements Listener {
         AttributeInstance healthAttribute = event.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH);
         if (healthAttribute != null) healthAttribute.setBaseValue(20);
 
-        plugin.getPlayerManager().getPlayerData(event.getPlayer()).saveData();
-        plugin.getPlayerManager().removePlayer(event.getPlayer());
+        Executors.newSingleThreadExecutor().submit(playerManager.getPlayerData(event.getPlayer())::saveData);
+        playerManager.removePlayer(event.getPlayer());
     }
 
     @EventHandler
     public void onPlayerPickupXp(@NotNull PlayerExpChangeEvent event) {
-        PlayerData playerData = plugin.getPlayerManager().getPlayerData(event.getPlayer());
+        PlayerData playerData = playerManager.getPlayerData(event.getPlayer());
         playerData.setTotalXp(playerData.getTotalXp() + event.getAmount());
 
         event.setAmount(0);
@@ -96,7 +103,7 @@ public class PlayerEvents implements Listener {
     public void onPlayerSwitchSlot(@NotNull PlayerItemHeldEvent event) {
         if (event.isCancelled()) return;
         Player player = event.getPlayer();
-        PlayerData playerData = plugin.getPlayerManager().getPlayerData(player);
+        PlayerData playerData = playerManager.getPlayerData(player);
         ItemStack item = player.getInventory().getItem(event.getNewSlot());
         if (item == null) item = new ItemStack(Material.AIR);
         PlayerEquipment equipment = playerData.getEquipment();
@@ -128,7 +135,7 @@ public class PlayerEvents implements Listener {
     }
 
     public void updateArmor(@NotNull HumanEntity player) {
-        PlayerData playerData = plugin.getPlayerManager().getPlayerData(player.getUniqueId());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData == null) return;
         PlayerEquipment playerEquipment = playerData.getEquipment();
         EntityEquipment equipment = player.getEquipment();
@@ -144,7 +151,7 @@ public class PlayerEvents implements Listener {
 
     @EventHandler
     public void onPlayerRespawn(@NotNull PlayerRespawnEvent event) {
-        plugin.getPlayerManager().getPlayerData(event.getPlayer()).heal();
+        playerManager.getPlayerData(event.getPlayer()).heal();
     }
 
     @EventHandler
@@ -164,7 +171,7 @@ public class PlayerEvents implements Listener {
         if (event.getBow() == null) return;
         if (!(event.getEntity() instanceof Player player)) return;
 
-        PlayerData playerData = plugin.getPlayerManager().getPlayerData(player);
+        PlayerData playerData = playerManager.getPlayerData(player);
 
         ArcadiaItem bowItem = new ArcadiaItem(event.getBow());
         if (bowItem.getItemData().getItemType() != ItemType.BOW) return;

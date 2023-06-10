@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.concurrent.Executors;
 
 public class AmuletGUI extends MenuHandler {
     private final Arcadia plugin;
@@ -76,7 +77,7 @@ public class AmuletGUI extends MenuHandler {
                 event.getInventory().setItem(firstEmptyIndex, arcadiaItem.build());
                 amulet[firstEmptyIndex] = arcadiaItem;
             }
-            playerData.saveData();
+            Executors.newSingleThreadExecutor().submit(playerData::saveData);
         }
     }
 

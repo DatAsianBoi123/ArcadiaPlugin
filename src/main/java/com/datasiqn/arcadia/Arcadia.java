@@ -27,6 +27,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public final class Arcadia extends JavaPlugin {
     private final PlayerManager playerManager = new PlayerManager(this);
@@ -159,7 +161,10 @@ public final class Arcadia extends JavaPlugin {
     }
 
     private void loadPlayerData() {
-        Bukkit.getOnlinePlayers().forEach(player -> playerManager.getPlayerData(player).loadData());
+        // Load players asynchronously using a thread pool with 6 max threads
+        ExecutorService threadPool = Executors.newFixedThreadPool(6);
+
+        Bukkit.getOnlinePlayers().forEach(player -> threadPool.submit(() -> playerManager.getPlayerData(player).loadData()));
     }
 
     private void setupDungeons() {
