@@ -19,7 +19,7 @@ public enum UpgradeType {
     ;
 
     private static final Object2DoubleMap<ItemRarity> RARITY_WEIGHTS = new Object2DoubleLinkedOpenHashMap<>();
-    private static final double[] PROBS;
+    private static final double[] PROBABILITIES;
     private static final int[] ALIAS;
     static {
         RARITY_WEIGHTS.put(ItemRarity.COMMON, 100);     // ~76%
@@ -29,7 +29,7 @@ public enum UpgradeType {
 
         int size = RARITY_WEIGHTS.size();
         double total = RARITY_WEIGHTS.values().doubleStream().sum();
-        PROBS = new double[size];
+        PROBABILITIES = new double[size];
         ALIAS = new int[size];
         // create alias to use when generating random weights
 
@@ -39,7 +39,7 @@ public enum UpgradeType {
             int i = 0;
             for (double value : RARITY_WEIGHTS.values()) {
                 double mappedVal = value * (size / total);
-                PROBS[i] = mappedVal;
+                PROBABILITIES[i] = mappedVal;
                 if (mappedVal < 1) small.add(i);
                 else large.add(i);
                 i++;
@@ -48,18 +48,18 @@ public enum UpgradeType {
 
         while (small.size() > 0 && large.size() > 0) {
             ALIAS[small.getInt(0)] = large.getInt(0);
-            PROBS[large.getInt(0)] += PROBS[small.getInt(0)] - 1;
+            PROBABILITIES[large.getInt(0)] += PROBABILITIES[small.getInt(0)] - 1;
             small.removeInt(0);
-            if (PROBS[large.getInt(0)] > 1) large.add(large.removeInt(0));
-            else if (PROBS[large.getInt(0)] < 1) small.add(large.removeInt(0));
+            if (PROBABILITIES[large.getInt(0)] > 1) large.add(large.removeInt(0));
+            else if (PROBABILITIES[large.getInt(0)] < 1) small.add(large.removeInt(0));
         }
 
         while (small.size() > 0) {
-            PROBS[small.removeInt(0)] = 1;
+            PROBABILITIES[small.removeInt(0)] = 1;
         }
 
         while (large.size() > 0) {
-            PROBS[large.removeInt(0)] = 1;
+            PROBABILITIES[large.removeInt(0)] = 1;
         }
     }
 
@@ -101,7 +101,7 @@ public enum UpgradeType {
 
         for (long i = 0; i < times; i++) {
             int random = (int) (Math.random() * RARITY_WEIGHTS.size());
-            if (Math.random() < PROBS[random]) {
+            if (Math.random() < PROBABILITIES[random]) {
                 results.putIfAbsent(random, 0);
                 results.computeIfPresent(random, (key, occurrences) -> occurrences + 1);
             } else {

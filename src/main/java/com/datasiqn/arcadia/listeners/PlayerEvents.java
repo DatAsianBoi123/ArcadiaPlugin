@@ -45,8 +45,7 @@ public class PlayerEvents implements Listener {
     @EventHandler
     public void onPlayerJoin(@NotNull PlayerJoinEvent event) {
         AttributeInstance attribute = event.getPlayer().getAttribute(Attribute.GENERIC_ATTACK_SPEED);
-        assert attribute != null;
-        attribute.setBaseValue(16);
+        if (attribute != null) attribute.setBaseValue(16);
 
         PlayerData playerData = plugin.getPlayerManager().getPlayerData(event.getPlayer());
         playerData.loadData();
@@ -64,12 +63,10 @@ public class PlayerEvents implements Listener {
     @EventHandler
     public void onPlayerLeave(@NotNull PlayerQuitEvent event) {
         AttributeInstance attackSpeedAttribute = event.getPlayer().getAttribute(Attribute.GENERIC_ATTACK_SPEED);
-        assert attackSpeedAttribute != null;
-        attackSpeedAttribute.setBaseValue(4);
+        if (attackSpeedAttribute != null) attackSpeedAttribute.setBaseValue(4);
 
         AttributeInstance healthAttribute = event.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH);
-        assert healthAttribute != null;
-        healthAttribute.setBaseValue(20);
+        if (healthAttribute != null) healthAttribute.setBaseValue(20);
 
         plugin.getPlayerManager().getPlayerData(event.getPlayer()).saveData();
         plugin.getPlayerManager().removePlayer(event.getPlayer());

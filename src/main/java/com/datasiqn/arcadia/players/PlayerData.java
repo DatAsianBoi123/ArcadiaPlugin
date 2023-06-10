@@ -314,10 +314,6 @@ public class PlayerData {
         this.debugMode = debugMode;
     }
 
-    public void toggleDebugMode() {
-        setDebugMode(!debugMode);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

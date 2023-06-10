@@ -5,7 +5,6 @@ import com.datasiqn.arcadia.players.ArcadiaSender;
 import com.datasiqn.arcadia.players.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,17 +23,12 @@ public class PlayerManager {
         this.dataFolder = new File(plugin.getDataFolder().getPath() + File.separatorChar + "player-data");
     }
 
-    public PlayerData getPlayerData(@NotNull ArcadiaSender<Player> player) {
-        return getPlayerData(player.get());
-    }
-    public PlayerData getPlayerData(@NotNull UUID uuid) {
+    public @Nullable PlayerData getPlayerData(@NotNull UUID uuid) {
         Player player = Bukkit.getPlayer(uuid);
         if (player == null) return null;
         return getPlayerData(player);
     }
-    @Contract("null -> null; !null -> !null")
-    public PlayerData getPlayerData(@Nullable Player player) {
-        if (player == null) return null;
+    public @NotNull PlayerData getPlayerData(@NotNull Player player) {
         if (playerMap.containsKey(player.getUniqueId())) return playerMap.get(player.getUniqueId());
         ArcadiaSender<Player> sender = new ArcadiaSender<>(player);
         PlayerData playerData = PlayerData.create(sender, plugin);

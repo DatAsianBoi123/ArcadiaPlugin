@@ -6,14 +6,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
-import java.util.Optional;
 
 @SuppressWarnings("unused")
 public enum ArcadiaRecipe {
     ENCHANTED_STICK(new EnchantedStickRecipe()),
     CROOKED_SWORD(new CrookedSwordRecipe()),
     ULTIMATUM(new UltimatumRecipe()),
-    AWAKENED_CORE(new AwakenedCoreRecipe());
+    AWAKENED_CORE(new AwakenedCoreRecipe()),
+    ;
 
     private final CraftingRecipe recipe;
 
@@ -27,7 +27,6 @@ public enum ArcadiaRecipe {
 
     @Nullable
     public static ArcadiaRecipe findApplicableRecipe(ItemStack[] recipe) {
-        Optional<ArcadiaRecipe> first = Arrays.stream(values()).filter(recipe1 -> recipe1.getRecipeData().canCraft(recipe)).findFirst();
-        return first.orElse(null);
+        return Arrays.stream(values()).filter(arcadiaRecipe -> arcadiaRecipe.getRecipeData().canCraft(recipe)).findFirst().orElse(null);
     }
 }

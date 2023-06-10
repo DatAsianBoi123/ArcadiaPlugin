@@ -41,39 +41,6 @@ public final class Arcadia extends JavaPlugin {
         if (new File(getDataFolder().getPath() + File.separatorChar + "player-data").mkdir()) {
             getLogger().info("Created player data folder");
         }
-
-        // Man wtf even is this
-
-//        Schema schema = DataFixers.getDataFixer().getSchema(DataFixUtils.makeKey(SharedConstants.getCurrentVersion().getDataVersion().getVersion()));
-//        TaggedChoice.TaggedChoiceType<?> choiceType = schema.findChoiceType(References.ENTITY_TREE);
-//        Map<Object, Type<?>> types = (Map<Object, Type<?>>) choiceType.types();
-//        types.put("minecraft:arcadia_dummy", types.get("minecraft:zombie"));
-//
-//        try {
-//            Bukkit.getLogger().log(Level.INFO, "Set not frozen");
-//            Field frozen = MappedRegistry.class.getDeclaredField("ca");
-//            frozen.setAccessible(true);
-//            frozen.set(Registry.ENTITY_TYPE, false);
-//
-//            Bukkit.getLogger().log(Level.INFO, "Reset intrusive holder cache");
-//            Field intrusiveHolderCache = MappedRegistry.class.getDeclaredField("cc");
-//            intrusiveHolderCache.setAccessible(true);
-//            intrusiveHolderCache.set(Registry.ENTITY_TYPE, new IdentityHashMap<>());
-//        } catch (NoSuchFieldException | IllegalAccessException e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//        if (Registry.ENTITY_TYPE.getOptional(new ResourceLocation("arcadia_dummy")).isEmpty()) {
-//            EntityType.Builder<EntityDummy.CustomEntity> zombie = EntityType.Builder.<EntityDummy.CustomEntity>of(EntityDummy::createEntity, MobCategory.AMBIENT)
-//                    .sized(0.6f, 1.95f)
-//                    .clientTrackingRange(8);
-//            Bukkit.getLogger().log(Level.INFO, "Created entity type");
-//            nmsEntityType = Registry.register(Registry.ENTITY_TYPE, "arcadia_dummy", zombie.build("arcadia_dummy"));
-//        } else {
-//            nmsEntityType = (EntityType<EntityDummy.CustomEntity>) Registry.ENTITY_TYPE.getOptional(new ResourceLocation("arcadia_dummy")).get();
-//        }
-//
-//        Registry.ENTITY_TYPE.freeze();
     }
 
     @Override

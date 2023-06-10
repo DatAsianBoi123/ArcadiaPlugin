@@ -7,10 +7,6 @@ public final class XPUtil {
         return (long) (100 * Math.pow(level, 2));
     }
 
-    public static long getXPFromLevel(int from, int to) {
-        return getTotalXPAtLevel(to) - getTotalXPAtLevel(from);
-    }
-
     public static long getXPForLevel(int level) {
         return (long) 200 * (level + 1) - 100;
     }

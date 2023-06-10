@@ -26,9 +26,6 @@ public class ArcadiaItemMeta {
         this.itemQuality = new Random(uuid.getMostSignificantBits()).nextDouble();
         this.itemStats.setItemQuality(itemQuality);
     }
-    public ArcadiaItemMeta(@NotNull ItemMeta meta) {
-        this(meta.getPersistentDataContainer());
-    }
     public ArcadiaItemMeta(@NotNull PersistentDataContainer pdc) {
         this.uuid = PdcUtil.getOrDefault(pdc, ArcadiaTag.ITEM_UUID, UUID.randomUUID());
         this.itemQuality = new Random(uuid.getMostSignificantBits()).nextDouble();

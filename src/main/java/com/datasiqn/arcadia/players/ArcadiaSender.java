@@ -27,9 +27,6 @@ public class ArcadiaSender<T extends CommandSender> {
     public void sendMessageRaw(String message) {
         base.sendMessage(message);
     }
-    public void sendMessageRaw(String... messages) {
-        base.sendMessage(messages);
-    }
 
     public void sendDebugMessage(@Nullable Object message) {
         sendMessage(ChatColor.GREEN + "Debug > " + ChatColor.WHITE, message == null ? "null" : message.toString());

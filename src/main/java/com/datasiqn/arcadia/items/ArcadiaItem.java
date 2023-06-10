@@ -84,8 +84,11 @@ public class ArcadiaItem implements ConfigurationSerializable {
         this.itemData = arcadiaMaterial.getData();
         if (!itemData.isStackable()) this.amount = 1;
         ItemMeta meta = itemStack.getItemMeta();
-        assert meta != null;
-        ArcadiaItemMeta meta1 = new ArcadiaItemMeta(meta);
+        if (meta == null) {
+            this.itemMeta = arcadiaMaterial.createItemMeta(UUID.randomUUID());
+            return;
+        }
+        ArcadiaItemMeta meta1 = new ArcadiaItemMeta(meta.getPersistentDataContainer());
         this.itemMeta = arcadiaMaterial.createItemMeta(meta1.getUuid());
 
         itemMeta.setItemQualityBonus(meta1.getItemQualityBonus());

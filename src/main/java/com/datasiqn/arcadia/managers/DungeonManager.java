@@ -60,11 +60,6 @@ public class DungeonManager {
         return instance;
     }
 
-    public boolean deleteDungeon(String id) {
-        DungeonInstance createdDungeon = getCreatedDungeon(id);
-        if (createdDungeon == null) return false;
-        return deleteDungeon(createdDungeon);
-    }
     public boolean deleteDungeon(@NotNull DungeonInstance instance) {
         World world = instance.getWorld();
         if (!Bukkit.unloadWorld(world, false)) return false;
@@ -78,11 +73,6 @@ public class DungeonManager {
         return true;
     }
 
-    public void addPlayerTo(@NotNull PlayerData player, @NotNull String dungeonId) {
-        DungeonInstance instance = getCreatedDungeon(dungeonId);
-        if (instance == null) return;
-        addPlayerTo(player, instance);
-    }
     public void addPlayerTo(@NotNull PlayerData playerData, @NotNull DungeonInstance instance) {
         if (getJoinedDungeon(playerData.getUniqueId()) != null) return;
         DungeonPlayer dungeonPlayer = instance.addPlayer(playerData);
