@@ -1,6 +1,6 @@
 package com.datasiqn.arcadia.upgrades;
 
-import com.datasiqn.arcadia.items.materials.data.MaterialData;
+import com.datasiqn.arcadia.items.material.data.MaterialData;
 import com.datasiqn.arcadia.items.modifiers.LoreItemModifier;
 import com.datasiqn.arcadia.items.type.ItemType;
 import com.datasiqn.arcadia.items.type.data.NoneItemData;

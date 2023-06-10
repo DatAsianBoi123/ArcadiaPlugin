@@ -1,4 +1,4 @@
-package com.datasiqn.arcadia.items.materials.data;
+package com.datasiqn.arcadia.items.material.data;
 
 import com.datasiqn.arcadia.ArcadiaTag;
 import com.datasiqn.arcadia.items.type.ItemType;

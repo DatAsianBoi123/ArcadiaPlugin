@@ -1,7 +1,7 @@
 package com.datasiqn.arcadia.loottables;
 
 import com.datasiqn.arcadia.items.ArcadiaItem;
-import com.datasiqn.arcadia.items.materials.ArcadiaMaterial;
+import com.datasiqn.arcadia.items.material.ArcadiaMaterial;
 import org.apache.commons.lang.math.IntRange;
 import org.bukkit.Material;
 

@@ -4,7 +4,7 @@ import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.ArcadiaTag;
 import com.datasiqn.arcadia.enchants.EnchantType;
 import com.datasiqn.arcadia.items.ArcadiaItem;
-import com.datasiqn.arcadia.items.materials.ArcadiaMaterial;
+import com.datasiqn.arcadia.items.material.ArcadiaMaterial;
 import com.datasiqn.arcadia.items.meta.ArcadiaItemMeta;
 import com.datasiqn.arcadia.util.PdcUtil;
 import com.datasiqn.arcadia.util.ItemUtil;

@@ -2,9 +2,9 @@ package com.datasiqn.arcadia.items;
 
 import com.datasiqn.arcadia.ArcadiaTag;
 import com.datasiqn.arcadia.datatype.EnchantsDataType;
-import com.datasiqn.arcadia.items.materials.ArcadiaMaterial;
-import com.datasiqn.arcadia.items.materials.data.DefaultMaterialData;
-import com.datasiqn.arcadia.items.materials.data.MaterialData;
+import com.datasiqn.arcadia.items.material.ArcadiaMaterial;
+import com.datasiqn.arcadia.items.material.data.DefaultMaterialData;
+import com.datasiqn.arcadia.items.material.data.MaterialData;
 import com.datasiqn.arcadia.items.meta.ArcadiaItemMeta;
 import com.datasiqn.arcadia.items.stats.AttributeInstance;
 import com.datasiqn.arcadia.items.stats.AttributeRange;

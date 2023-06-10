@@ -1,6 +1,6 @@
 package com.datasiqn.arcadia.items;
 
-import com.datasiqn.arcadia.items.materials.ArcadiaMaterial;
+import com.datasiqn.arcadia.items.material.ArcadiaMaterial;
 import org.bukkit.Material;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;

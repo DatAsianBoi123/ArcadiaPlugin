@@ -1,8 +1,8 @@
-package com.datasiqn.arcadia.items.materials;
+package com.datasiqn.arcadia.items.material;
 
 import com.datasiqn.arcadia.items.ItemRarity;
 import com.datasiqn.arcadia.items.abilities.*;
-import com.datasiqn.arcadia.items.materials.data.MaterialData;
+import com.datasiqn.arcadia.items.material.data.MaterialData;
 import com.datasiqn.arcadia.items.meta.ArcadiaItemMeta;
 import com.datasiqn.arcadia.items.modifiers.LeatherArmorItemModifier;
 import com.datasiqn.arcadia.items.modifiers.LoreItemModifier;

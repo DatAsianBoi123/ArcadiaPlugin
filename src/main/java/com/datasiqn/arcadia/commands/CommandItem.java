@@ -3,7 +3,7 @@ package com.datasiqn.arcadia.commands;
 import com.datasiqn.arcadia.ArcadiaPermission;
 import com.datasiqn.arcadia.commands.arguments.ArcadiaArgumentType;
 import com.datasiqn.arcadia.items.ArcadiaItem;
-import com.datasiqn.arcadia.items.materials.ArcadiaMaterial;
+import com.datasiqn.arcadia.items.material.ArcadiaMaterial;
 import com.datasiqn.commandcore.arguments.ArgumentType;
 import com.datasiqn.commandcore.commands.builder.ArgumentBuilder;
 import com.datasiqn.commandcore.commands.builder.CommandBuilder;

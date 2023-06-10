@@ -1,7 +1,7 @@
 package com.datasiqn.arcadia.datatype;
 
 import com.datasiqn.arcadia.items.ItemId;
-import com.datasiqn.arcadia.items.materials.ArcadiaMaterial;
+import com.datasiqn.arcadia.items.material.ArcadiaMaterial;
 import org.bukkit.Material;
 import org.bukkit.persistence.PersistentDataAdapterContext;
 import org.bukkit.persistence.PersistentDataType;
