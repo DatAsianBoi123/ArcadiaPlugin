@@ -26,7 +26,7 @@ public class DungeonPlayer {
         for (Upgrade upgrade : upgrades) {
             if (upgrade.getType() == upgradeType) {
                 upgrade.setAmount(upgrade.getAmount() + 1);
-                break;
+                return;
             }
         }
         upgrades.add(new Upgrade(upgradeType));
