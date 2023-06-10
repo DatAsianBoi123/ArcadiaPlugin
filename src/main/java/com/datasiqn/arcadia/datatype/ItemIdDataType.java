@@ -30,9 +30,9 @@ public class ItemIdDataType implements PersistentDataType<String, ItemId> {
     @Override
     public ItemId fromPrimitive(@NotNull String s, @NotNull PersistentDataAdapterContext persistentDataAdapterContext) {
         try {
-            return ItemId.fromVanillaMaterial(Material.valueOf(s.toUpperCase()));
-        } catch (IllegalArgumentException e) {
             return ItemId.fromArcadiaMaterial(ArcadiaMaterial.valueOf(s.toUpperCase()));
+        } catch (IllegalArgumentException e) {
+            return ItemId.fromVanillaMaterial(Material.valueOf(s.toUpperCase()));
         }
     }
 }
