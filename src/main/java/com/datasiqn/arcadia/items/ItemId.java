@@ -30,4 +30,11 @@ public class ItemId {
     public static @NotNull ItemId fromVanillaMaterial(@NotNull Material material) {
         return new ItemId(null, material.name().toLowerCase());
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof ItemId other)) return false;
+        if (obj == this) return true;
+        return id.equalsIgnoreCase(other.id);
+    }
 }
