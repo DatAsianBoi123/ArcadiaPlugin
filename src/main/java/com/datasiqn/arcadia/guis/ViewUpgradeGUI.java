@@ -3,20 +3,42 @@ package com.datasiqn.arcadia.guis;
 import com.datasiqn.arcadia.upgrades.Upgrade;
 import com.datasiqn.arcadia.upgrades.UpgradeType;
 import com.datasiqn.arcadia.util.ItemUtil;
+import com.datasiqn.menuapi.inventory.MenuHandler;
+import com.datasiqn.menuapi.inventory.item.StaticMenuItem;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.HumanEntity;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class ViewUpgradeGUI extends StaticGUI {
-    public ViewUpgradeGUI(@NotNull UpgradeType upgradeType) {
-        super(InventoryType.DISPENSER, upgradeType.getDisplayName());
+public class ViewUpgradeGUI extends MenuHandler {
+    private final UpgradeType upgradeType;
 
+    public ViewUpgradeGUI(@NotNull UpgradeType upgradeType) {
+        this.upgradeType = upgradeType;
+    }
+
+    @Override
+    public void onClick(@NotNull InventoryClickEvent event) {
+        super.onClick(event);
+
+        event.setCancelled(true);
+    }
+
+    @Override
+    public void populate(HumanEntity humanEntity) {
         ItemStack empty = ItemUtil.createEmpty(Material.GRAY_STAINED_GLASS_PANE);
         for (int i = 0; i < 9; i++) {
-            inv.setItem(i, empty);
+            if (i == 4) setItem(i, new StaticMenuItem(new Upgrade(upgradeType).toItemStack()));
+            else setItem(i, new StaticMenuItem(empty));
         }
+    }
 
-        inv.setItem(4, new Upgrade(upgradeType).toItemStack());
+    @Override
+    public @NotNull Inventory createInventory() {
+        return Bukkit.createInventory(null, InventoryType.DISPENSER, upgradeType.getDisplayName());
     }
 }

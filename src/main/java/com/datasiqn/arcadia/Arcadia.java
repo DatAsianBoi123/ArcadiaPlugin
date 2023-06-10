@@ -1,8 +1,8 @@
 package com.datasiqn.arcadia;
 
 import com.datasiqn.arcadia.commands.*;
-import com.datasiqn.arcadia.events.*;
 import com.datasiqn.arcadia.items.ArcadiaItem;
+import com.datasiqn.arcadia.listeners.*;
 import com.datasiqn.arcadia.managers.DungeonManager;
 import com.datasiqn.arcadia.managers.PlayerManager;
 import com.datasiqn.arcadia.managers.UpgradeEventManager;
@@ -12,6 +12,7 @@ import com.datasiqn.arcadia.util.PdcUtil;
 import com.datasiqn.commandcore.CommandCore;
 import com.datasiqn.commandcore.commands.builder.CommandBuilder;
 import com.datasiqn.commandcore.managers.CommandManager;
+import com.datasiqn.menuapi.MenuApi;
 import com.datasiqn.schedulebuilder.ScheduleBuilder;
 import org.bukkit.*;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -31,6 +32,7 @@ public final class Arcadia extends JavaPlugin {
     private final PlayerManager playerManager = new PlayerManager(this);
     private final DungeonManager dungeonManager = new DungeonManager(this);
     private final UpgradeEventManager upgradeEventManager = new UpgradeEventManager(this);
+    private final MenuApi menuApi = MenuApi.getInstance();
 
     private final long lastModified = getFile().lastModified();
 
@@ -140,7 +142,8 @@ public final class Arcadia extends JavaPlugin {
     }
 
     private void registerAllListeners() {
-        registerListener(new InventoryEvents());
+        menuApi.registerEvents(this);
+
         registerListener(new ItemEvents(this));
         registerListener(new DamageEvents(this));
         registerListener(new PlayerEvents(this));

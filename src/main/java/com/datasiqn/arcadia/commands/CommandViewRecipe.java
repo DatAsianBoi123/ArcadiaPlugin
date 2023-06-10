@@ -5,6 +5,8 @@ import com.datasiqn.arcadia.commands.arguments.ArcadiaArgumentType;
 import com.datasiqn.arcadia.guis.ViewRecipeGUI;
 import com.datasiqn.commandcore.commands.builder.ArgumentBuilder;
 import com.datasiqn.commandcore.commands.builder.CommandBuilder;
+import com.datasiqn.menuapi.MenuApi;
+import org.bukkit.inventory.Inventory;
 
 public class CommandViewRecipe {
     public CommandBuilder getCommand() {
@@ -13,6 +15,11 @@ public class CommandViewRecipe {
                 .description("Views a custom Arcadia Recipe")
                 .then(ArgumentBuilder.argument(ArcadiaArgumentType.RECIPE, "recipe")
                         .requiresPlayer()
-                        .executes(context -> context.getSource().getPlayer().unwrap().openInventory(new ViewRecipeGUI(context.getArguments().get(0, ArcadiaArgumentType.RECIPE).unwrap()).getInventory())));
+                        .executes(context -> {
+                            ViewRecipeGUI gui = new ViewRecipeGUI(context.getArguments().get(0, ArcadiaArgumentType.RECIPE).unwrap());
+                            Inventory inventory = gui.createInventory();
+                            MenuApi.getInstance().getMenuManager().registerHandler(inventory, gui);
+                            context.getSource().getPlayer().unwrap().openInventory(inventory);
+                        }));
     }
 }

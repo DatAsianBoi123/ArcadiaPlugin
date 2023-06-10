@@ -6,39 +6,44 @@ import com.datasiqn.arcadia.enchants.EnchantType;
 import com.datasiqn.arcadia.items.ArcadiaItem;
 import com.datasiqn.arcadia.items.material.ArcadiaMaterial;
 import com.datasiqn.arcadia.items.meta.ArcadiaItemMeta;
-import com.datasiqn.arcadia.util.PdcUtil;
 import com.datasiqn.arcadia.util.ItemUtil;
+import com.datasiqn.arcadia.util.PdcUtil;
+import com.datasiqn.menuapi.inventory.MenuHandler;
+import com.datasiqn.menuapi.inventory.item.StaticMenuItem;
 import com.datasiqn.schedulebuilder.ScheduleBuilder;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryInteractEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
-
-public class AnvilGUI extends ArcadiaGUI {
+public class AnvilGUI extends MenuHandler {
     private static final ItemStack MISSING_RECIPE = new ItemStack(Material.BARRIER);
     private static final ItemStack CORRECT_SLOT = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
     private static final ItemStack INCORRECT_SLOT = new ItemStack(Material.RED_STAINED_GLASS_PANE);
 
     static {
         ItemMeta missingRecipeItemMeta = MISSING_RECIPE.getItemMeta();
-        assert missingRecipeItemMeta != null;
-        missingRecipeItemMeta.setDisplayName(ChatColor.RED + "Incorrect Recipe");
-        MISSING_RECIPE.setItemMeta(missingRecipeItemMeta);
+        if (missingRecipeItemMeta != null) {
+            missingRecipeItemMeta.setDisplayName(ChatColor.RED + "Incorrect Recipe");
+            MISSING_RECIPE.setItemMeta(missingRecipeItemMeta);
+        }
 
         ItemMeta slotItemMeta = CORRECT_SLOT.getItemMeta();
-        assert slotItemMeta != null;
-        slotItemMeta.setDisplayName(" ");
-        CORRECT_SLOT.setItemMeta(slotItemMeta);
-        INCORRECT_SLOT.setItemMeta(slotItemMeta);
+        if (slotItemMeta != null) {
+            slotItemMeta.setDisplayName(" ");
+            CORRECT_SLOT.setItemMeta(slotItemMeta);
+            INCORRECT_SLOT.setItemMeta(slotItemMeta);
+        }
     }
 
     private final Arcadia plugin;
@@ -48,80 +53,77 @@ public class AnvilGUI extends ArcadiaGUI {
     private ItemStack result;
 
     public AnvilGUI(Arcadia plugin) {
-        super(54, "Anvil");
         this.plugin = plugin;
-        init();
-    }
-
-    public void init() {
-        ItemStack emptyItem = ItemUtil.createEmpty(Material.GRAY_STAINED_GLASS_PANE);
-        for (int i = 0; i < 54; i++) {
-            this.inv.setItem(i, emptyItem);
-        }
-
-        this.inv.setItem(28, null);
-        this.inv.setItem(34, null);
-
-        update();
     }
 
     @Override
-    public void clickEvent(@NotNull InventoryInteractEvent event) {
-        ScheduleBuilder.create().executes(runnable -> update()).run(plugin);
+    public void onClick(@NotNull InventoryClickEvent event) {
+        super.onClick(event);
 
-        if (event instanceof InventoryClickEvent clickEvent) {
-            if (clickEvent.getClickedInventory() == null) return;
-            if (!(clickEvent.getClickedInventory().getHolder() instanceof AnvilGUI)) return;
-            if (clickEvent.getSlot() == 28 || clickEvent.getSlot() == 34) return;
-            if (clickEvent.getSlot() == 31 && result != null) {
-                inv.setItem(31, new ArcadiaItem(result).build());
-                inv.setItem(28, null);
-                inv.setItem(34, null);
-                clickEvent.getWhoClicked().getWorld().playSound(clickEvent.getWhoClicked(), Sound.BLOCK_ANVIL_USE, 1, 1);
-                return;
-            }
-            event.setCancelled(true);
-        } else if (event instanceof InventoryDragEvent) {
-            event.setCancelled(true);
+        ScheduleBuilder.create().executes(runnable -> update(event.getInventory())).run(plugin);
+
+        Inventory inv = event.getInventory();
+        if (event.getClickedInventory() == event.getView().getBottomInventory()) return;
+        if (event.getSlot() == 28 || event.getSlot() == 34) return;
+        if (event.getSlot() == 31 && result != null) {
+            inv.setItem(31, new ArcadiaItem(result).build());
+            inv.setItem(28, null);
+            inv.setItem(34, null);
+            event.getWhoClicked().getWorld().playSound(event.getWhoClicked(), Sound.BLOCK_ANVIL_USE, 1, 1);
+            return;
         }
-
         event.setCancelled(true);
     }
 
     @Override
-    public void closeEvent(@NotNull InventoryCloseEvent event) {
-        update();
+    public void onDrag(@NotNull InventoryDragEvent event) {
+        event.setCancelled(true);
+    }
 
-        if (originalItem != null && !event.getPlayer().getInventory().addItem(originalItem).isEmpty()) {
+    @Override
+    public void onOpen(@NotNull InventoryOpenEvent event) {
+        super.onOpen(event);
+
+        update(event.getInventory());
+    }
+
+    @Override
+    public void onClose(@NotNull InventoryCloseEvent event) {
+        super.onClose(event);
+
+        update(event.getInventory());
+
+        Inventory inventory = event.getPlayer().getInventory();
+        if (originalItem != null && !inventory.addItem(originalItem).isEmpty()) {
             event.getPlayer().getWorld().dropItem(event.getPlayer().getEyeLocation(), originalItem, droppedItem -> droppedItem.setVelocity(event.getPlayer().getLocation().getDirection().multiply(0.25)));
         }
 
-        if (addedItem != null && !event.getPlayer().getInventory().addItem(addedItem).isEmpty()) {
+        if (addedItem != null && !inventory.addItem(addedItem).isEmpty()) {
             event.getPlayer().getWorld().dropItem(event.getPlayer().getEyeLocation(), addedItem, droppedItem -> droppedItem.setVelocity(event.getPlayer().getLocation().getDirection().multiply(0.25)));
         }
     }
 
-    private void update() {
-        originalItem = inv.getItem(28);
-        addedItem = inv.getItem(34);
+    private void update(@NotNull Inventory inventory) {
+        originalItem = inventory.getItem(28);
+        addedItem = inventory.getItem(34);
 
-        prepareAnvilCraft();
+        prepareAnvilCraft(inventory);
 
         boolean leftCorrect = originalItem != null && (addedItem == null || result != null);
 
         boolean rightCorrect = addedItem != null && (originalItem == null || result != null);
 
-        inv.setItem(29, leftCorrect ? CORRECT_SLOT : INCORRECT_SLOT);
-        inv.setItem(30, leftCorrect ? CORRECT_SLOT : INCORRECT_SLOT);
+        inventory.setItem(29, leftCorrect ? CORRECT_SLOT : INCORRECT_SLOT);
+        inventory.setItem(30, leftCorrect ? CORRECT_SLOT : INCORRECT_SLOT);
 
-        inv.setItem(32, rightCorrect ? CORRECT_SLOT : INCORRECT_SLOT);
-        inv.setItem(33, rightCorrect ? CORRECT_SLOT : INCORRECT_SLOT);
+        inventory.setItem(32, rightCorrect ? CORRECT_SLOT : INCORRECT_SLOT);
+        inventory.setItem(33, rightCorrect ? CORRECT_SLOT : INCORRECT_SLOT);
     }
 
-    private void prepareAnvilCraft() {
+    private void prepareAnvilCraft(Inventory inventory) {
         result = null;
         if (addedItem == null || originalItem == null) {
-            inv.setItem(31, MISSING_RECIPE);
+            inventory.setItem(31, MISSING_RECIPE);
             return;
         }
         ArcadiaItem originalArcadiaItem = new ArcadiaItem(originalItem);
@@ -131,9 +133,8 @@ public class AnvilGUI extends ArcadiaGUI {
         ArcadiaItemMeta addedMeta = addedArcadiaItem.getItemMeta();
         if (addedArcadiaItem.getMaterial() == ArcadiaMaterial.ENCHANTED_BOOK || originalArcadiaItem.isSimilar(addedArcadiaItem)) {
             boolean canAddEnchants = !originalArcadiaItem.getItemMeta().hasEnchants() && !addedArcadiaItem.getItemMeta().hasEnchants();
-            for (Map.Entry<EnchantType, Integer> enchant : addedMeta.getEnchants().entrySet()) {
-                EnchantType enchantType = enchant.getKey();
-                Integer level = enchant.getValue();
+            for (EnchantType enchantType : addedMeta.getEnchants()) {
+                int level = addedMeta.getEnchantLevel(enchantType);
                 boolean canEnchant = enchantType.getEnchantment().canEnchant(originalArcadiaItem);
                 if (canEnchant) canAddEnchants = true;
                 int originalEnchant = originalMeta.getEnchantLevel(enchantType);
@@ -143,7 +144,7 @@ public class AnvilGUI extends ArcadiaGUI {
             }
 
             if (!canAddEnchants) {
-                inv.setItem(31, MISSING_RECIPE);
+                inventory.setItem(31, MISSING_RECIPE);
                 return;
             }
 
@@ -157,7 +158,7 @@ public class AnvilGUI extends ArcadiaGUI {
             originalMeta.setItemQualityBonus(originalMeta.getItemQualityBonus() + 0.1);
         }
 
-        inv.setItem(31, MISSING_RECIPE);
+        inventory.setItem(31, MISSING_RECIPE);
 
         ItemStack result = originalArcadiaItem.build();
         if (result.equals(originalItem)) return;
@@ -168,7 +169,21 @@ public class AnvilGUI extends ArcadiaGUI {
 
         result.setItemMeta(meta);
 
-        inv.setItem(31, result);
+        inventory.setItem(31, result);
         this.result = result;
+    }
+
+    @Override
+    public void populate(HumanEntity humanEntity) {
+        ItemStack emptyItem = ItemUtil.createEmpty(Material.GRAY_STAINED_GLASS_PANE);
+        for (int i = 0; i < 54; i++) {
+            if (i == 28 || i == 34 || i == 31) continue;
+            setItem(i, new StaticMenuItem(emptyItem));
+        }
+    }
+
+    @Override
+    public @NotNull Inventory createInventory() {
+        return Bukkit.createInventory(null, 54, "Anvil");
     }
 }

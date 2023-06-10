@@ -3,79 +3,105 @@ package com.datasiqn.arcadia.guis;
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.items.ArcadiaItem;
 import com.datasiqn.arcadia.items.type.ItemType;
+import com.datasiqn.arcadia.players.ArcadiaSender;
 import com.datasiqn.arcadia.players.PlayerData;
 import com.datasiqn.arcadia.util.ItemUtil;
+import com.datasiqn.menuapi.inventory.MenuHandler;
+import com.datasiqn.menuapi.inventory.item.StaticMenuItem;
 import org.apache.commons.lang.ArrayUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.event.inventory.*;
+import org.bukkit.entity.HumanEntity;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-public class AmuletGUI extends ArcadiaGUI {
+public class AmuletGUI extends MenuHandler {
     private final Arcadia plugin;
 
     public AmuletGUI(Arcadia plugin) {
-        super(InventoryType.DISPENSER, "Amulet");
         this.plugin = plugin;
-
-        ItemStack empty = ItemUtil.createEmpty(Material.GRAY_STAINED_GLASS_PANE);
-        for (int i = 0; i < 9; i++) {
-            inv.setItem(i, empty);
-        }
     }
 
     @Override
-    public void openEvent(@NotNull InventoryOpenEvent event) {
-        ItemStack empty = ItemUtil.createEmpty(Material.GRAY_STAINED_GLASS_PANE);
-        for (int i = 0; i < 9; i++) {
-            ArcadiaItem amuletItem = plugin.getPlayerManager().getPlayerData(event.getPlayer().getUniqueId()).getEquipment().getAmulet()[i];
-            inv.setItem(i, amuletItem == null ? empty : amuletItem.build());
-        }
-    }
+    public void onClose(@NotNull InventoryCloseEvent event) {
+        super.onClose(event);
 
-    @Override
-    public void closeEvent(@NotNull InventoryCloseEvent event) {
         plugin.saveConfig();
-        plugin.getPlayerManager().getPlayerData(event.getPlayer().getUniqueId()).updateValues();
+        PlayerData playerData = plugin.getPlayerManager().getPlayerData(event.getPlayer().getUniqueId());
+        if (playerData == null) return;
+        playerData.updateValues();
     }
 
     @Override
-    public void clickEvent(@NotNull InventoryInteractEvent event) {
+    public void onClick(@NotNull InventoryClickEvent event) {
+        super.onClick(event);
+
         event.setCancelled(true);
 
-        if (event instanceof InventoryClickEvent clickEvent) {
-            Inventory clickedInventory = clickEvent.getClickedInventory();
-            if (clickedInventory == null) return;
-            boolean clickedTop = clickedInventory.getHolder() instanceof AmuletGUI;
-            ItemStack itemStack = clickEvent.getCurrentItem();
-            if (itemStack == null) return;
-            ArcadiaItem arcadiaItem = new ArcadiaItem(itemStack);
-            arcadiaItem.setAmount(1);
-            if (arcadiaItem.getItemData().getItemType() == ItemType.POWER_STONE) {
-                PlayerData playerData = plugin.getPlayerManager().getPlayerData(clickEvent.getWhoClicked().getUniqueId());
-                ArcadiaItem[] amulet = playerData.getEquipment().getAmulet();
-                if (clickedTop) {
-                    Map<Integer, ItemStack> overflow = clickEvent.getWhoClicked().getInventory().addItem(arcadiaItem.build());
-                    if (!overflow.isEmpty()) return;
-                    clickEvent.setCurrentItem(ItemUtil.createEmpty(Material.GRAY_STAINED_GLASS_PANE));
-                    amulet[clickEvent.getSlot()] = null;
-                } else {
-                    int firstEmptyIndex = ArrayUtils.indexOf(amulet, null);
-                    if (firstEmptyIndex == ArrayUtils.INDEX_NOT_FOUND) return;
-                    if (itemStack.getAmount() == 1) {
-                        clickEvent.setCurrentItem(null);
-                    } else {
-                        itemStack.setAmount(itemStack.getAmount() - 1);
-                        clickEvent.setCurrentItem(itemStack);
-                    }
-                    inv.setItem(firstEmptyIndex, arcadiaItem.build());
-                    amulet[firstEmptyIndex] = arcadiaItem;
-                }
-                playerData.saveData();
+        Inventory clickedInventory = event.getClickedInventory();
+        if (clickedInventory == null) return;
+        ItemStack itemStack = event.getCurrentItem();
+        if (itemStack == null) return;
+        ArcadiaItem arcadiaItem = new ArcadiaItem(itemStack);
+        arcadiaItem.setAmount(1);
+        if (arcadiaItem.getItemData().getItemType() == ItemType.POWER_STONE) {
+            PlayerData playerData = plugin.getPlayerManager().getPlayerData(event.getWhoClicked().getUniqueId());
+            if (playerData == null) {
+                new ArcadiaSender<>(event.getWhoClicked()).sendError("Failed to get player data");
+                return;
             }
+            ArcadiaItem[] amulet = playerData.getEquipment().getAmulet();
+            if (event.getClickedInventory().equals(event.getView().getTopInventory())) {
+                Map<Integer, ItemStack> overflow = event.getWhoClicked().getInventory().addItem(arcadiaItem.build());
+                if (!overflow.isEmpty()) return;
+                event.setCurrentItem(ItemUtil.createEmpty(Material.GRAY_STAINED_GLASS_PANE));
+                amulet[event.getSlot()] = null;
+            } else {
+                int firstEmptyIndex = ArrayUtils.indexOf(amulet, null);
+                if (firstEmptyIndex == ArrayUtils.INDEX_NOT_FOUND) return;
+                if (itemStack.getAmount() == 1) {
+                    event.setCurrentItem(null);
+                } else {
+                    itemStack.setAmount(itemStack.getAmount() - 1);
+                    event.setCurrentItem(itemStack);
+                }
+                event.getInventory().setItem(firstEmptyIndex, arcadiaItem.build());
+                amulet[firstEmptyIndex] = arcadiaItem;
+            }
+            playerData.saveData();
         }
+    }
+
+    @Override
+    public void onDrag(@NotNull InventoryDragEvent event) {
+        event.setCancelled(true);
+    }
+
+    @Override
+    public void populate(@NotNull HumanEntity humanEntity) {
+        PlayerData playerData = plugin.getPlayerManager().getPlayerData(humanEntity.getUniqueId());
+        if (playerData == null) {
+            new ArcadiaSender<>(humanEntity).sendError("Failed to get player data");
+            return;
+        }
+        @Nullable ArcadiaItem[] amulet = playerData.getEquipment().getAmulet();
+
+        ItemStack empty = ItemUtil.createEmpty(Material.GRAY_STAINED_GLASS_PANE);
+        for (int i = 0; i < 9; i++) {
+            setItem(i, amulet[i] == null ? new StaticMenuItem(empty) : new StaticMenuItem(amulet[i].build()));
+        }
+    }
+
+    @Override
+    public @NotNull Inventory createInventory() {
+        return Bukkit.createInventory(null, InventoryType.DISPENSER, "Amulet");
     }
 }

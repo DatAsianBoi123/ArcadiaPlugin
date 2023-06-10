@@ -3,16 +3,15 @@ package com.datasiqn.arcadia.listeners;
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.ArcadiaTag;
 import com.datasiqn.arcadia.dungeons.DungeonPlayer;
-import com.datasiqn.arcadia.guis.StaticGUI;
+import com.datasiqn.arcadia.guis.BagGUI;
 import com.datasiqn.arcadia.items.ArcadiaItem;
 import com.datasiqn.arcadia.items.abilities.AbilityExecutor;
 import com.datasiqn.arcadia.items.abilities.AbilityType;
 import com.datasiqn.arcadia.items.abilities.ItemAbility;
 import com.datasiqn.arcadia.players.PlayerData;
-import com.datasiqn.arcadia.util.ItemUtil;
 import com.datasiqn.arcadia.util.PdcUtil;
+import com.datasiqn.menuapi.MenuApi;
 import com.datasiqn.schedulebuilder.ScheduleBuilder;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.HumanEntity;
@@ -67,18 +66,9 @@ public class ItemEvents implements Listener {
 
         event.setCancelled(true);
 
-        Inventory bagInventory = new StaticGUI(54, "Item Bag") {}.getInventory();
-        ItemStack empty = ItemUtil.createEmpty(Material.GRAY_STAINED_GLASS_PANE);
-        ItemStack closeItem = new ItemStack(Material.BARRIER);
-        ItemMeta closeMeta = closeItem.getItemMeta();
-        if (closeMeta == null) return;
-
-        closeMeta.setDisplayName(ChatColor.RED + "Close");
-        closeItem.setItemMeta(closeMeta);
-        for (int i = 0; i < 9; i++) bagInventory.setItem(53 - i, empty);
-        bagInventory.setItem(49, closeItem);
-
-        dungeonPlayer.getUpgrades().forEach(upgrade -> bagInventory.addItem(upgrade.toItemStack()));
+        BagGUI bagGUI = new BagGUI(plugin);
+        Inventory bagInventory = bagGUI.createInventory();
+        MenuApi.getInstance().getMenuManager().registerHandler(bagInventory, bagGUI);
 
         ScheduleBuilder.create().executes(runnable -> {
             whoClicked.getWorld().playSound(whoClicked, Sound.BLOCK_CHEST_OPEN, 1, 1);
