@@ -41,8 +41,9 @@ public class ArcadiaItem implements ConfigurationSerializable {
             this.itemMeta = new ArcadiaItemMeta(UUID.randomUUID());
         } else {
             ArcadiaItemMeta meta = original.material.createItemMeta(UUID.randomUUID());
-            meta.setItemQualityBonus(original.itemMeta.getItemQualityBonus());
-            original.itemMeta.getEnchants().forEach(meta::addEnchant);
+            ArcadiaItemMeta originalMeta = original.itemMeta;
+            meta.setItemQualityBonus(originalMeta.getItemQualityBonus());
+            originalMeta.getEnchants().forEach(type -> meta.addEnchant(type, originalMeta.getEnchantLevel(type)));
             this.itemMeta = meta;
         }
     }
@@ -92,7 +93,7 @@ public class ArcadiaItem implements ConfigurationSerializable {
         this.itemMeta = arcadiaMaterial.createItemMeta(meta1.getUuid());
 
         itemMeta.setItemQualityBonus(meta1.getItemQualityBonus());
-        meta1.getEnchants().forEach(itemMeta::addEnchant);
+        meta1.getEnchants().forEach(type -> itemMeta.addEnchant(type, meta1.getEnchantLevel(type)));
     }
 
     public ArcadiaItem(@NotNull MaterialData<?> itemData) {
@@ -116,9 +117,9 @@ public class ArcadiaItem implements ConfigurationSerializable {
 
             List<String> enchantLore = new ArrayList<>();
 
-            itemMeta.getEnchants().forEach((type, level) -> {
+            itemMeta.getEnchants().forEach(type -> {
                 NumberFormat numberFormat = NumberFormat.getInstance(Locale.ENGLISH);
-                enchantLore.add(ChatColor.BLUE + type.getEnchantment().getName() + " " + numberFormat.format(level));
+                enchantLore.add(ChatColor.BLUE + type.getEnchantment().getName() + " " + numberFormat.format(itemMeta.getEnchantLevel(type)));
             });
             enchantLore.sort(Comparator.naturalOrder());
             lore.add(0, " ");
@@ -157,8 +158,9 @@ public class ArcadiaItem implements ConfigurationSerializable {
             List<String> enchantLore = new ArrayList<>();
             List<EnchantsDataType.EnchantData> enchantData = new ArrayList<>();
 
-            itemMeta.getEnchants().forEach((type, level) -> {
+            itemMeta.getEnchants().forEach(type -> {
                 NumberFormat numberFormat = NumberFormat.getInstance(Locale.ENGLISH);
+                int level = itemMeta.getEnchantLevel(type);
                 enchantLore.add(ChatColor.BLUE + type.getEnchantment().getName() + " " + numberFormat.format(level));
                 enchantData.add(new EnchantsDataType.EnchantData(type, level));
             });

@@ -38,7 +38,6 @@ import org.jetbrains.annotations.NotNull;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
-import java.util.Map;
 
 public class DamageEvents implements Listener {
     private final Arcadia plugin;
@@ -156,10 +155,11 @@ public class DamageEvents implements Listener {
 
         double additiveBonus = 1;
         double multiplicativeBonus = 1;
-        for (Map.Entry<EnchantType, Integer> enchantData : itemMeta.getEnchants().entrySet()) {
-            EnchantModifier modifier = enchantData.getKey().getEnchantment().getModifier();
+        for (EnchantType enchantType : itemMeta.getEnchants()) {
+            int level = itemMeta.getEnchantLevel(enchantType);
+            EnchantModifier modifier = enchantType.getEnchantment().getModifier();
             if (modifier instanceof DamageEnchantModifier damageModifier) {
-                double multiplier = damageModifier.getMultiplier(enchantData.getValue());
+                double multiplier = damageModifier.getMultiplier(level);
                 if (damageModifier.getType() == DamageModifierType.ADDITIVE_MULTIPLIER) {
                     additiveBonus += multiplier;
                 } else if (damageModifier.getType() == DamageModifierType.MULTIPLICATIVE_MULTIPLIER) {
@@ -169,7 +169,7 @@ public class DamageEvents implements Listener {
             }
 
             if (modifier instanceof EntityEnchantModifier enchantModifier) {
-                enchantModifier.modifyEntity(entity, enchantData.getValue());
+                enchantModifier.modifyEntity(entity, level);
             }
         }
 

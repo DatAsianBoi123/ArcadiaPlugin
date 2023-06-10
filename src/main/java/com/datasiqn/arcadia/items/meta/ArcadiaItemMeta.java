@@ -5,7 +5,8 @@ import com.datasiqn.arcadia.datatype.EnchantsDataType;
 import com.datasiqn.arcadia.enchants.EnchantType;
 import com.datasiqn.arcadia.items.stats.ItemStats;
 import com.datasiqn.arcadia.util.PdcUtil;
-import org.bukkit.inventory.meta.ItemMeta;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -17,7 +18,7 @@ public class ArcadiaItemMeta {
     private final UUID uuid;
     private final double itemQuality;
     private final ItemStats itemStats = new ItemStats();
-    private final Map<EnchantType, Integer> enchants = new HashMap<>();
+    private final Object2IntMap<EnchantType> enchants = new Object2IntOpenHashMap<>();
 
     private double qualityBonus;
 
@@ -68,14 +69,13 @@ public class ArcadiaItemMeta {
     }
 
     public int getEnchantLevel(EnchantType type) {
-        Integer integer = enchants.get(type);
-        return integer == null ? 0 : integer;
+        return enchants.getInt(type);
     }
 
     @Contract(" -> new")
     @Unmodifiable
-    public @NotNull Map<EnchantType, Integer> getEnchants() {
-        return Map.copyOf(enchants);
+    public @NotNull Set<EnchantType> getEnchants() {
+        return Set.copyOf(enchants.keySet());
     }
 
     public void addEnchant(EnchantType type, int level) {
@@ -83,7 +83,7 @@ public class ArcadiaItemMeta {
     }
 
     public void removeEnchant(EnchantType type) {
-        enchants.remove(type);
+        enchants.removeInt(type);
     }
 
     public void clearEnchants() {
