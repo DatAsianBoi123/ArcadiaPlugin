@@ -1,7 +1,7 @@
 package com.datasiqn.arcadia.listeners;
 
 import com.datasiqn.arcadia.Arcadia;
-import com.datasiqn.arcadia.guis.GUIType;
+import com.datasiqn.arcadia.menu.MenuType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -20,12 +20,12 @@ public class GuiListener implements Listener {
     public void onOpenCustomMenu(@NotNull InventoryOpenEvent event) {
         if (event.getInventory().getType() == InventoryType.WORKBENCH) {
             event.setCancelled(true);
-            GUIType.CRAFTING.openInventory(event.getPlayer(), plugin);
+            MenuType.CRAFTING.openInventory(event.getPlayer(), plugin);
         }
 
         if (event.getInventory().getType() == InventoryType.ANVIL) {
             event.setCancelled(true);
-            GUIType.ANVIL.openInventory(event.getPlayer(), plugin);
+            MenuType.ANVIL.openInventory(event.getPlayer(), plugin);
         }
     }
 

@@ -1,6 +1,6 @@
 package com.datasiqn.arcadia.util.lorebuilder.component;
 
-import com.datasiqn.arcadia.items.stats.ItemAttribute;
+import com.datasiqn.arcadia.item.stat.ItemAttribute;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 

@@ -2,8 +2,8 @@ package com.datasiqn.arcadia.listeners;
 
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.ArcadiaTag;
-import com.datasiqn.arcadia.dungeons.DungeonPlayer;
-import com.datasiqn.arcadia.upgrades.UpgradeType;
+import com.datasiqn.arcadia.dungeon.DungeonPlayer;
+import com.datasiqn.arcadia.upgrade.UpgradeType;
 import com.datasiqn.arcadia.util.PdcUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;

@@ -1,7 +1,7 @@
 package com.datasiqn.arcadia;
 
 import com.datasiqn.arcadia.commands.*;
-import com.datasiqn.arcadia.items.ArcadiaItem;
+import com.datasiqn.arcadia.item.ArcadiaItem;
 import com.datasiqn.arcadia.listeners.*;
 import com.datasiqn.arcadia.managers.DungeonManager;
 import com.datasiqn.arcadia.managers.PlayerManager;
@@ -146,13 +146,13 @@ public final class Arcadia extends JavaPlugin {
     private void registerAllListeners() {
         menuApi.registerEvents(this);
 
-        registerListener(new ItemEvents(this));
-        registerListener(new DamageEvents(this));
-        registerListener(new PlayerEvents(this));
-        registerListener(new GUIEvents(this));
-        registerListener(new ConsumableEvents(this));
-        registerListener(new UpgradeEvents(this));
-        registerListener(new LootTableEvents(this));
+        registerListener(new ItemListener(this));
+        registerListener(new DamageListener(this));
+        registerListener(new PlayerListener(this));
+        registerListener(new GuiListener(this));
+        registerListener(new ConsumableListener(this));
+        registerListener(new UpgradeListener(this));
+        registerListener(new LootTableListener(this));
     }
 
     private void setupConfig() {

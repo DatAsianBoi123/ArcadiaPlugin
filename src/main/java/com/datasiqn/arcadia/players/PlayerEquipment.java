@@ -1,6 +1,6 @@
 package com.datasiqn.arcadia.players;
 
-import com.datasiqn.arcadia.items.ArcadiaItem;
+import com.datasiqn.arcadia.item.ArcadiaItem;
 import org.bukkit.Material;
 import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;

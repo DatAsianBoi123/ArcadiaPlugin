@@ -1,10 +1,10 @@
 package com.datasiqn.arcadia.managers;
 
 import com.datasiqn.arcadia.Arcadia;
-import com.datasiqn.arcadia.upgrades.UpgradeType;
-import com.datasiqn.arcadia.upgrades.listeners.ActionHandler;
-import com.datasiqn.arcadia.upgrades.listeners.UpgradeListener;
-import com.datasiqn.arcadia.upgrades.listeners.actions.Action;
+import com.datasiqn.arcadia.upgrade.UpgradeType;
+import com.datasiqn.arcadia.upgrade.listeners.ActionHandler;
+import com.datasiqn.arcadia.upgrade.listeners.UpgradeListener;
+import com.datasiqn.arcadia.upgrade.listeners.actions.Action;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import org.jetbrains.annotations.NotNull;

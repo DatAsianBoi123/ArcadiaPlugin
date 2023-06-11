@@ -2,12 +2,12 @@ package com.datasiqn.arcadia.players;
 
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.DamageHelper;
-import com.datasiqn.arcadia.items.ArcadiaItem;
-import com.datasiqn.arcadia.items.stats.AttributeInstance;
-import com.datasiqn.arcadia.items.stats.ItemAttribute;
-import com.datasiqn.arcadia.items.stats.ItemStats;
-import com.datasiqn.arcadia.items.stats.StatIcon;
-import com.datasiqn.arcadia.items.type.ItemType;
+import com.datasiqn.arcadia.item.ArcadiaItem;
+import com.datasiqn.arcadia.item.stat.AttributeInstance;
+import com.datasiqn.arcadia.item.stat.ItemAttribute;
+import com.datasiqn.arcadia.item.stat.ItemStats;
+import com.datasiqn.arcadia.item.stat.StatIcon;
+import com.datasiqn.arcadia.item.type.ItemType;
 import com.datasiqn.arcadia.util.XPUtil;
 import com.datasiqn.schedulebuilder.ScheduleBuilder;
 import com.google.common.reflect.TypeToken;

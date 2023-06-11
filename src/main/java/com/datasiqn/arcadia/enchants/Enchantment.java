@@ -1,7 +1,7 @@
 package com.datasiqn.arcadia.enchants;
 
 import com.datasiqn.arcadia.enchants.modifiers.EnchantModifier;
-import com.datasiqn.arcadia.items.ArcadiaItem;
+import com.datasiqn.arcadia.item.ArcadiaItem;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class Enchantment {

@@ -1,10 +1,10 @@
 package com.datasiqn.arcadia;
 
-import com.datasiqn.arcadia.datatype.ArcadiaDataType;
-import com.datasiqn.arcadia.datatype.EnchantsDataType;
+import com.datasiqn.arcadia.datatypes.ArcadiaDataType;
+import com.datasiqn.arcadia.datatypes.EnchantsDataType;
 import com.datasiqn.arcadia.enchants.EnchantType;
-import com.datasiqn.arcadia.items.ItemId;
-import com.datasiqn.arcadia.loottables.LootTables;
+import com.datasiqn.arcadia.item.ItemId;
+import com.datasiqn.arcadia.loottable.LootTables;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.persistence.PersistentDataType;

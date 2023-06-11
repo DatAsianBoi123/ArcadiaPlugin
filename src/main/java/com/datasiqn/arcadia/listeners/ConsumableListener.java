@@ -1,9 +1,9 @@
 package com.datasiqn.arcadia.listeners;
 
 import com.datasiqn.arcadia.Arcadia;
-import com.datasiqn.arcadia.items.ArcadiaItem;
-import com.datasiqn.arcadia.items.type.ItemType;
-import com.datasiqn.arcadia.items.type.data.ConsumableData;
+import com.datasiqn.arcadia.item.ArcadiaItem;
+import com.datasiqn.arcadia.item.type.ItemType;
+import com.datasiqn.arcadia.item.type.data.ConsumableData;
 import com.datasiqn.arcadia.players.PlayerData;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;

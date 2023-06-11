@@ -1,7 +1,7 @@
 package com.datasiqn.arcadia.entities;
 
-import com.datasiqn.arcadia.loottables.LootTables;
-import com.datasiqn.arcadia.items.stats.StatIcon;
+import com.datasiqn.arcadia.item.stat.StatIcon;
+import com.datasiqn.arcadia.loottable.LootTables;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;

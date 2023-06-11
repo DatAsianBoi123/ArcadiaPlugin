@@ -1,6 +1,6 @@
 package com.datasiqn.arcadia.entities;
 
-import com.datasiqn.arcadia.loottables.LootTables;
+import com.datasiqn.arcadia.loottable.LootTables;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;

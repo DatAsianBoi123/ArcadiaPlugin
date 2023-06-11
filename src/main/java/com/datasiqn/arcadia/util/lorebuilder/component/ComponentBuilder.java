@@ -1,6 +1,6 @@
 package com.datasiqn.arcadia.util.lorebuilder.component;
 
-import com.datasiqn.arcadia.items.stats.ItemAttribute;
+import com.datasiqn.arcadia.item.stat.ItemAttribute;
 import org.bukkit.ChatColor;
 
 import java.text.DecimalFormat;

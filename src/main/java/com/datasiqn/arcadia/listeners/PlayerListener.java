@@ -3,9 +3,9 @@ package com.datasiqn.arcadia.listeners;
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.ArcadiaTag;
 import com.datasiqn.arcadia.DamageHelper;
-import com.datasiqn.arcadia.items.ArcadiaItem;
-import com.datasiqn.arcadia.items.stats.ItemAttribute;
-import com.datasiqn.arcadia.items.type.ItemType;
+import com.datasiqn.arcadia.item.ArcadiaItem;
+import com.datasiqn.arcadia.item.stat.ItemAttribute;
+import com.datasiqn.arcadia.item.type.ItemType;
 import com.datasiqn.arcadia.managers.PlayerManager;
 import com.datasiqn.arcadia.players.PlayerData;
 import com.datasiqn.arcadia.players.PlayerEquipment;
@@ -177,7 +177,7 @@ public class PlayerListener implements Listener {
         if (bowItem.getItemData().getItemType() != ItemType.BOW) return;
 
         PersistentDataContainer pdc = event.getProjectile().getPersistentDataContainer();
-        com.datasiqn.arcadia.items.stats.AttributeInstance damageAttribute = bowItem.getItemMeta().getItemStats().getAttribute(ItemAttribute.DAMAGE);
+        com.datasiqn.arcadia.item.stat.AttributeInstance damageAttribute = bowItem.getItemMeta().getItemStats().getAttribute(ItemAttribute.DAMAGE);
         double damageValue = damageAttribute == null ? 1 : damageAttribute.getValue();
         double damage = damageValue + DamageHelper.getStrengthBonus(playerData.getStrength(), damageValue) * event.getForce();
         PdcUtil.set(pdc, ArcadiaTag.ARROW_DAMAGE, damage);

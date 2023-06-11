@@ -2,8 +2,8 @@ package com.datasiqn.arcadia.commands;
 
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.ArcadiaPermission;
-import com.datasiqn.arcadia.commands.arguments.ArcadiaArgumentType;
-import com.datasiqn.arcadia.dungeons.DungeonInstance;
+import com.datasiqn.arcadia.commands.argument.ArcadiaArgumentType;
+import com.datasiqn.arcadia.dungeon.DungeonInstance;
 import com.datasiqn.arcadia.players.ArcadiaSender;
 import com.datasiqn.commandcore.commands.builder.ArgumentBuilder;
 import com.datasiqn.commandcore.commands.builder.CommandBuilder;

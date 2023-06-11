@@ -2,12 +2,12 @@ package com.datasiqn.arcadia.listeners;
 
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.ArcadiaTag;
-import com.datasiqn.arcadia.dungeons.DungeonPlayer;
-import com.datasiqn.arcadia.guis.BagGUI;
-import com.datasiqn.arcadia.items.ArcadiaItem;
-import com.datasiqn.arcadia.items.abilities.AbilityExecutor;
-import com.datasiqn.arcadia.items.abilities.AbilityType;
-import com.datasiqn.arcadia.items.abilities.ItemAbility;
+import com.datasiqn.arcadia.dungeon.DungeonPlayer;
+import com.datasiqn.arcadia.item.ArcadiaItem;
+import com.datasiqn.arcadia.item.abilities.AbilityExecutor;
+import com.datasiqn.arcadia.item.abilities.AbilityType;
+import com.datasiqn.arcadia.item.abilities.ItemAbility;
+import com.datasiqn.arcadia.menu.handlers.BagMenuHandler;
 import com.datasiqn.arcadia.players.PlayerData;
 import com.datasiqn.arcadia.util.PdcUtil;
 import com.datasiqn.menuapi.MenuApi;
@@ -66,9 +66,9 @@ public class ItemListener implements Listener {
 
         event.setCancelled(true);
 
-        BagGUI bagGUI = new BagGUI(plugin);
-        Inventory bagInventory = bagGUI.createInventory();
-        MenuApi.getInstance().getMenuManager().registerHandler(bagInventory, bagGUI);
+        BagMenuHandler bagHandler = new BagMenuHandler(plugin);
+        Inventory bagInventory = bagHandler.createInventory();
+        MenuApi.getInstance().getMenuManager().registerHandler(bagInventory, bagHandler);
 
         ScheduleBuilder.create().executes(runnable -> {
             whoClicked.getWorld().playSound(whoClicked, Sound.BLOCK_CHEST_OPEN, 1, 1);

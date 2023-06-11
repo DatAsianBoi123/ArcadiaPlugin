@@ -1,10 +1,10 @@
 package com.datasiqn.arcadia.util;
 
 import com.datasiqn.arcadia.ArcadiaTag;
-import com.datasiqn.arcadia.items.ArcadiaItem;
-import com.datasiqn.arcadia.items.material.ArcadiaMaterial;
-import com.datasiqn.arcadia.items.material.data.DefaultMaterialData;
-import com.datasiqn.arcadia.items.material.data.MaterialData;
+import com.datasiqn.arcadia.item.ArcadiaItem;
+import com.datasiqn.arcadia.item.material.ArcadiaMaterial;
+import com.datasiqn.arcadia.item.material.data.DefaultMaterialData;
+import com.datasiqn.arcadia.item.material.data.MaterialData;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;

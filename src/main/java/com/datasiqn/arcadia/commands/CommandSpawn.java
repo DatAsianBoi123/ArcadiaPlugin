@@ -2,8 +2,8 @@ package com.datasiqn.arcadia.commands;
 
 import com.datasiqn.arcadia.ArcadiaPermission;
 import com.datasiqn.arcadia.ArcadiaTag;
-import com.datasiqn.arcadia.commands.arguments.ArcadiaArgumentType;
-import com.datasiqn.arcadia.loottables.LootTables;
+import com.datasiqn.arcadia.commands.argument.ArcadiaArgumentType;
+import com.datasiqn.arcadia.loottable.LootTables;
 import com.datasiqn.arcadia.util.PdcUtil;
 import com.datasiqn.commandcore.commands.builder.ArgumentBuilder;
 import com.datasiqn.commandcore.commands.builder.CommandBuilder;

@@ -1,8 +1,8 @@
 package com.datasiqn.arcadia.enchants;
 
 import com.datasiqn.arcadia.enchants.modifiers.EntityEnchantModifier;
-import com.datasiqn.arcadia.items.ArcadiaItem;
-import com.datasiqn.arcadia.items.type.ItemType;
+import com.datasiqn.arcadia.item.ArcadiaItem;
+import com.datasiqn.arcadia.item.type.ItemType;
 import org.jetbrains.annotations.NotNull;
 
 public class EnchantFire extends Enchantment {

@@ -1,6 +1,6 @@
 package com.datasiqn.arcadia.players;
 
-import com.datasiqn.arcadia.items.stats.ItemAttribute;
+import com.datasiqn.arcadia.item.stat.ItemAttribute;
 
 public enum PlayerAttribute {
     MAX_HEALTH(ItemAttribute.HEALTH, 10),

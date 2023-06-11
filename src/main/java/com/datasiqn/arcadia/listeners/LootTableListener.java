@@ -2,7 +2,7 @@ package com.datasiqn.arcadia.listeners;
 
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.ArcadiaTag;
-import com.datasiqn.arcadia.loottables.LootTables;
+import com.datasiqn.arcadia.loottable.LootTables;
 import com.datasiqn.arcadia.util.PdcUtil;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
