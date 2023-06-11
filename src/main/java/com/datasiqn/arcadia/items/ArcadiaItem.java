@@ -237,13 +237,13 @@ public class ArcadiaItem implements ConfigurationSerializable {
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> objectMap = new HashMap<>();
-        objectMap.put("id", getId());
+        objectMap.put("id", getId().getStringId());
         objectMap.put("amount", amount);
         return objectMap;
     }
 
     public static @NotNull ArcadiaItem deserialize(@NotNull Map<String, Object> data) {
-        String id = data.get("id") instanceof String string ? string : "STONE";
+        String id = data.get("id") instanceof String string ? string.toUpperCase() : "STONE";
         ArcadiaItem item;
         try {
             item = new ArcadiaItem(ArcadiaMaterial.valueOf(id));
