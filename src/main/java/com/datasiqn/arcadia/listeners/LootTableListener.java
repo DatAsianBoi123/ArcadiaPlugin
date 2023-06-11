@@ -17,10 +17,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 
-public class LootTableEvents implements Listener {
+public class LootTableListener implements Listener {
     private final Arcadia plugin;
 
-    public LootTableEvents(Arcadia plugin) {
+    public LootTableListener(Arcadia plugin) {
         this.plugin = plugin;
     }
 

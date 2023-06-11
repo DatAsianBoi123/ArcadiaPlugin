@@ -23,10 +23,10 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
-public class UpgradeEvents implements Listener {
+public class UpgradeListener implements Listener {
     private final Arcadia plugin;
 
-    public UpgradeEvents(Arcadia plugin) {
+    public UpgradeListener(Arcadia plugin) {
         this.plugin = plugin;
     }
 

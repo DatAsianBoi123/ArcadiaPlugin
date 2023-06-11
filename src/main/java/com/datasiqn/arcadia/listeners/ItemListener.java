@@ -35,11 +35,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class ItemEvents implements Listener {
+public class ItemListener implements Listener {
     private final Map<UUID, Map<String, Long>> cooldowns = new HashMap<>();
     private final Arcadia plugin;
 
-    public ItemEvents(Arcadia plugin) {
+    public ItemListener(Arcadia plugin) {
         this.plugin = plugin;
     }
 

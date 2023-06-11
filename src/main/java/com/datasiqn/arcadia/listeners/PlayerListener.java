@@ -39,12 +39,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.Executors;
 
-public class PlayerEvents implements Listener {
+public class PlayerListener implements Listener {
     private final Arcadia plugin;
     private final PlayerManager playerManager;
 
     @Contract(pure = true)
-    public PlayerEvents(@NotNull Arcadia plugin) {
+    public PlayerListener(@NotNull Arcadia plugin) {
         this.plugin = plugin;
         this.playerManager = plugin.getPlayerManager();
     }

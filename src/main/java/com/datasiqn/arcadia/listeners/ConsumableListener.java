@@ -15,10 +15,10 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class ConsumableEvents implements Listener {
+public class ConsumableListener implements Listener {
     private final Arcadia plugin;
 
-    public ConsumableEvents(Arcadia plugin) {
+    public ConsumableListener(Arcadia plugin) {
         this.plugin = plugin;
     }
 

@@ -9,10 +9,10 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class GUIEvents implements Listener {
+public class GuiListener implements Listener {
     private final Arcadia plugin;
 
-    public GUIEvents(Arcadia plugin) {
+    public GuiListener(Arcadia plugin) {
         this.plugin = plugin;
     }
 
