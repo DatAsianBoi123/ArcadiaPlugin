@@ -110,7 +110,7 @@ public class ArcadiaItem implements ConfigurationSerializable {
         if (meta == null) return itemStack;
         PdcUtil.set(meta.getPersistentDataContainer(), ArcadiaTag.ITEM_ID, getId());
         List<String> lore = meta.getLore();
-        assert lore != null;
+        if (lore == null) lore = new ArrayList<>();
 
         if (itemMeta.hasEnchants()) {
             meta.addEnchant(Enchantment.DURABILITY, 0, true);
@@ -150,7 +150,7 @@ public class ArcadiaItem implements ConfigurationSerializable {
         if (meta == null) return craftingResult;
         PdcUtil.set(meta.getPersistentDataContainer(), ArcadiaTag.ITEM_ID, getId());
         List<String> lore = meta.getLore();
-        assert lore != null;
+        if (lore == null) lore = new ArrayList<>();
 
         if (itemMeta.hasEnchants()) {
             meta.addEnchant(Enchantment.DURABILITY, 0, true);
