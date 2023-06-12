@@ -30,7 +30,6 @@ import java.text.DecimalFormat;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.concurrent.Executors;
 
 public class PlayerData {
     public static final double HEALTH_PRECISION = 0.00001;
@@ -279,7 +278,7 @@ public class PlayerData {
 
     public void setTotalXp(long xp) {
         this.xp = xp;
-        Executors.newSingleThreadExecutor().submit(this::saveData);
+        new Thread(this::saveData).start();
         updateLevel();
     }
 

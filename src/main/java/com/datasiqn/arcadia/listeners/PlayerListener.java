@@ -37,8 +37,6 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.concurrent.Executors;
-
 public class PlayerListener implements Listener {
     private final Arcadia plugin;
     private final PlayerManager playerManager;
@@ -75,7 +73,7 @@ public class PlayerListener implements Listener {
         AttributeInstance healthAttribute = event.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH);
         if (healthAttribute != null) healthAttribute.setBaseValue(20);
 
-        Executors.newSingleThreadExecutor().submit(playerManager.getPlayerData(event.getPlayer())::saveData);
+        new Thread(playerManager.getPlayerData(event.getPlayer())::saveData).start();
         playerManager.removePlayer(event.getPlayer());
     }
 
