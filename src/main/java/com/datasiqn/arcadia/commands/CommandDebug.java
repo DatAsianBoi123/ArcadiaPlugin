@@ -3,9 +3,9 @@ package com.datasiqn.arcadia.commands;
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.ArcadiaPermission;
 import com.datasiqn.arcadia.players.PlayerData;
-import com.datasiqn.commandcore.arguments.ArgumentType;
-import com.datasiqn.commandcore.commands.builder.ArgumentBuilder;
-import com.datasiqn.commandcore.commands.builder.CommandBuilder;
+import com.datasiqn.commandcore.argument.ArgumentType;
+import com.datasiqn.commandcore.command.builder.ArgumentBuilder;
+import com.datasiqn.commandcore.command.builder.CommandBuilder;
 import org.bukkit.entity.Player;
 
 public class CommandDebug {

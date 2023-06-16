@@ -5,9 +5,9 @@ import com.datasiqn.arcadia.ArcadiaPermission;
 import com.datasiqn.arcadia.commands.argument.ArcadiaArgumentType;
 import com.datasiqn.arcadia.dungeon.DungeonInstance;
 import com.datasiqn.arcadia.players.ArcadiaSender;
-import com.datasiqn.commandcore.commands.builder.ArgumentBuilder;
-import com.datasiqn.commandcore.commands.builder.CommandBuilder;
-import com.datasiqn.commandcore.commands.builder.LiteralBuilder;
+import com.datasiqn.commandcore.command.builder.ArgumentBuilder;
+import com.datasiqn.commandcore.command.builder.CommandBuilder;
+import com.datasiqn.commandcore.command.builder.LiteralBuilder;
 import org.bukkit.entity.Player;
 
 public class CommandDungeons {

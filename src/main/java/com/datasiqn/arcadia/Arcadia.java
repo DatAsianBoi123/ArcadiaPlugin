@@ -10,7 +10,7 @@ import com.datasiqn.arcadia.players.PlayerData;
 import com.datasiqn.arcadia.util.ItemUtil;
 import com.datasiqn.arcadia.util.PdcUtil;
 import com.datasiqn.commandcore.CommandCore;
-import com.datasiqn.commandcore.commands.builder.CommandBuilder;
+import com.datasiqn.commandcore.command.builder.CommandBuilder;
 import com.datasiqn.commandcore.managers.CommandManager;
 import com.datasiqn.menuapi.MenuApi;
 import com.datasiqn.schedulebuilder.ScheduleBuilder;

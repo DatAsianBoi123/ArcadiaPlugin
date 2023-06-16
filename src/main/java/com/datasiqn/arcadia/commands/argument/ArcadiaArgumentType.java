@@ -9,7 +9,7 @@ import com.datasiqn.arcadia.loottable.LootTables;
 import com.datasiqn.arcadia.menu.MenuType;
 import com.datasiqn.arcadia.recipe.ArcadiaRecipe;
 import com.datasiqn.arcadia.upgrade.UpgradeType;
-import com.datasiqn.commandcore.arguments.ArgumentType;
+import com.datasiqn.commandcore.argument.ArgumentType;
 import com.datasiqn.resultapi.Result;
 
 public interface ArcadiaArgumentType {
