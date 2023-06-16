@@ -2,11 +2,11 @@ load: POSTWORLD
 main: com.datasiqn.arcadia.Arcadia
 name: Arcadia
 version: '${project.version}'
-api-version: 1.19
+api-version: 1.13
 permissions:
   arcadia.heal:
     description: Allows the player to use the heal command (/arcadia heal)
-    default: false
+    default: op
   arcadia.item:
     description: Allows the player to use the i command (/arcadia i <item>)
     default: op
@@ -53,14 +53,13 @@ permissions:
     description: Allows the player to use all admin commands
     default: op
     children:
+      arcadia.player: true
       arcadia.heal: true
       arcadia.item: true
       arcadia.summon: true
       arcadia.spawn: true
       arcadia.gui: true
-      arcadia.player: true
       arcadia.debug: true
-      arcadia.config: true
       arcadia.loot: true
       arcadia.enchant: true
       arcadia.dungeons: true
