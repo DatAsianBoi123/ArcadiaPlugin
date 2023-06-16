@@ -40,6 +40,9 @@ permissions:
   arcadia.dungeon:
     description: Allows the player to manage dungeons (/arcadia dungeons)
     default: op
+  arcadia.data:
+    description: Allows the player to manage player data (/arcadia playerdata)
+    default: op
   arcadia.command:
     description: Allows the player to use the default arcadia command (/arcadia)
     default: true
@@ -67,3 +70,4 @@ permissions:
       arcadia.loot: true
       arcadia.enchant: true
       arcadia.dungeons: true
+      arcadia.data: true

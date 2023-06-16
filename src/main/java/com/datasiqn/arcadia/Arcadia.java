@@ -121,6 +121,7 @@ public final class Arcadia extends JavaPlugin {
         commandManager.registerCommand("dungeons", new CommandDungeons(this).getCommand());
         commandManager.registerCommand("lobby", new CommandLobby(this).getCommand());
         commandManager.registerCommand("spawn", new CommandSpawn().getCommand());
+        commandManager.registerCommand("playerdata", new CommandPlayerData(this).getCommand());
         commandManager.registerCommand("bag", new CommandBuilder()
                 .requiresPlayer()
                 .executes(context -> {

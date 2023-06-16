@@ -15,4 +15,5 @@ public final class ArcadiaPermission {
     public static final String PERMISSION_USE_ENCHANT = "arcadia.enchant";
     public static final String PERMISSION_MANAGE_DUNGEONS = "arcadia.dungeons";
     public static final String PERMISSION_USE_LOBBY = "arcadia.lobby";
+    public static final String PERMISSION_MANAGE_DATA = "arcadia.data";
 }
