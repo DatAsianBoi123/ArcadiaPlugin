@@ -31,6 +31,9 @@ permissions:
   arcadia.recipe:
     description: Allows the player to view any recipe (/arcadia viewrecipe)
     default: true
+  arcadia.upgrade:
+    description: Allows the player to view any upgrade (/arcadia viewupgrade)
+    default: true
   arcadia.lobby:
     description: Allows the player to go to the lobby (/arcadia lobby)
     default: true
@@ -46,6 +49,7 @@ permissions:
     default: true
     children:
       arcadia.recipe: true
+      arcadia.upgrade: true
       arcadia.command: true
       arcadia.lobby: true
 

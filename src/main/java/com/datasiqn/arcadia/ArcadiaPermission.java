@@ -10,6 +10,7 @@ public final class ArcadiaPermission {
     public static final String PERMISSION_USE_GUI = "arcadia.gui";
     public static final String PERMISSION_USE_DEBUG = "arcadia.debug";
     public static final String PERMISSION_USE_RECIPE = "arcadia.recipe";
+    public static final String PERMISSION_USE_UPGRADE = "arcadia.upgrade";
     public static final String PERMISSION_USE_LOOT = "arcadia.loot";
     public static final String PERMISSION_USE_ENCHANT = "arcadia.enchant";
     public static final String PERMISSION_MANAGE_DUNGEONS = "arcadia.dungeons";

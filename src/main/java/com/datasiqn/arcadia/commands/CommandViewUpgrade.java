@@ -1,5 +1,6 @@
 package com.datasiqn.arcadia.commands;
 
+import com.datasiqn.arcadia.ArcadiaPermission;
 import com.datasiqn.arcadia.commands.argument.ArcadiaArgumentType;
 import com.datasiqn.arcadia.menu.handlers.UpgradeMenuHandler;
 import com.datasiqn.commandcore.commands.builder.ArgumentBuilder;
@@ -10,6 +11,8 @@ import org.bukkit.inventory.Inventory;
 public class CommandViewUpgrade {
     public CommandBuilder getCommand() {
         return new CommandBuilder()
+                .permission(ArcadiaPermission.PERMISSION_USE_UPGRADE)
+                .description("Views an upgrade")
                 .then(ArgumentBuilder.argument(ArcadiaArgumentType.UPGRADE, "upgrade")
                         .requiresPlayer()
                         .executes(context -> {
