@@ -1,5 +1,6 @@
 package com.datasiqn.arcadia.item.material;
 
+import com.datasiqn.arcadia.ArcadiaTag;
 import com.datasiqn.arcadia.item.ItemRarity;
 import com.datasiqn.arcadia.item.abilities.*;
 import com.datasiqn.arcadia.item.material.data.MaterialData;
@@ -13,13 +14,18 @@ import com.datasiqn.arcadia.item.stat.ItemAttribute;
 import com.datasiqn.arcadia.item.stat.ItemStats;
 import com.datasiqn.arcadia.item.type.ItemType;
 import com.datasiqn.arcadia.item.type.data.ConsumableData;
+import com.datasiqn.arcadia.util.PdcUtil;
 import com.datasiqn.arcadia.util.lorebuilder.Lore;
 import com.datasiqn.arcadia.util.lorebuilder.LoreBuilder;
 import com.datasiqn.arcadia.util.lorebuilder.component.ComponentBuilder;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 import java.util.function.UnaryOperator;
@@ -306,5 +312,16 @@ public enum ArcadiaMaterial {
     @NotNull
     public ArcadiaItemMeta createItemMeta(UUID uuid) {
         return metaBuilder.apply(new ArcadiaItemMeta(uuid));
+    }
+
+    public static @Nullable ArcadiaMaterial fromItemStack(@NotNull ItemStack itemStack) {
+        ItemMeta meta = itemStack.getItemMeta();
+        if (meta == null) return null;
+
+        PersistentDataContainer pdc = meta.getPersistentDataContainer();
+        if (!PdcUtil.has(pdc, ArcadiaTag.ITEM_ID)) return null;
+        if (PdcUtil.getOrDefault(pdc, ArcadiaTag.ITEM_MATERIAL, false)) return null;
+
+        return PdcUtil.get(pdc, ArcadiaTag.ITEM_ID).getMaterial();
     }
 }

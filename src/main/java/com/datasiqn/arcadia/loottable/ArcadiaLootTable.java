@@ -2,7 +2,6 @@ package com.datasiqn.arcadia.loottable;
 
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.item.ArcadiaItem;
-import com.datasiqn.arcadia.util.ItemUtil;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -32,7 +31,21 @@ public interface ArcadiaLootTable {
             ArcadiaItem itemToSplit = items.stream().findAny().get();
 
             float splitAmount = (itemToSplit.getAmount() / (float) totalAmount) * (size - emptySlots);
-            itemsSplit.addAll(ItemUtil.splitItem(itemToSplit, Math.round(splitAmount)));
+            int times = Math.round(splitAmount);
+            Set<ArcadiaItem> itemSet = new HashSet<>(times);
+            int amount = Math.floorDiv(itemToSplit.getAmount(), times);
+            int extraAmounts = itemToSplit.getAmount() % times;
+            for (int i = 0; i < times; i++) {
+                ArcadiaItem item = new ArcadiaItem(itemToSplit);
+                if (extraAmounts > 0) {
+                    item.setAmount(amount + 1);
+                    extraAmounts -= 1;
+                } else {
+                    item.setAmount(amount);
+                }
+                if (item.getAmount() > 0) itemSet.add(item);
+            }
+            itemsSplit.addAll(itemSet);
 
             items.remove(itemToSplit);
         }

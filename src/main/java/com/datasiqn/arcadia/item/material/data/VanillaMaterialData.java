@@ -13,8 +13,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public class DefaultMaterialData extends MaterialData<@Nullable NoneItemData> {
-    public DefaultMaterialData(@NotNull Material material) {
+public class VanillaMaterialData extends MaterialData<@Nullable NoneItemData> {
+    public VanillaMaterialData(@NotNull Material material) {
         super(new Builder<>(ItemType.NONE).material(material));
     }
 

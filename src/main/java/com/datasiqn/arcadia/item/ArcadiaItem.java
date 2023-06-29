@@ -3,13 +3,12 @@ package com.datasiqn.arcadia.item;
 import com.datasiqn.arcadia.ArcadiaTag;
 import com.datasiqn.arcadia.datatypes.EnchantsDataType;
 import com.datasiqn.arcadia.item.material.ArcadiaMaterial;
-import com.datasiqn.arcadia.item.material.data.DefaultMaterialData;
 import com.datasiqn.arcadia.item.material.data.MaterialData;
+import com.datasiqn.arcadia.item.material.data.VanillaMaterialData;
 import com.datasiqn.arcadia.item.meta.ArcadiaItemMeta;
 import com.datasiqn.arcadia.item.stat.AttributeInstance;
 import com.datasiqn.arcadia.item.stat.AttributeRange;
 import com.datasiqn.arcadia.item.stat.ItemAttribute;
-import com.datasiqn.arcadia.util.ItemUtil;
 import com.datasiqn.arcadia.util.PdcUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -52,7 +51,7 @@ public class ArcadiaItem implements ConfigurationSerializable {
         this(material, 1);
     }
     public ArcadiaItem(@NotNull Material material, int amount) {
-        this(ItemUtil.fromDefaultItem(material));
+        this(new VanillaMaterialData(material));
         this.amount = amount;
     }
 
@@ -67,14 +66,14 @@ public class ArcadiaItem implements ConfigurationSerializable {
 
     public ArcadiaItem(@NotNull ItemStack itemStack) {
         this.amount = itemStack.getAmount();
-        ArcadiaMaterial arcadiaMaterial = ItemUtil.getFrom(itemStack);
+        ArcadiaMaterial arcadiaMaterial = ArcadiaMaterial.fromItemStack(itemStack);
         if (arcadiaMaterial == null) {
             MaterialData<?> data;
             try {
                 arcadiaMaterial = ArcadiaMaterial.valueOf(itemStack.getType().name());
                 data = arcadiaMaterial.getData();
             } catch (IllegalArgumentException ignored) {
-                data = ItemUtil.fromDefaultItem(itemStack.getType());
+                data = new VanillaMaterialData(itemStack.getType());
             }
             this.itemData = data;
             this.material = arcadiaMaterial;
@@ -206,7 +205,7 @@ public class ArcadiaItem implements ConfigurationSerializable {
     }
 
     public boolean isDefaultMaterial() {
-        return itemData instanceof DefaultMaterialData;
+        return itemData instanceof VanillaMaterialData;
     }
 
     public @NotNull ItemId getId() {
@@ -250,14 +249,14 @@ public class ArcadiaItem implements ConfigurationSerializable {
         } catch (IllegalArgumentException e) {
             Material matchMaterial = Material.matchMaterial(id);
             if (matchMaterial == null) matchMaterial = Material.STONE;
-            item = new ArcadiaItem(ItemUtil.fromDefaultItem(matchMaterial));
+            item = new ArcadiaItem(new VanillaMaterialData(matchMaterial));
         }
         item.amount = data.get("amount") instanceof Integer integer ? integer : 1;
         return item;
     }
 
     public static @NotNull ItemStack from(@NotNull Material material, int amount) {
-        ArcadiaItem arcadiaItem = new ArcadiaItem(ItemUtil.fromDefaultItem(material));
+        ArcadiaItem arcadiaItem = new ArcadiaItem(new VanillaMaterialData(material));
         arcadiaItem.amount = amount;
         return arcadiaItem.build();
     }
