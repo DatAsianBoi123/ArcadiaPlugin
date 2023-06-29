@@ -80,7 +80,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerPickupXp(@NotNull PlayerExpChangeEvent event) {
         PlayerData playerData = playerManager.getPlayerData(event.getPlayer());
-        playerData.setTotalXp(playerData.getTotalXp() + event.getAmount());
+        playerData.addXp(event.getAmount());
 
         event.setAmount(0);
     }

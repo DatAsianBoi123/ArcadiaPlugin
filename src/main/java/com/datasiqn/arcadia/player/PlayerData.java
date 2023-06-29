@@ -8,7 +8,6 @@ import com.datasiqn.arcadia.item.stat.ItemAttribute;
 import com.datasiqn.arcadia.item.stat.ItemStats;
 import com.datasiqn.arcadia.item.stat.StatIcon;
 import com.datasiqn.arcadia.item.type.ItemType;
-import com.datasiqn.arcadia.util.XPUtil;
 import com.datasiqn.schedulebuilder.ScheduleBuilder;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.*;
@@ -42,7 +41,7 @@ public class PlayerData {
     private final ArcadiaSender<Player> player;
     private final Object2DoubleMap<PlayerAttribute> attributes = new Object2DoubleOpenHashMap<>();
     private final Arcadia plugin;
-    private long xp = 0;
+    private Experience xp = new Experience();
 
     private double health;
     private double hunger;
@@ -72,8 +71,8 @@ public class PlayerData {
     }
 
     public void updateLevel() {
-        player.get().setLevel(getLevel());
-        player.get().setExp((float) getLevelProgress());
+        player.get().setLevel(xp.getLevel());
+        player.get().setExp((float) xp.getProgress());
     }
 
     public void updateValues() {
@@ -221,9 +220,9 @@ public class PlayerData {
             plugin.getLogger().warning("Data file for player " + player.get().getName() + " (" + player.get().getUniqueId() + ") does not exist");
             return;
         }
-        xp = 0;
+        xp = new Experience();
         if (jsonObject.has("xp")) {
-            xp = jsonObject.get("xp").getAsLong();
+            xp = new Experience(jsonObject.get("xp").getAsLong());
         }
 
         if (jsonObject.has("amulet")) {
@@ -240,7 +239,7 @@ public class PlayerData {
 
     public void saveData() {
         JsonObject jsonObject = new JsonObject();
-        jsonObject.add("xp", new JsonPrimitive(xp));
+        jsonObject.add("xp", new JsonPrimitive(xp.getAmount()));
         ArcadiaItem[] amulet = equipment.getAmulet();
         JsonArray amuletArray = new JsonArray();
         for (int i = 0; i < amulet.length; i++) {
@@ -265,20 +264,12 @@ public class PlayerData {
         return equipment;
     }
 
-    public long getTotalXp() {
+    public Experience getXp() {
         return xp;
     }
 
-    public int getLevel() {
-        return XPUtil.getLevelFromXP(xp);
-    }
-
-    public double getLevelProgress() {
-        return XPUtil.getProgress(xp);
-    }
-
-    public void setTotalXp(long xp) {
-        this.xp = xp;
+    public void addXp(long xp) {
+        this.xp.setAmount(this.xp.getAmount() + xp);
         new Thread(this::saveData).start();
         updateLevel();
     }
