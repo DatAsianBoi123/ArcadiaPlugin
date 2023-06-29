@@ -3,7 +3,7 @@ package com.datasiqn.arcadia.managers;
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.dungeon.DungeonInstance;
 import com.datasiqn.arcadia.dungeon.DungeonPlayer;
-import com.datasiqn.arcadia.players.PlayerData;
+import com.datasiqn.arcadia.player.PlayerData;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.bukkit.Bukkit;

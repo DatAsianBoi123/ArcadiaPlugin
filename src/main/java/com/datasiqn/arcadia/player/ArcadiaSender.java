@@ -1,4 +1,4 @@
-package com.datasiqn.arcadia.players;
+package com.datasiqn.arcadia.player;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;

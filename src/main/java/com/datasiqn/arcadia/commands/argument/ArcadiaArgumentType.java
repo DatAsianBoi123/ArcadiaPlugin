@@ -6,7 +6,7 @@ import com.datasiqn.arcadia.entities.EntityType;
 import com.datasiqn.arcadia.item.material.ArcadiaMaterial;
 import com.datasiqn.arcadia.loottable.LootTables;
 import com.datasiqn.arcadia.menu.MenuType;
-import com.datasiqn.arcadia.players.PlayerData;
+import com.datasiqn.arcadia.player.PlayerData;
 import com.datasiqn.arcadia.recipe.ArcadiaRecipe;
 import com.datasiqn.arcadia.upgrade.UpgradeType;
 import com.datasiqn.commandcore.argument.type.ArgumentType;

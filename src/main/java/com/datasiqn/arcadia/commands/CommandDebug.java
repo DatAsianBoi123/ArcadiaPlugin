@@ -2,7 +2,7 @@ package com.datasiqn.arcadia.commands;
 
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.ArcadiaPermission;
-import com.datasiqn.arcadia.players.PlayerData;
+import com.datasiqn.arcadia.player.PlayerData;
 import com.datasiqn.commandcore.argument.type.ArgumentType;
 import com.datasiqn.commandcore.command.builder.ArgumentBuilder;
 import com.datasiqn.commandcore.command.builder.CommandBuilder;

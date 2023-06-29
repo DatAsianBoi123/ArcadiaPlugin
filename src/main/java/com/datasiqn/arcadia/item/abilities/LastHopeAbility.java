@@ -1,7 +1,7 @@
 package com.datasiqn.arcadia.item.abilities;
 
-import com.datasiqn.arcadia.players.ArcadiaSender;
-import com.datasiqn.arcadia.players.PlayerData;
+import com.datasiqn.arcadia.player.ArcadiaSender;
+import com.datasiqn.arcadia.player.PlayerData;
 import com.datasiqn.arcadia.util.lorebuilder.Lore;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

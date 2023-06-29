@@ -1,7 +1,7 @@
 package com.datasiqn.arcadia.commands.argument;
 
 import com.datasiqn.arcadia.Arcadia;
-import com.datasiqn.arcadia.players.PlayerData;
+import com.datasiqn.arcadia.player.PlayerData;
 import com.datasiqn.commandcore.argument.ArgumentReader;
 import com.datasiqn.commandcore.argument.type.ArgumentType;
 import com.datasiqn.commandcore.command.CommandContext;

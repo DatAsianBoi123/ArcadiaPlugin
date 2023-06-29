@@ -6,7 +6,7 @@ import com.datasiqn.arcadia.listeners.*;
 import com.datasiqn.arcadia.managers.DungeonManager;
 import com.datasiqn.arcadia.managers.PlayerManager;
 import com.datasiqn.arcadia.managers.UpgradeEventManager;
-import com.datasiqn.arcadia.players.PlayerData;
+import com.datasiqn.arcadia.player.PlayerData;
 import com.datasiqn.arcadia.util.ItemUtil;
 import com.datasiqn.arcadia.util.PdcUtil;
 import com.datasiqn.commandcore.CommandCore;

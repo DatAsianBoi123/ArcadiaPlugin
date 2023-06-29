@@ -1,7 +1,7 @@
 package com.datasiqn.arcadia.item.type.data;
 
 import com.datasiqn.arcadia.item.stat.ItemAttribute;
-import com.datasiqn.arcadia.players.PlayerData;
+import com.datasiqn.arcadia.player.PlayerData;
 import com.datasiqn.arcadia.util.lorebuilder.Lore;
 import com.datasiqn.arcadia.util.lorebuilder.LoreBuilder;
 import com.datasiqn.arcadia.util.lorebuilder.component.ComponentBuilder;

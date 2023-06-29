@@ -1,8 +1,8 @@
 package com.datasiqn.arcadia.managers;
 
 import com.datasiqn.arcadia.Arcadia;
-import com.datasiqn.arcadia.players.ArcadiaSender;
-import com.datasiqn.arcadia.players.PlayerData;
+import com.datasiqn.arcadia.player.ArcadiaSender;
+import com.datasiqn.arcadia.player.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

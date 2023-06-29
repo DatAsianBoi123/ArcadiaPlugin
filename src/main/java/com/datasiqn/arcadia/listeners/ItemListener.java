@@ -8,7 +8,7 @@ import com.datasiqn.arcadia.item.abilities.AbilityExecutor;
 import com.datasiqn.arcadia.item.abilities.AbilityType;
 import com.datasiqn.arcadia.item.abilities.ItemAbility;
 import com.datasiqn.arcadia.menu.handlers.BagMenuHandler;
-import com.datasiqn.arcadia.players.PlayerData;
+import com.datasiqn.arcadia.player.PlayerData;
 import com.datasiqn.arcadia.util.PdcUtil;
 import com.datasiqn.menuapi.MenuApi;
 import com.datasiqn.schedulebuilder.ScheduleBuilder;

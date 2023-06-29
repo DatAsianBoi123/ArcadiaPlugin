@@ -1,6 +1,6 @@
 package com.datasiqn.arcadia.dungeon;
 
-import com.datasiqn.arcadia.players.PlayerData;
+import com.datasiqn.arcadia.player.PlayerData;
 import com.datasiqn.arcadia.upgrade.Upgrade;
 import com.datasiqn.arcadia.upgrade.UpgradeType;
 import org.jetbrains.annotations.NotNull;

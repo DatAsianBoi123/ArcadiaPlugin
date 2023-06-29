@@ -7,8 +7,8 @@ import com.datasiqn.arcadia.item.ArcadiaItem;
 import com.datasiqn.arcadia.item.stat.ItemAttribute;
 import com.datasiqn.arcadia.item.type.ItemType;
 import com.datasiqn.arcadia.managers.PlayerManager;
-import com.datasiqn.arcadia.players.PlayerData;
-import com.datasiqn.arcadia.players.PlayerEquipment;
+import com.datasiqn.arcadia.player.PlayerData;
+import com.datasiqn.arcadia.player.PlayerEquipment;
 import com.datasiqn.arcadia.util.PdcUtil;
 import com.datasiqn.schedulebuilder.ScheduleBuilder;
 import org.bukkit.GameMode;
@@ -162,6 +162,7 @@ public class PlayerListener implements Listener {
     public void onPlayerLoseHunger(@NotNull FoodLevelChangeEvent event) {
         event.setCancelled(true);
         event.getEntity().setFoodLevel(20);
+        event.getEntity().setSaturation(5);
     }
 
     @EventHandler

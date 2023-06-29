@@ -1,4 +1,4 @@
-package com.datasiqn.arcadia.players;
+package com.datasiqn.arcadia.player;
 
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.DamageHelper;
@@ -18,6 +18,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -119,6 +120,8 @@ public class PlayerData {
                 player.get().setHealth(expectedHealth);
             }
         }
+
+        beginRegenHealth();
     }
 
     public void damage(@NotNull EntityDamageEvent event) {
@@ -140,15 +143,7 @@ public class PlayerData {
         }
         updateActionbar();
 
-        if (health < getAttribute(PlayerAttribute.MAX_HEALTH)) {
-            if (regenHealthRunnable == null || regenHealthRunnable.isCancelled()) {
-                regenHealthRunnable = ScheduleBuilder.create()
-                        .wait(4.0).seconds()
-                        .repeatEvery(4.0).seconds()
-                        .executes(runnable -> heal(getAttribute(PlayerAttribute.MAX_HEALTH) / 10))
-                        .run(plugin);
-            }
-        }
+        beginRegenHealth();
 
         if (!debugMode) return;
         player.sendMessageRaw("-------------------------");
@@ -175,9 +170,15 @@ public class PlayerData {
         health += amount;
         if (health >= getAttribute(PlayerAttribute.MAX_HEALTH)) {
             health = getAttribute(PlayerAttribute.MAX_HEALTH);
-            if (regenHealthRunnable != null) regenHealthRunnable.cancel();
+            stopRegen();
         }
-        player.get().setHealth(getHearts());
+
+        // Doing this instead of a simple LivingEntity#setHealth
+        // because that method doesn't show the regen health animation
+        CraftPlayer craftPlayer = (CraftPlayer) player.get();
+        craftPlayer.setRealHealth(getHearts());
+        craftPlayer.sendHealthUpdate();
+
         updateActionbar();
     }
 
@@ -314,6 +315,22 @@ public class PlayerData {
         this.debugMode = debugMode;
     }
 
+    private void beginRegenHealth() {
+        if (health < getAttribute(PlayerAttribute.MAX_HEALTH)) {
+            if (regenHealthRunnable == null || regenHealthRunnable.isCancelled()) {
+                regenHealthRunnable = ScheduleBuilder.create()
+                        .wait(4.0).seconds()
+                        .repeatEvery(4.0).seconds()
+                        .executes(runnable -> heal(getAttribute(PlayerAttribute.MAX_HEALTH) / 10))
+                        .run(plugin);
+            }
+        }
+    }
+
+    private void stopRegen() {
+        if (regenHealthRunnable != null) regenHealthRunnable.cancel();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -322,12 +339,6 @@ public class PlayerData {
         PlayerData that = (PlayerData) o;
 
         return getPlayer().getUniqueId().equals(that.getPlayer().getUniqueId());
-    }
-
-    public static @NotNull PlayerData create(@NotNull ArcadiaSender<Player> player, Arcadia plugin) {
-        PlayerData stats = new PlayerData(player, plugin);
-        stats.updateValues();
-        return stats;
     }
 
     private double getHearts() {
@@ -353,6 +364,12 @@ public class PlayerData {
             return null;
         }
         return file;
+    }
+
+    public static @NotNull PlayerData create(@NotNull ArcadiaSender<Player> player, Arcadia plugin) {
+        PlayerData stats = new PlayerData(player, plugin);
+        stats.updateValues();
+        return stats;
     }
 
     private static String formatDouble(double d, @NotNull DecimalFormat format) {

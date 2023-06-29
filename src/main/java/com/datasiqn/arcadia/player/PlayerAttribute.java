@@ -1,4 +1,4 @@
-package com.datasiqn.arcadia.players;
+package com.datasiqn.arcadia.player;
 
 import com.datasiqn.arcadia.item.stat.ItemAttribute;
 
