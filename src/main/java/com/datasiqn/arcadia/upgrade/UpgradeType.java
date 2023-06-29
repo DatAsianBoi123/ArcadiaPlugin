@@ -12,6 +12,7 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2DoubleLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import org.bukkit.Material;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 public enum UpgradeType {
@@ -74,7 +75,7 @@ public enum UpgradeType {
         this.material = material;
         this.rarity = rarity;
 
-        Arcadia.getPlugin(Arcadia.class).getUpgradeEventManager().register(listener, this);
+        JavaPlugin.getPlugin(Arcadia.class).getUpgradeEventManager().register(listener, this);
     }
 
     public String getDisplayName() {

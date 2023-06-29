@@ -7,7 +7,7 @@ import com.datasiqn.commandcore.command.builder.CommandBuilder;
 
 public class CommandSummon {
     public CommandBuilder getCommand() {
-        return new CommandBuilder()
+        return new CommandBuilder("summon")
                 .permission(ArcadiaPermission.PERMISSION_USE_SUMMON)
                 .description("Summons a custom Arcadia Entity")
                 .then(ArgumentBuilder.argument(ArcadiaArgumentType.ENTITY, "entity")

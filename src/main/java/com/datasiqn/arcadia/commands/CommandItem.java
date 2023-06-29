@@ -4,7 +4,7 @@ import com.datasiqn.arcadia.ArcadiaPermission;
 import com.datasiqn.arcadia.commands.argument.ArcadiaArgumentType;
 import com.datasiqn.arcadia.item.ArcadiaItem;
 import com.datasiqn.arcadia.item.material.ArcadiaMaterial;
-import com.datasiqn.commandcore.argument.ArgumentType;
+import com.datasiqn.commandcore.argument.type.ArgumentType;
 import com.datasiqn.commandcore.command.builder.ArgumentBuilder;
 import com.datasiqn.commandcore.command.builder.CommandBuilder;
 import org.bukkit.entity.Player;
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class CommandItem {
     public CommandBuilder getCommand() {
-        return new CommandBuilder()
+        return new CommandBuilder("i")
                 .permission(ArcadiaPermission.PERMISSION_USE_ITEM)
                 .description("Gives you a custom Arcadia Item")
                 .then(ArgumentBuilder.argument(ArcadiaArgumentType.ITEM, "item")

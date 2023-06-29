@@ -10,7 +10,7 @@ import org.bukkit.inventory.Inventory;
 
 public class CommandViewUpgrade {
     public CommandBuilder getCommand() {
-        return new CommandBuilder()
+        return new CommandBuilder("viewupgrade")
                 .permission(ArcadiaPermission.PERMISSION_USE_UPGRADE)
                 .description("Views an upgrade")
                 .then(ArgumentBuilder.argument(ArcadiaArgumentType.UPGRADE, "upgrade")

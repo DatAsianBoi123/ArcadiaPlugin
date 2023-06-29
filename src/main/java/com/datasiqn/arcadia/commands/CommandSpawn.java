@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class CommandSpawn {
     public CommandBuilder getCommand() {
-        return new CommandBuilder()
+        return new CommandBuilder("spawn")
                 .permission(ArcadiaPermission.PERMISSION_USE_SPAWN)
                 .then(LiteralBuilder.literal("upgradechest")
                         .requiresPlayer()

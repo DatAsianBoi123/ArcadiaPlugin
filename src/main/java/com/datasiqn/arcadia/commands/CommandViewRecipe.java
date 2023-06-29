@@ -10,7 +10,7 @@ import org.bukkit.inventory.Inventory;
 
 public class CommandViewRecipe {
     public CommandBuilder getCommand() {
-        return new CommandBuilder()
+        return new CommandBuilder("viewrecipe")
                 .permission(ArcadiaPermission.PERMISSION_USE_RECIPE)
                 .description("Views a custom Arcadia Recipe")
                 .then(ArgumentBuilder.argument(ArcadiaArgumentType.RECIPE, "recipe")

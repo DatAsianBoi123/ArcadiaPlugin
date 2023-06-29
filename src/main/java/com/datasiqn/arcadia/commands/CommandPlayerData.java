@@ -2,9 +2,9 @@ package com.datasiqn.arcadia.commands;
 
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.ArcadiaPermission;
+import com.datasiqn.arcadia.commands.argument.ArcadiaArgumentType;
 import com.datasiqn.arcadia.managers.PlayerManager;
 import com.datasiqn.arcadia.players.PlayerData;
-import com.datasiqn.commandcore.argument.ArgumentType;
 import com.datasiqn.commandcore.command.builder.ArgumentBuilder;
 import com.datasiqn.commandcore.command.builder.CommandBuilder;
 import com.datasiqn.commandcore.command.builder.LiteralBuilder;
@@ -25,13 +25,13 @@ public class CommandPlayerData {
     }
 
     public CommandBuilder getCommand() {
-        return new CommandBuilder()
+        return new CommandBuilder("playerdata")
                 .permission(ArcadiaPermission.PERMISSION_MANAGE_DATA)
                 .description("Manages player data")
                 .then(LiteralBuilder.literal("load")
-                        .then(ArgumentBuilder.argument(ArgumentType.PLAYER, "player")
+                        .then(ArgumentBuilder.argument(ArcadiaArgumentType.PLAYER, "player")
                                 .executes(context -> new Thread(() -> {
-                                    PlayerData playerData = playerManager.getPlayerData(context.getArguments().get(1, ArgumentType.PLAYER).unwrap());
+                                    PlayerData playerData = context.getArguments().get(1, ArcadiaArgumentType.PLAYER).unwrap();
                                     playerData.loadData();
                                     playerData.getSender().sendMessage("Successfully loaded " + playerData.getPlayer().getName() + "'s player data");
                                 }).start()))
@@ -45,9 +45,9 @@ public class CommandPlayerData {
                             }
                         }))
                 .then(LiteralBuilder.literal("save")
-                        .then(ArgumentBuilder.argument(ArgumentType.PLAYER, "player")
+                        .then(ArgumentBuilder.argument(ArcadiaArgumentType.PLAYER, "player")
                                 .executes(context -> new Thread(() -> {
-                                    PlayerData playerData = playerManager.getPlayerData(context.getArguments().get(1, ArgumentType.PLAYER).unwrap());
+                                    PlayerData playerData = context.getArguments().get(1, ArcadiaArgumentType.PLAYER).unwrap();
                                     playerData.saveData();
                                     playerData.getSender().sendMessage("Successfully saved " + playerData.getPlayer().getName() + "'s player data");
                                 }).start()))

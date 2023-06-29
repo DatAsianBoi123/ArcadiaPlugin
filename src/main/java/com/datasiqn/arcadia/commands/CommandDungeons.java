@@ -18,7 +18,7 @@ public class CommandDungeons {
     }
 
     public CommandBuilder getCommand() {
-        return new CommandBuilder()
+        return new CommandBuilder("dungeons")
                 .permission(ArcadiaPermission.PERMISSION_MANAGE_DUNGEONS)
                 .description("Manages different dungeon instances")
                 .requiresPlayer()

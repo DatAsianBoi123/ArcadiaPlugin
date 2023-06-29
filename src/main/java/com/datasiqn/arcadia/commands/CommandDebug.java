@@ -3,7 +3,7 @@ package com.datasiqn.arcadia.commands;
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.ArcadiaPermission;
 import com.datasiqn.arcadia.players.PlayerData;
-import com.datasiqn.commandcore.argument.ArgumentType;
+import com.datasiqn.commandcore.argument.type.ArgumentType;
 import com.datasiqn.commandcore.command.builder.ArgumentBuilder;
 import com.datasiqn.commandcore.command.builder.CommandBuilder;
 import org.bukkit.entity.Player;
@@ -16,7 +16,7 @@ public class CommandDebug {
     }
 
     public CommandBuilder getCommand() {
-        return new CommandBuilder()
+        return new CommandBuilder("debug")
                 .permission(ArcadiaPermission.PERMISSION_USE_DEBUG)
                 .description("Changes if you're in debug mode or not")
                 .then(ArgumentBuilder.argument(ArgumentType.BOOLEAN, "mode")

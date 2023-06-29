@@ -14,7 +14,7 @@ public class CommandGUI {
     }
 
     public CommandBuilder getCommand() {
-        return new CommandBuilder()
+        return new CommandBuilder("opengui")
                 .permission(ArcadiaPermission.PERMISSION_USE_GUI)
                 .description("Opens a custom Arcadia GUI")
                 .then(ArgumentBuilder.argument(ArcadiaArgumentType.GUI, "gui")

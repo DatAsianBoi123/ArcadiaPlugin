@@ -1,18 +1,19 @@
 package com.datasiqn.arcadia.commands.argument;
 
-import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.dungeon.DungeonInstance;
 import com.datasiqn.arcadia.enchants.EnchantType;
 import com.datasiqn.arcadia.entities.EntityType;
 import com.datasiqn.arcadia.item.material.ArcadiaMaterial;
 import com.datasiqn.arcadia.loottable.LootTables;
 import com.datasiqn.arcadia.menu.MenuType;
+import com.datasiqn.arcadia.players.PlayerData;
 import com.datasiqn.arcadia.recipe.ArcadiaRecipe;
 import com.datasiqn.arcadia.upgrade.UpgradeType;
-import com.datasiqn.commandcore.argument.ArgumentType;
-import com.datasiqn.resultapi.Result;
+import com.datasiqn.commandcore.argument.type.ArgumentType;
 
 public interface ArcadiaArgumentType {
+    ArgumentType<PlayerData> PLAYER = new PlayerArgumentType();
+
     ArgumentType<ArcadiaMaterial> ITEM = new ArgumentType.EnumArgumentType<>(ArcadiaMaterial.class);
 
     ArgumentType<EnchantType> ENCHANT = new ArgumentType.EnumArgumentType<>(EnchantType.class);
@@ -27,6 +28,5 @@ public interface ArcadiaArgumentType {
 
     ArgumentType<MenuType> GUI = new ArgumentType.EnumArgumentType<>(MenuType.class);
 
-    ArgumentType<DungeonInstance> DUNGEON = new ArgumentType.CustomArgumentType<>(reader -> Result.<String, String>ok(reader.nextWord())
-            .andThen(str -> Result.ofNullable(Arcadia.getPlugin(Arcadia.class).getDungeonManager().getCreatedDungeon(str), "The dungeon '" + str + "' does not exist.")), context -> Arcadia.getPlugin(Arcadia.class).getDungeonManager().getAllDungeonInstances().stream().map(DungeonInstance::getId).toList());
+    ArgumentType<DungeonInstance> DUNGEON = new DungeonArgumentType();
 }

@@ -13,7 +13,7 @@ public class CommandLoot {
     private static final Random random = new Random();
 
     public CommandBuilder getCommand() {
-        return new CommandBuilder()
+        return new CommandBuilder("loot")
                 .permission(ArcadiaPermission.PERMISSION_USE_LOOT)
                 .description("Loots a specific loot table")
                 .then(ArgumentBuilder.argument(ArcadiaArgumentType.LOOT_TABLE, "loot table")

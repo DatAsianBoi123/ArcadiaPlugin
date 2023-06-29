@@ -10,6 +10,7 @@ import com.datasiqn.arcadia.players.PlayerData;
 import com.datasiqn.arcadia.util.ItemUtil;
 import com.datasiqn.arcadia.util.PdcUtil;
 import com.datasiqn.commandcore.CommandCore;
+import com.datasiqn.commandcore.InitOptions;
 import com.datasiqn.commandcore.command.builder.CommandBuilder;
 import com.datasiqn.commandcore.managers.CommandManager;
 import com.datasiqn.menuapi.MenuApi;
@@ -54,7 +55,9 @@ public final class Arcadia extends JavaPlugin {
             getLogger().info("Created default dungeon");
         }
 
-        CommandCore.init(this, "arcadia");
+        CommandCore.init(this, new InitOptions.Builder("arcadia")
+                .warnOn(InitOptions.Warning.MISSING_PERMISSION, InitOptions.Warning.MISSING_DESCRIPTION)
+                .build());
 
         registerAllCommands();
         registerAllListeners();
@@ -109,20 +112,20 @@ public final class Arcadia extends JavaPlugin {
 
     private void registerAllCommands() {
         CommandManager commandManager = CommandCore.getInstance().getCommandManager();
-        commandManager.registerCommand("i", new CommandItem().getCommand());
-        commandManager.registerCommand("opengui", new CommandGUI(this).getCommand());
-        commandManager.registerCommand("summon", new CommandSummon().getCommand());
-        commandManager.registerCommand("heal", new CommandHeal(this).getCommand());
-        commandManager.registerCommand("debug", new CommandDebug(this).getCommand());
-        commandManager.registerCommand("viewrecipe", new CommandViewRecipe().getCommand());
-        commandManager.registerCommand("viewupgrade", new CommandViewUpgrade().getCommand());
-        commandManager.registerCommand("loot", new CommandLoot().getCommand());
-        commandManager.registerCommand("enchant", new CommandEnchant(this).getCommand());
-        commandManager.registerCommand("dungeons", new CommandDungeons(this).getCommand());
-        commandManager.registerCommand("lobby", new CommandLobby(this).getCommand());
-        commandManager.registerCommand("spawn", new CommandSpawn().getCommand());
-        commandManager.registerCommand("playerdata", new CommandPlayerData(this).getCommand());
-        commandManager.registerCommand("bag", new CommandBuilder()
+        commandManager.registerCommand(new CommandItem().getCommand());
+        commandManager.registerCommand(new CommandGUI(this).getCommand());
+        commandManager.registerCommand(new CommandSummon().getCommand());
+        commandManager.registerCommand(new CommandHeal(this).getCommand());
+        commandManager.registerCommand(new CommandDebug(this).getCommand());
+        commandManager.registerCommand(new CommandViewRecipe().getCommand());
+        commandManager.registerCommand(new CommandViewUpgrade().getCommand());
+        commandManager.registerCommand(new CommandLoot().getCommand());
+        commandManager.registerCommand(new CommandEnchant(this).getCommand());
+        commandManager.registerCommand(new CommandDungeons(this).getCommand());
+        commandManager.registerCommand(new CommandLobby(this).getCommand());
+        commandManager.registerCommand(new CommandSpawn().getCommand());
+        commandManager.registerCommand(new CommandPlayerData(this).getCommand());
+        commandManager.registerCommand(new CommandBuilder("bag")
                 .requiresPlayer()
                 .executes(context -> {
                     ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD);

@@ -6,13 +6,14 @@ import com.datasiqn.arcadia.commands.argument.ArcadiaArgumentType;
 import com.datasiqn.arcadia.enchants.EnchantType;
 import com.datasiqn.arcadia.item.ArcadiaItem;
 import com.datasiqn.arcadia.managers.PlayerManager;
-import com.datasiqn.commandcore.argument.ArgumentType;
+import com.datasiqn.commandcore.argument.type.ArgumentType;
 import com.datasiqn.commandcore.command.builder.ArgumentBuilder;
 import com.datasiqn.commandcore.command.builder.CommandBuilder;
 import com.datasiqn.commandcore.command.builder.LiteralBuilder;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandEnchant {
     private final Arcadia plugin;
@@ -23,7 +24,7 @@ public class CommandEnchant {
 
     public CommandBuilder getCommand() {
         PlayerManager playerManager = plugin.getPlayerManager();
-        return new CommandBuilder()
+        return new CommandBuilder("enchant")
                 .permission(ArcadiaPermission.PERMISSION_USE_ENCHANT)
                 .description("Enchants the item in your hand")
                 .then(LiteralBuilder.literal("add")
@@ -62,7 +63,7 @@ public class CommandEnchant {
                         }));
     }
 
-    private void addEnchant(Player player, EnchantType type, int level) {
+    private void addEnchant(@NotNull Player player, EnchantType type, int level) {
         PlayerInventory inventory = player.getInventory();
         ItemStack itemStack = inventory.getItemInMainHand();
         ArcadiaItem arcadiaItem = new ArcadiaItem(itemStack);

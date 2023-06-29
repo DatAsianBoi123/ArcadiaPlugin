@@ -12,7 +12,7 @@ public class CommandLobby {
     }
 
     public CommandBuilder getCommand() {
-        return new CommandBuilder()
+        return new CommandBuilder("lobby")
                 .permission(ArcadiaPermission.PERMISSION_USE_LOBBY)
                 .description("Sends you to the lobby")
                 .requiresPlayer()
