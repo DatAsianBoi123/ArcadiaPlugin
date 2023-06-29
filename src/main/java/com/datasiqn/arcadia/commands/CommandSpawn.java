@@ -21,6 +21,7 @@ public class CommandSpawn {
     public CommandBuilder getCommand() {
         return new CommandBuilder("spawn")
                 .permission(ArcadiaPermission.PERMISSION_USE_SPAWN)
+                .description("Spawns different types of chests")
                 .then(LiteralBuilder.literal("upgradechest")
                         .requiresPlayer()
                         .executes(context -> {
