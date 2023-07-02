@@ -15,7 +15,7 @@ public final class ArcadiaTag<T> {
     public static final ArcadiaTag<ItemId> ITEM_ID = new ArcadiaTag<>("id", ArcadiaDataType.ITEM_ID);
     public static final ArcadiaTag<UUID> ITEM_UUID = new ArcadiaTag<>("uuid", ArcadiaDataType.UUID);
     public static final ArcadiaTag<Boolean> ITEM_MATERIAL = new ArcadiaTag<>("material", ArcadiaDataType.BOOLEAN);
-    public static final ArcadiaTag<Double> ITEM_QUALITY_BONUS = new ArcadiaTag<>("quality_bonus", PersistentDataType.DOUBLE);
+    public static final ArcadiaTag<Double> ITEM_QUALITY = new ArcadiaTag<>("quality", PersistentDataType.DOUBLE);
 
     public static final ArcadiaTag<EnchantsDataType.EnchantData[]> ITEM_ENCHANTS = new ArcadiaTag<>("enchants", ArcadiaDataType.ENCHANTS);
     public static final ArcadiaTag<EnchantType> ENCHANT_ID = new ArcadiaTag<>("id", ArcadiaDataType.ENCHANT_ID);

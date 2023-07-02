@@ -16,11 +16,10 @@ import java.util.*;
 
 public class ArcadiaItemMeta {
     private final UUID uuid;
-    private final double itemQuality;
     private final ItemStats itemStats = new ItemStats();
     private final Object2IntMap<EnchantType> enchants = new Object2IntOpenHashMap<>();
 
-    private double qualityBonus;
+    private double itemQuality;
 
     public ArcadiaItemMeta(@NotNull UUID uuid) {
         this.uuid = uuid;
@@ -29,8 +28,7 @@ public class ArcadiaItemMeta {
     }
     public ArcadiaItemMeta(@NotNull PersistentDataContainer pdc) {
         this.uuid = PdcUtil.getOrDefault(pdc, ArcadiaTag.ITEM_UUID, UUID.randomUUID());
-        this.itemQuality = new Random(uuid.getMostSignificantBits()).nextDouble();
-        this.qualityBonus = PdcUtil.getOrDefault(pdc, ArcadiaTag.ITEM_QUALITY_BONUS, 0d);
+        this.itemQuality = PdcUtil.getOrDefault(pdc, ArcadiaTag.ITEM_QUALITY, 0d);
         this.itemStats.setItemQuality(itemQuality);
 
         EnchantsDataType.EnchantData[] enchantData = PdcUtil.getOrDefault(pdc, ArcadiaTag.ITEM_ENCHANTS, new EnchantsDataType.EnchantData[0]);
@@ -51,13 +49,9 @@ public class ArcadiaItemMeta {
         return itemQuality;
     }
 
-    public double getItemQualityBonus() {
-        return qualityBonus;
-    }
-
-    public void setItemQualityBonus(double newAmount) {
-        this.qualityBonus = Math.min(1 - itemQuality, newAmount);
-        this.itemStats.setItemQuality(itemQuality + qualityBonus);
+    public void setItemQuality(double newAmount) {
+        this.itemQuality = Math.min(1, newAmount);
+        this.itemStats.setItemQuality(itemQuality);
     }
 
     public boolean hasEnchants() {
@@ -98,7 +92,7 @@ public class ArcadiaItemMeta {
         }
 
         if (itemStats.hasAttributes()) {
-            PdcUtil.set(pdc, ArcadiaTag.ITEM_QUALITY_BONUS, qualityBonus);
+            PdcUtil.set(pdc, ArcadiaTag.ITEM_QUALITY, itemQuality);
         }
     }
 }

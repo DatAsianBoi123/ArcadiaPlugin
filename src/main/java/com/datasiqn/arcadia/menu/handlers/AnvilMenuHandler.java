@@ -149,13 +149,13 @@ public class AnvilMenuHandler extends MenuHandler {
             }
 
             if (originalArcadiaItem.isSimilar(addedArcadiaItem)) {
-                double newBonus = originalMeta.getItemQualityBonus() + addedMeta.getItemQuality() + addedMeta.getItemQualityBonus();
-                originalMeta.setItemQualityBonus(newBonus);
+                double newBonus = originalMeta.getItemQuality() + addedMeta.getItemQuality();
+                originalMeta.setItemQuality(newBonus);
             }
         }
 
         if (addedArcadiaItem.getMaterial() == ArcadiaMaterial.SPACE_REWRITER) {
-            originalMeta.setItemQualityBonus(originalMeta.getItemQualityBonus() + 0.1);
+            originalMeta.setItemQuality(originalMeta.getItemQuality() + 0.1);
         }
 
         inventory.setItem(31, MISSING_RECIPE);
