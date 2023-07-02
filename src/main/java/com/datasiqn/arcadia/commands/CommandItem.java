@@ -26,12 +26,12 @@ public class CommandItem {
 
     private void giveItem(@NotNull Player player, @NotNull ArcadiaMaterial material, int amount) {
         PlayerInventory inventory = player.getInventory();
-        ArcadiaItem item = new ArcadiaItem(material);
-        if (item.getItemData().isStackable()) {
-            item.setAmount(amount);
+        if (material.getData().isStackable()) {
+            ArcadiaItem item = new ArcadiaItem(material, amount);
             inventory.addItem(item.build());
         } else {
             for (int i = 0; i < amount; i++) {
+                ArcadiaItem item = new ArcadiaItem(material);
                 inventory.addItem(item.build());
             }
         }
