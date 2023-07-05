@@ -4,6 +4,7 @@ import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.menu.handlers.AmuletMenuHandler;
 import com.datasiqn.arcadia.menu.handlers.AnvilMenuHandler;
 import com.datasiqn.arcadia.menu.handlers.CraftingMenuHandler;
+import com.datasiqn.arcadia.menu.handlers.LevelMenuHandler;
 import com.datasiqn.menuapi.MenuApi;
 import com.datasiqn.menuapi.inventory.MenuHandler;
 import org.bukkit.entity.HumanEntity;
@@ -16,6 +17,7 @@ public enum MenuType {
     ANVIL(AnvilMenuHandler::new),
     CRAFTING(CraftingMenuHandler::new),
     AMULET(AmuletMenuHandler::new),
+    LEVEL(LevelMenuHandler::new),
     ;
 
     private final Function<Arcadia, MenuHandler> menuCreator;
