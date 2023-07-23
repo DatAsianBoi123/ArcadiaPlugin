@@ -3,18 +3,21 @@ package com.datasiqn.arcadia.listeners;
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.ArcadiaTag;
 import com.datasiqn.arcadia.DamageHelper;
+import com.datasiqn.arcadia.dungeon.DungeonPlayer;
 import com.datasiqn.arcadia.item.ArcadiaItem;
 import com.datasiqn.arcadia.item.stat.ItemAttribute;
 import com.datasiqn.arcadia.item.type.ItemType;
 import com.datasiqn.arcadia.managers.PlayerManager;
 import com.datasiqn.arcadia.player.PlayerData;
 import com.datasiqn.arcadia.player.PlayerEquipment;
+import com.datasiqn.arcadia.upgrade.listeners.actions.ShootBowAction;
 import com.datasiqn.arcadia.util.PdcUtil;
 import com.datasiqn.schedulebuilder.ScheduleBuilder;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -175,10 +178,16 @@ public class PlayerListener implements Listener {
         ArcadiaItem bowItem = new ArcadiaItem(event.getBow());
         if (bowItem.getItemData().getItemType() != ItemType.BOW) return;
 
-        PersistentDataContainer pdc = event.getProjectile().getPersistentDataContainer();
+        if (!(event.getProjectile() instanceof Arrow arrow)) return;
+        PersistentDataContainer pdc = arrow.getPersistentDataContainer();
         com.datasiqn.arcadia.item.stat.AttributeInstance damageAttribute = bowItem.getItemMeta().getItemStats().getAttribute(ItemAttribute.DAMAGE);
         double damageValue = damageAttribute == null ? 1 : damageAttribute.getValue();
         double damage = damageValue + DamageHelper.getStrengthBonus(playerData.getStrength(), damageValue) * event.getForce();
         PdcUtil.set(pdc, ArcadiaTag.ARROW_DAMAGE, damage);
+
+        DungeonPlayer dungeonPlayer = plugin.getDungeonManager().getDungeonPlayer(playerData.getUniqueId());
+        if (dungeonPlayer != null) {
+            plugin.getUpgradeEventManager().emit(new ShootBowAction(dungeonPlayer, arrow));
+        }
     }
 }
