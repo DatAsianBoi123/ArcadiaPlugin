@@ -101,17 +101,15 @@ public class DamageListener implements Listener {
     private void spawnDamageIndicator(@NotNull Location center, double damage) {
         World world = center.getWorld();
         if (world == null) return;
+        Vector direction = new Vector(Math.random() - 0.5, 0, Math.random() - 0.5);
+        direction.normalize();
+        direction.setY(1);
+        center.add(direction);
         NumberFormat numberFormat = NumberFormat.getInstance(Locale.ENGLISH);
-        AreaEffectCloud entity = world.spawn(center, AreaEffectCloud.class, cloud -> {
-            Location location = cloud.getLocation();
-            Vector direction = new Vector(Math.random() - 0.5, 0, Math.random() - 0.5);
-            direction.normalize();
-            direction.setY(0.5);
-            location.add(direction);
-            cloud.teleport(location);
-            cloud.setCustomName(ChatColor.RED + numberFormat.format(Math.round(damage)));
-            cloud.setCustomNameVisible(true);
-            cloud.setParticle(Particle.BLOCK_CRACK, Material.AIR.createBlockData());
+        TextDisplay entity = world.spawn(center, TextDisplay.class, display -> {
+            display.setText(ChatColor.RED + numberFormat.format(Math.round(damage)));
+            display.setAlignment(TextDisplay.TextAlignment.CENTER);
+            display.setBillboard(Display.Billboard.CENTER);
         });
         ScheduleBuilder.create()
                 .wait(1.0).seconds()
