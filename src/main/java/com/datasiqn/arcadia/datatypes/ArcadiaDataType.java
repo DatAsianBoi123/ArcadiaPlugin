@@ -2,7 +2,8 @@ package com.datasiqn.arcadia.datatypes;
 
 import com.datasiqn.arcadia.enchants.EnchantType;
 import com.datasiqn.arcadia.item.ItemId;
-import com.datasiqn.arcadia.loottable.LootTables;
+import com.datasiqn.arcadia.loottable.LootTable;
+import com.datasiqn.arcadia.upgrade.UpgradeType;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -27,5 +28,7 @@ public final class ArcadiaDataType {
 
     public static final PersistentDataType<PersistentDataContainer, Location> LOCATION = new LocationDataType();
 
-    public static final PersistentDataType<String, LootTables> LOOT_TABLE = new LootTableDataType();
+    public static final PersistentDataType<String, LootTable> LOOT_TABLE = new EnumDataType<>(LootTable.class);
+
+    public static final PersistentDataType<String, UpgradeType> UPGRADE_TYPE = new EnumDataType<>(UpgradeType.class);
 }
