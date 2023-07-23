@@ -5,6 +5,8 @@ import com.datasiqn.arcadia.item.ItemRarity;
 import com.datasiqn.arcadia.upgrade.listeners.BloodChaliceListener;
 import com.datasiqn.arcadia.upgrade.listeners.UpgradeListener;
 import com.datasiqn.arcadia.util.lorebuilder.Lore;
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.Multimap;
 import it.unimi.dsi.fastutil.ints.Int2LongMap;
 import it.unimi.dsi.fastutil.ints.Int2LongOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -15,10 +17,20 @@ import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.function.Function;
+
 public enum UpgradeType {
     BLOOD_CHALICE("Blood Chalice", Lore.of("Killing enemies heal you"), Material.POTION, ItemRarity.RARE, new BloodChaliceListener()),
     ;
 
+    private static final Multimap<ItemRarity, UpgradeType> UPGRADES = LinkedHashMultimap.create();
+    static {
+        Arrays.stream(values()).sorted(Comparator.comparing(type -> type.rarity)).forEach(type -> UPGRADES.put(type.rarity, type));
+    }
     private static final Object2DoubleMap<ItemRarity> RARITY_WEIGHTS = new Object2DoubleLinkedOpenHashMap<>();
     private static final double[] PROBABILITIES;
     private static final int[] ALIAS;
@@ -92,6 +104,15 @@ public enum UpgradeType {
 
     public ItemRarity getRarity() {
         return rarity;
+    }
+
+    public static UpgradeType getRandomWeighted() {
+        int random = (int) (Math.random() * RARITY_WEIGHTS.size());
+        int i;
+        if (Math.random() < PROBABILITIES[random]) i = random;
+        else i = ALIAS[random];
+        Collection<UpgradeType> upgrades = UPGRADES.keySet().stream().skip(i).findFirst().map(UPGRADES::get).orElse(Collections.emptyList());
+        return upgrades.stream().skip((int) (Math.random() * upgrades.size())).findFirst().orElse(BLOOD_CHALICE);
     }
 
     public static void testRandom() {
