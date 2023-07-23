@@ -3,7 +3,7 @@ package com.datasiqn.arcadia.commands;
 import com.datasiqn.arcadia.ArcadiaPermission;
 import com.datasiqn.arcadia.ArcadiaTag;
 import com.datasiqn.arcadia.commands.argument.ArcadiaArgumentType;
-import com.datasiqn.arcadia.loottable.LootTables;
+import com.datasiqn.arcadia.loottable.LootTable;
 import com.datasiqn.arcadia.util.PdcUtil;
 import com.datasiqn.commandcore.command.builder.ArgumentBuilder;
 import com.datasiqn.commandcore.command.builder.CommandBuilder;
@@ -38,14 +38,14 @@ public class CommandSpawn {
                         .then(ArgumentBuilder.argument(ArcadiaArgumentType.LOOT_TABLE, "loot table")
                                 .requiresPlayer()
                                 .executes(context -> {
-                                    LootTables lootTable = context.getArguments().get(1, ArcadiaArgumentType.LOOT_TABLE).unwrap();
+                                    LootTable lootTable = context.getArguments().get(1, ArcadiaArgumentType.LOOT_TABLE).unwrap();
                                     spawnLootChest(context.getSource().getPlayer().unwrap().getLocation(), lootTable);
                                 }))
                         .requiresPlayer()
-                        .executes(context -> spawnLootChest(context.getSource().getPlayer().unwrap().getLocation(), LootTables.CHEST_DEFAULT)));
+                        .executes(context -> spawnLootChest(context.getSource().getPlayer().unwrap().getLocation(), LootTable.CHEST_DEFAULT)));
     }
 
-    private void spawnLootChest(@NotNull Location location, LootTables lootTable) {
+    private void spawnLootChest(@NotNull Location location, LootTable lootTable) {
         World world = location.getWorld();
         if (world == null) return;
         world.setType(location, Material.CHEST);

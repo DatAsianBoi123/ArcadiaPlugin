@@ -2,7 +2,7 @@ package com.datasiqn.arcadia.listeners;
 
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.ArcadiaTag;
-import com.datasiqn.arcadia.loottable.LootTables;
+import com.datasiqn.arcadia.loottable.LootTable;
 import com.datasiqn.arcadia.util.PdcUtil;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -34,7 +34,7 @@ public class LootTableListener implements Listener {
 
         Chest chest = (Chest) block.getState();
         PersistentDataContainer pdc = chest.getPersistentDataContainer();
-        LootTables lootTable = PdcUtil.get(pdc, ArcadiaTag.LOOT_TABLE);
+        LootTable lootTable = PdcUtil.get(pdc, ArcadiaTag.LOOT_TABLE);
         if (lootTable == null) return;
         PdcUtil.remove(pdc, ArcadiaTag.LOOT_TABLE);
         chest.update();

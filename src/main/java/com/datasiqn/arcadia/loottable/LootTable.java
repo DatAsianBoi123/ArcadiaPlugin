@@ -5,7 +5,7 @@ import com.datasiqn.arcadia.item.material.ArcadiaMaterial;
 import org.apache.commons.lang.math.IntRange;
 import org.bukkit.Material;
 
-public enum LootTables {
+public enum LootTable {
     ENTITY_ZOMBIE(new WeightedLootTable.Builder()
             .addItem(new WeightedLootTable.LootTableItem(() -> new ArcadiaItem(Material.ROTTEN_FLESH), 1, new IntRange(2, 3)))
             .build()),
@@ -28,7 +28,7 @@ public enum LootTables {
 
     private final ArcadiaLootTable lootTable;
 
-    LootTables(ArcadiaLootTable lootTable) {
+    LootTable(ArcadiaLootTable lootTable) {
         this.lootTable = lootTable;
     }
 

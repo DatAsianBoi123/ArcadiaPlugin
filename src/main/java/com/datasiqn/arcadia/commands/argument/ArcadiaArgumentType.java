@@ -4,7 +4,7 @@ import com.datasiqn.arcadia.dungeon.DungeonInstance;
 import com.datasiqn.arcadia.enchants.EnchantType;
 import com.datasiqn.arcadia.entities.EntityType;
 import com.datasiqn.arcadia.item.material.ArcadiaMaterial;
-import com.datasiqn.arcadia.loottable.LootTables;
+import com.datasiqn.arcadia.loottable.LootTable;
 import com.datasiqn.arcadia.menu.MenuType;
 import com.datasiqn.arcadia.player.PlayerData;
 import com.datasiqn.arcadia.recipe.ArcadiaRecipe;
@@ -18,7 +18,7 @@ public interface ArcadiaArgumentType {
 
     ArgumentType<EnchantType> ENCHANT = new ArgumentType.EnumArgumentType<>(EnchantType.class);
 
-    ArgumentType<LootTables> LOOT_TABLE = new ArgumentType.EnumArgumentType<>(LootTables.class);
+    ArgumentType<LootTable> LOOT_TABLE = new ArgumentType.EnumArgumentType<>(LootTable.class);
 
     ArgumentType<ArcadiaRecipe> RECIPE = new ArgumentType.EnumArgumentType<>(ArcadiaRecipe.class);
 

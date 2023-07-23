@@ -1,6 +1,6 @@
 package com.datasiqn.arcadia.entities;
 
-import com.datasiqn.arcadia.loottable.LootTables;
+import com.datasiqn.arcadia.loottable.LootTable;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import org.bukkit.Location;

@@ -1,7 +1,7 @@
 package com.datasiqn.arcadia.entities;
 
 import com.datasiqn.arcadia.item.stat.StatIcon;
-import com.datasiqn.arcadia.loottable.LootTables;
+import com.datasiqn.arcadia.loottable.LootTable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -105,7 +105,7 @@ public abstract class ArcadiaEntity extends PathfinderMob {
     protected abstract void registerGoals();
 
     @NotNull
-    protected abstract LootTables getArcadiaLootTable();
+    protected abstract LootTable getArcadiaLootTable();
 
     private String formatDouble(double d) {
         DecimalFormat format = new DecimalFormat("#,###");
