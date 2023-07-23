@@ -38,8 +38,8 @@ public class EntityDummy implements ArcadiaEntitySummoner {
         }
 
         @Override
-        protected @NotNull LootTables getArcadiaLootTable() {
-            return LootTables.EMPTY;
+        protected @NotNull LootTable getArcadiaLootTable() {
+            return LootTable.EMPTY;
         }
     }
 }
