@@ -29,4 +29,6 @@ public interface ArcadiaArgumentType {
     ArgumentType<MenuType> GUI = new ArgumentType.EnumArgumentType<>(MenuType.class);
 
     ArgumentType<DungeonInstance> DUNGEON = new DungeonArgumentType();
+
+    ArgumentType<UpgradeType> UPGRADE_TYPE = new ArgumentType.EnumArgumentType<>(UpgradeType.class);
 }
