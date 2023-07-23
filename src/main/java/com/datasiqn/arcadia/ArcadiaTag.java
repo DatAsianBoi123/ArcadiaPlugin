@@ -4,7 +4,8 @@ import com.datasiqn.arcadia.datatypes.ArcadiaDataType;
 import com.datasiqn.arcadia.datatypes.EnchantsDataType;
 import com.datasiqn.arcadia.enchants.EnchantType;
 import com.datasiqn.arcadia.item.ItemId;
-import com.datasiqn.arcadia.loottable.LootTables;
+import com.datasiqn.arcadia.loottable.LootTable;
+import com.datasiqn.arcadia.upgrade.UpgradeType;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.persistence.PersistentDataType;
@@ -32,7 +33,9 @@ public final class ArcadiaTag<T> {
     public static final ArcadiaTag<Boolean> CHEST_OPENED = new ArcadiaTag<>("opened", ArcadiaDataType.BOOLEAN);
     public static final ArcadiaTag<Location> CHEST_LOC = new ArcadiaTag<>("chest_loc", ArcadiaDataType.LOCATION);
 
-    public static final ArcadiaTag<LootTables> LOOT_TABLE = new ArcadiaTag<>("loot_chest", ArcadiaDataType.LOOT_TABLE);
+    public static final ArcadiaTag<UpgradeType> UPGRADE_TYPE = new ArcadiaTag<>("upgrade_type", ArcadiaDataType.UPGRADE_TYPE);
+
+    public static final ArcadiaTag<LootTable> LOOT_TABLE = new ArcadiaTag<>("loot_chest", ArcadiaDataType.LOOT_TABLE);
 
     public static final ArcadiaTag<World> WORLD = new ArcadiaTag<>("world", ArcadiaDataType.WORLD);
     public static final ArcadiaTag<Double> LOCATION_X = new ArcadiaTag<>("x", PersistentDataType.DOUBLE);
