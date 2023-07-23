@@ -17,7 +17,7 @@ public final class ArcadiaDataType {
 
     public static final PersistentDataType<PersistentDataContainer[], EnchantsDataType.EnchantData[]> ENCHANTS = new EnchantsDataType();
 
-    public static final PersistentDataType<String, EnchantType> ENCHANT_ID = new EnchantIdDataType();
+    public static final PersistentDataType<String, EnchantType> ENCHANT_ID = new EnumDataType<>(EnchantType.class);
 
     public static final PersistentDataType<Byte, Boolean> BOOLEAN = new BooleanDataType();
 
