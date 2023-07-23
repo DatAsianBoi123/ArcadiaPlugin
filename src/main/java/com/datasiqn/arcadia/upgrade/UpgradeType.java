@@ -3,6 +3,8 @@ package com.datasiqn.arcadia.upgrade;
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.item.ItemRarity;
 import com.datasiqn.arcadia.upgrade.listeners.BloodChaliceListener;
+import com.datasiqn.arcadia.upgrade.listeners.LightningBottleListener;
+import com.datasiqn.arcadia.upgrade.listeners.MagicQuiverListener;
 import com.datasiqn.arcadia.upgrade.listeners.UpgradeListener;
 import com.datasiqn.arcadia.util.lorebuilder.Lore;
 import com.google.common.collect.LinkedHashMultimap;
@@ -24,7 +26,15 @@ import java.util.Comparator;
 import java.util.function.Function;
 
 public enum UpgradeType {
+    COMMON_ITEM("This is some common item", Lore.of("Cool item"), Material.DIRT, ItemRarity.COMMON),
+
     BLOOD_CHALICE("Blood Chalice", Lore.of("Killing enemies heal you"), Material.POTION, ItemRarity.RARE, new BloodChaliceListener()),
+    MAGIC_QUIVER("Magic Quiver", Lore.of("Bows shoot extra arrows"), Material.LEATHER_HORSE_ARMOR, ItemRarity.RARE, MagicQuiverListener::new),
+    LIGHTNING_BOTTLE("Lightning in a Bottle", Lore.of("Chance on hit to strike lightning"), Material.GLASS_BOTTLE, ItemRarity.RARE, new LightningBottleListener()),
+
+    LEGENDARY_ITEM("This is some legendary item", Lore.of("Cool item"), Material.GRASS, ItemRarity.LEGENDARY),
+
+    MYTHIC_ITEM("This is some mythic item", Lore.of("Cool item"), Material.MYCELIUM, ItemRarity.MYTHIC),
     ;
 
     private static final Multimap<ItemRarity, UpgradeType> UPGRADES = LinkedHashMultimap.create();
@@ -81,12 +91,19 @@ public enum UpgradeType {
     private final Material material;
     private final ItemRarity rarity;
 
+    UpgradeType(String displayName, @NotNull Lore description, Material material, ItemRarity rarity) {
+        this(displayName, description, material, rarity, (UpgradeListener) null);
+    }
+    UpgradeType(String displayName, @NotNull Lore description, Material material, ItemRarity rarity, @NotNull Function<Arcadia, UpgradeListener> listenerFunction) {
+        this(displayName, description, material, rarity, listenerFunction.apply(JavaPlugin.getPlugin(Arcadia.class)));
+    }
     UpgradeType(String displayName, @NotNull Lore description, Material material, ItemRarity rarity, UpgradeListener listener) {
         this.displayName = displayName;
         this.description = description;
         this.material = material;
         this.rarity = rarity;
 
+        if (listener == null) return;
         JavaPlugin.getPlugin(Arcadia.class).getUpgradeEventManager().register(listener, this);
     }
 
