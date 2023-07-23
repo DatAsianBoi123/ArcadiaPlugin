@@ -4,11 +4,15 @@ import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.ArcadiaPermission;
 import com.datasiqn.arcadia.commands.argument.ArcadiaArgumentType;
 import com.datasiqn.arcadia.dungeon.DungeonInstance;
+import com.datasiqn.arcadia.dungeon.DungeonPlayer;
 import com.datasiqn.arcadia.player.ArcadiaSender;
+import com.datasiqn.arcadia.upgrade.UpgradeType;
+import com.datasiqn.commandcore.command.CommandContext;
 import com.datasiqn.commandcore.command.builder.ArgumentBuilder;
 import com.datasiqn.commandcore.command.builder.CommandBuilder;
 import com.datasiqn.commandcore.command.builder.LiteralBuilder;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandDungeons {
     private final Arcadia plugin;
@@ -54,6 +58,22 @@ public class CommandDungeons {
                 .then(LiteralBuilder.literal("tp")
                         .then(ArgumentBuilder.argument(ArcadiaArgumentType.DUNGEON, "dungeon id")
                                 .requiresPlayer()
-                                .executes(context -> plugin.getDungeonManager().addPlayerTo(plugin.getPlayerManager().getPlayerData(context.getSource().getPlayer().unwrap()), context.getArguments().get(1, ArcadiaArgumentType.DUNGEON).unwrap()))));
+                                .executes(context -> plugin.getDungeonManager().addPlayerTo(plugin.getPlayerManager().getPlayerData(context.getSource().getPlayer().unwrap()), context.getArguments().get(1, ArcadiaArgumentType.DUNGEON).unwrap()))))
+                .then(LiteralBuilder.literal("pickup")
+                        .then(ArgumentBuilder.argument(ArcadiaArgumentType.UPGRADE_TYPE, "upgrade")
+                                .requiresPlayer()
+                                .executes(context -> pickupItem(context, context.getArguments().get(1, ArcadiaArgumentType.UPGRADE_TYPE).unwrap())))
+                        .requiresPlayer()
+                        .executes(context -> pickupItem(context, UpgradeType.getRandomWeighted())));
+    }
+
+    private void pickupItem(@NotNull CommandContext context, UpgradeType upgrade) {
+        Player player = context.getSource().getPlayer().unwrap();
+        DungeonPlayer dungeonPlayer = plugin.getDungeonManager().getDungeonPlayer(player.getUniqueId());
+        if (dungeonPlayer == null) {
+            plugin.getPlayerManager().getPlayerData(player).getSender().sendError("You are not in a dungeon");
+            return;
+        }
+        dungeonPlayer.pickupUpgrade(upgrade);
     }
 }
