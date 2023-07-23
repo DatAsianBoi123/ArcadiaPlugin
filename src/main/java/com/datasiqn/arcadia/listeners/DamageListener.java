@@ -3,7 +3,6 @@ package com.datasiqn.arcadia.listeners;
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.ArcadiaTag;
 import com.datasiqn.arcadia.DamageHelper;
-import com.datasiqn.arcadia.dungeon.DungeonInstance;
 import com.datasiqn.arcadia.dungeon.DungeonPlayer;
 import com.datasiqn.arcadia.enchants.DamageModifierType;
 import com.datasiqn.arcadia.enchants.EnchantType;
@@ -24,7 +23,9 @@ import com.datasiqn.arcadia.upgrade.listeners.actions.DamageEnemyAction;
 import com.datasiqn.arcadia.upgrade.listeners.actions.KillEnemyAction;
 import com.datasiqn.arcadia.util.PdcUtil;
 import com.datasiqn.schedulebuilder.ScheduleBuilder;
-import org.bukkit.*;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_19_R3.entity.CraftEntity;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -70,23 +71,27 @@ public class DamageListener implements Listener {
             entity.damage(damage, event);
             spawnDamageIndicator(event.getEntity().getLocation(), damage);
 
-            if (!(event.getDamager() instanceof Player player)) return;
+            Player player;
+            if (!(event.getDamager() instanceof Player damager)) {
+                if (!(event.getDamager() instanceof Projectile projectile) || !(projectile.getShooter() instanceof Player shooter)) {
+                    return;
+                }
+                player = shooter;
+            } else player = damager;
+
+//            ((CraftPlayer) player).getHandle().getAttackStrengthScale(0.5f);
 
             PlayerData playerData = plugin.getPlayerManager().getPlayerData(player);
 
-            DungeonInstance joinedDungeon = plugin.getDungeonManager().getJoinedDungeon(playerData.getUniqueId());
-            if (joinedDungeon != null) {
+            DungeonPlayer dungeonPlayer = plugin.getDungeonManager().getDungeonPlayer(playerData.getUniqueId());
+            if (dungeonPlayer != null) {
                 UpgradeEventManager eventManager = plugin.getUpgradeEventManager();
-                DungeonPlayer dungeonPlayer = joinedDungeon.getPlayer(playerData);
                 eventManager.emit(new DamageEnemyAction(dungeonPlayer, entity, damage));
 
                 if (entity.arcadia().health() <= damage) eventManager.emit(new KillEnemyAction(dungeonPlayer, entity));
             }
 
-            ArcadiaItem itemInMainHand = playerData.getEquipment().getItemInMainHand();
-            if (itemInMainHand.getItemData().getItemType() != ItemType.SWORD) return;
-
-            double attackSpeed = playerData.getAttackSpeed();
+            double attackSpeed = event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE ? 100 : playerData.getAttackSpeed();
             ScheduleBuilder.create().executes(runnable -> {
                 Entity eventEntity = event.getEntity();
                 if (!(eventEntity instanceof LivingEntity living)) return;
