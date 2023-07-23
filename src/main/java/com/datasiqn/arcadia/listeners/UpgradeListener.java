@@ -53,19 +53,22 @@ public class UpgradeListener implements Listener {
         Location location = block.getLocation();
         block.getWorld().spawnParticle(Particle.CLOUD, location.clone().add(0.5, 1.1, 0.5), 20, 0.1, 0.1, 0.1, 0.05);
         block.getWorld().spawn(location.clone().add(0.5, 1, 0.5), Item.class, item -> {
+            UpgradeType upgradeType = UpgradeType.getRandomWeighted();
+
             item.setVelocity(new Vector());
             item.setGravity(false);
             item.setUnlimitedLifetime(true);
             item.setGlowing(true);
             item.setPickupDelay(40);
-            item.getItemStack().setType(UpgradeType.BLOOD_CHALICE.getMaterial());
-            item.setCustomName(UpgradeType.BLOOD_CHALICE.getRarity().getColor() + UpgradeType.BLOOD_CHALICE.getDisplayName());
+            item.getItemStack().setType(upgradeType.getMaterial());
+            item.setCustomName(upgradeType.getRarity().getColor() + upgradeType.getDisplayName());
             item.setCustomNameVisible(true);
 
-            UpgradeType.BLOOD_CHALICE.getRarity().getTeam().addEntry(item.getUniqueId().toString());
+            upgradeType.getRarity().getTeam().addEntry(item.getUniqueId().toString());
 
             PersistentDataContainer itemPdc = item.getPersistentDataContainer();
             PdcUtil.set(itemPdc, ArcadiaTag.CHEST_LOC, location);
+            PdcUtil.set(itemPdc, ArcadiaTag.UPGRADE_TYPE, upgradeType);
         });
         enderChest.open();
         event.getPlayer().playSound(location, Sound.ENTITY_ITEM_PICKUP, 0.2f, 1);
@@ -77,7 +80,7 @@ public class UpgradeListener implements Listener {
         if (!(event.getEntity() instanceof Player player)) return;
 
         PersistentDataContainer pdc = event.getItem().getPersistentDataContainer();
-        if (!PdcUtil.has(pdc, ArcadiaTag.CHEST_LOC)) return;
+        if (!PdcUtil.has(pdc, ArcadiaTag.CHEST_LOC) || !PdcUtil.has(pdc, ArcadiaTag.UPGRADE_TYPE)) return;
 
         Location chestLocation = PdcUtil.get(pdc, ArcadiaTag.CHEST_LOC);
         Block block = player.getWorld().getBlockAt(chestLocation);
@@ -90,7 +93,7 @@ public class UpgradeListener implements Listener {
         event.getItem().setItemStack(itemStack);
         DungeonPlayer dungeonPlayer = plugin.getDungeonManager().getDungeonPlayer(plugin.getPlayerManager().getPlayerData(player).getUniqueId());
         if (dungeonPlayer == null) return;
-        dungeonPlayer.pickupUpgrade(UpgradeType.BLOOD_CHALICE);
+        dungeonPlayer.pickupUpgrade(PdcUtil.get(pdc, ArcadiaTag.UPGRADE_TYPE));
         player.playSound(chestLocation, Sound.BLOCK_ENDER_CHEST_CLOSE, 1, 1);
     }
 }
