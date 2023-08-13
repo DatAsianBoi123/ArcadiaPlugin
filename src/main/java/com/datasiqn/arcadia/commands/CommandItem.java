@@ -19,9 +19,9 @@ public class CommandItem {
                 .then(ArgumentBuilder.argument(ArcadiaArgumentType.ITEM, "item")
                         .then(ArgumentBuilder.argument(ArgumentType.NATURAL_NUMBER, "amount")
                                 .requiresPlayer()
-                                .executes(context -> giveItem(context.getSource().getPlayer().unwrap(), context.getArguments().get(0, ArcadiaArgumentType.ITEM).unwrap(), context.getArguments().get(1, ArgumentType.NATURAL_NUMBER).unwrap())))
+                                .executes(context -> giveItem(context.getSource().getPlayer(), context.getArguments().get(0, ArcadiaArgumentType.ITEM), context.getArguments().get(1, ArgumentType.NATURAL_NUMBER))))
                         .requiresPlayer()
-                        .executes(context -> giveItem(context.getSource().getPlayer().unwrap(), context.getArguments().get(0, ArcadiaArgumentType.ITEM).unwrap(), 1)));
+                        .executes(context -> giveItem(context.getSource().getPlayer(), context.getArguments().get(0, ArcadiaArgumentType.ITEM), 1)));
     }
 
     private void giveItem(@NotNull Player player, @NotNull ArcadiaMaterial material, int amount) {

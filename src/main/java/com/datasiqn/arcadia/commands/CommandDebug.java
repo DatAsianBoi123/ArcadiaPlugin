@@ -21,9 +21,9 @@ public class CommandDebug {
                 .description("Changes if you're in debug mode or not")
                 .then(ArgumentBuilder.argument(ArgumentType.BOOLEAN, "mode")
                         .requiresPlayer()
-                        .executes(context -> setDebugMode(context.getArguments().get(0, ArgumentType.BOOLEAN).unwrap(), context.getSource().getPlayer().unwrap())))
+                        .executes(context -> setDebugMode(context.getArguments().get(0, ArgumentType.BOOLEAN), context.getSource().getPlayer())))
                 .requiresPlayer()
-                .executes(context -> toggleDebugMode(context.getSource().getPlayer().unwrap()));
+                .executes(context -> toggleDebugMode(context.getSource().getPlayer()));
     }
 
     private void toggleDebugMode(Player player) {

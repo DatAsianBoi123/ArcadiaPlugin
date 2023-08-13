@@ -16,6 +16,6 @@ public class CommandLobby {
                 .permission(ArcadiaPermission.PERMISSION_USE_LOBBY)
                 .description("Sends you to the lobby")
                 .requiresPlayer()
-                .executes(context -> plugin.getDungeonManager().leaveDungeon(context.getSource().getPlayer().unwrap()));
+                .executes(context -> plugin.getDungeonManager().leaveDungeon(context.getSource().getPlayer()));
     }
 }

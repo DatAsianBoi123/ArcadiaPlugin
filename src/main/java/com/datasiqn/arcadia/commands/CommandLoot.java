@@ -18,6 +18,6 @@ public class CommandLoot {
                 .description("Loots a specific loot table")
                 .then(ArgumentBuilder.argument(ArcadiaArgumentType.LOOT_TABLE, "loot table")
                         .requiresPlayer()
-                        .executes(context -> context.getSource().getPlayer().unwrap().getInventory().addItem(context.getArguments().get(0, ArcadiaArgumentType.LOOT_TABLE).unwrap().getLootTable().generateItems(random).stream().map(ArcadiaItem::build).toArray(ItemStack[]::new))));
+                        .executes(context -> context.getSource().getPlayer().getInventory().addItem(context.getArguments().get(0, ArcadiaArgumentType.LOOT_TABLE).getLootTable().generateItems(random).stream().map(ArcadiaItem::build).toArray(ItemStack[]::new))));
     }
 }

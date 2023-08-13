@@ -25,7 +25,7 @@ public class CommandSpawn {
                 .then(LiteralBuilder.literal("upgradechest")
                         .requiresPlayer()
                         .executes(context -> {
-                            Player player = context.getSource().getPlayer().unwrap();
+                            Player player = context.getSource().getPlayer();
                             Location location = player.getLocation();
                             World world = player.getWorld();
                             world.setType(location, Material.ENDER_CHEST);
@@ -38,11 +38,11 @@ public class CommandSpawn {
                         .then(ArgumentBuilder.argument(ArcadiaArgumentType.LOOT_TABLE, "loot table")
                                 .requiresPlayer()
                                 .executes(context -> {
-                                    LootTable lootTable = context.getArguments().get(1, ArcadiaArgumentType.LOOT_TABLE).unwrap();
-                                    spawnLootChest(context.getSource().getPlayer().unwrap().getLocation(), lootTable);
+                                    LootTable lootTable = context.getArguments().get(1, ArcadiaArgumentType.LOOT_TABLE);
+                                    spawnLootChest(context.getSource().getPlayer().getLocation(), lootTable);
                                 }))
                         .requiresPlayer()
-                        .executes(context -> spawnLootChest(context.getSource().getPlayer().unwrap().getLocation(), LootTable.CHEST_DEFAULT)));
+                        .executes(context -> spawnLootChest(context.getSource().getPlayer().getLocation(), LootTable.CHEST_DEFAULT)));
     }
 
     private void spawnLootChest(@NotNull Location location, LootTable lootTable) {

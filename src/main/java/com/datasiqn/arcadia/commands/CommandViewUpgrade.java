@@ -16,10 +16,10 @@ public class CommandViewUpgrade {
                 .then(ArgumentBuilder.argument(ArcadiaArgumentType.UPGRADE, "upgrade")
                         .requiresPlayer()
                         .executes(context -> {
-                            UpgradeMenuHandler gui = new UpgradeMenuHandler(context.getArguments().get(0, ArcadiaArgumentType.UPGRADE).unwrap());
+                            UpgradeMenuHandler gui = new UpgradeMenuHandler(context.getArguments().get(0, ArcadiaArgumentType.UPGRADE));
                             Inventory inventory = gui.createInventory();
                             MenuApi.getInstance().getMenuManager().registerHandler(inventory, gui);
-                            context.getSource().getPlayer().unwrap().openInventory(inventory);
+                            context.getSource().getPlayer().openInventory(inventory);
                         }));
     }
 }

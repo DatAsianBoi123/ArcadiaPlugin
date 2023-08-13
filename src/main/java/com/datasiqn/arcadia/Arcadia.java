@@ -143,7 +143,7 @@ public final class Arcadia extends JavaPlugin {
                     PersistentDataContainer pdc = meta.getPersistentDataContainer();
                     PdcUtil.set(pdc, ArcadiaTag.UPGRADE_BAG, true);
                     itemStack.setItemMeta(meta);
-                    context.getSource().getPlayer().unwrap().getInventory().addItem(itemStack);
+                    context.getSource().getPlayer().getInventory().addItem(itemStack);
                 }));
     }
 

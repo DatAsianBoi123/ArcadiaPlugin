@@ -31,18 +31,18 @@ public class CommandEnchant {
                         .then(ArgumentBuilder.argument(ArcadiaArgumentType.ENCHANT, "enchant")
                                 .then(ArgumentBuilder.argument(ArgumentType.NATURAL_NUMBER, "level")
                                         .requiresPlayer()
-                                        .executes(context -> addEnchant(context.getSource().getPlayer().unwrap(), context.getArguments().get(1, ArcadiaArgumentType.ENCHANT).unwrap(), context.getArguments().get(2, ArgumentType.NATURAL_NUMBER).unwrap())))
+                                        .executes(context -> addEnchant(context.getSource().getPlayer(), context.getArguments().get(1, ArcadiaArgumentType.ENCHANT), context.getArguments().get(2, ArgumentType.NATURAL_NUMBER))))
                                 .requiresPlayer()
-                                .executes(context -> addEnchant(context.getSource().getPlayer().unwrap(), context.getArguments().get(1, ArcadiaArgumentType.ENCHANT).unwrap(), 1))))
+                                .executes(context -> addEnchant(context.getSource().getPlayer(), context.getArguments().get(1, ArcadiaArgumentType.ENCHANT), 1))))
                 .then(LiteralBuilder.literal("remove")
                         .then(ArgumentBuilder.argument(ArcadiaArgumentType.ENCHANT, "enchant")
                                 .requiresPlayer()
                                 .executes(context -> {
-                                    Player player = context.getSource().getPlayer().unwrap();
+                                    Player player = context.getSource().getPlayer();
                                     PlayerInventory inventory = player.getInventory();
                                     ItemStack itemStack = inventory.getItemInMainHand();
                                     ArcadiaItem arcadiaItem = new ArcadiaItem(itemStack);
-                                    EnchantType enchantType = context.getArguments().get(1, ArcadiaArgumentType.ENCHANT).unwrap();
+                                    EnchantType enchantType = context.getArguments().get(1, ArcadiaArgumentType.ENCHANT);
                                     if (!arcadiaItem.getItemMeta().hasEnchant(enchantType)) {
                                         playerManager.getPlayerData(player).getSender().sendMessage("That item does not have that enchant");
                                         return;
@@ -53,7 +53,7 @@ public class CommandEnchant {
                                 }))
                         .requiresPlayer()
                         .executes(context -> {
-                            Player player = context.getSource().getPlayer().unwrap();
+                            Player player = context.getSource().getPlayer();
                             PlayerInventory inventory = player.getInventory();
                             ItemStack itemStack = inventory.getItemInMainHand();
                             ArcadiaItem arcadiaItem = new ArcadiaItem(itemStack);

@@ -31,7 +31,7 @@ public class CommandPlayerData {
                 .then(LiteralBuilder.literal("load")
                         .then(ArgumentBuilder.argument(ArcadiaArgumentType.PLAYER, "player")
                                 .executes(context -> new Thread(() -> {
-                                    PlayerData playerData = context.getArguments().get(1, ArcadiaArgumentType.PLAYER).unwrap();
+                                    PlayerData playerData = context.getArguments().get(1, ArcadiaArgumentType.PLAYER);
                                     playerData.loadData();
                                     playerData.getSender().sendMessage("Successfully loaded " + playerData.getPlayer().getName() + "'s player data");
                                 }).start()))
@@ -40,14 +40,14 @@ public class CommandPlayerData {
                             for (Player player : Bukkit.getOnlinePlayers()) {
                                 threadPool.submit(() -> {
                                     playerManager.getPlayerData(player).loadData();
-                                    playerManager.getPlayerData(context.getSource().getPlayer().unwrap()).getSender().sendMessage("Successfully loaded " + player.getName() + "'s data");
+                                    playerManager.getPlayerData(context.getSource().getPlayer()).getSender().sendMessage("Successfully loaded " + player.getName() + "'s data");
                                 });
                             }
                         }))
                 .then(LiteralBuilder.literal("save")
                         .then(ArgumentBuilder.argument(ArcadiaArgumentType.PLAYER, "player")
                                 .executes(context -> new Thread(() -> {
-                                    PlayerData playerData = context.getArguments().get(1, ArcadiaArgumentType.PLAYER).unwrap();
+                                    PlayerData playerData = context.getArguments().get(1, ArcadiaArgumentType.PLAYER);
                                     playerData.saveData();
                                     playerData.getSender().sendMessage("Successfully saved " + playerData.getPlayer().getName() + "'s player data");
                                 }).start()))
@@ -56,7 +56,7 @@ public class CommandPlayerData {
                             for (Player player : Bukkit.getOnlinePlayers()) {
                                 threadPool.submit(() -> {
                                     playerManager.getPlayerData(player).saveData();
-                                    playerManager.getPlayerData(context.getSource().getPlayer().unwrap()).getSender().sendMessage("Successfully saved " + player.getName() + "'s data");
+                                    playerManager.getPlayerData(context.getSource().getPlayer()).getSender().sendMessage("Successfully saved " + player.getName() + "'s data");
                                 });
                             }
                         }));

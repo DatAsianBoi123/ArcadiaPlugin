@@ -12,6 +12,6 @@ public class CommandSummon {
                 .description("Summons a custom Arcadia Entity")
                 .then(ArgumentBuilder.argument(ArcadiaArgumentType.ENTITY, "entity")
                         .requiresPlayer()
-                        .executes(context -> context.getArguments().get(0, ArcadiaArgumentType.ENTITY).unwrap().getSummoner().summonEntity(context.getSource().getPlayer().unwrap().getLocation())));
+                        .executes(context -> context.getArguments().get(0, ArcadiaArgumentType.ENTITY).getSummoner().summonEntity(context.getSource().getPlayer().getLocation())));
     }
 }

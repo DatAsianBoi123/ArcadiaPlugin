@@ -18,8 +18,8 @@ public class CommandHeal {
                 .permission(ArcadiaPermission.PERMISSION_USE_HEAL)
                 .description("Heals you or another player")
                 .then(ArgumentBuilder.argument(ArcadiaArgumentType.PLAYER, "player")
-                        .executes(context -> context.getArguments().get(0, ArcadiaArgumentType.PLAYER).unwrap().heal()))
+                        .executes(context -> context.getArguments().get(0, ArcadiaArgumentType.PLAYER).heal()))
                 .requiresPlayer()
-                .executes(context -> plugin.getPlayerManager().getPlayerData(context.getSource().getPlayer().unwrap()).heal());
+                .executes(context -> plugin.getPlayerManager().getPlayerData(context.getSource().getPlayer()).heal());
     }
 }
