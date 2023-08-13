@@ -5,21 +5,23 @@ import com.datasiqn.arcadia.ArcadiaPermission;
 import com.datasiqn.arcadia.commands.argument.ArcadiaArgumentType;
 import com.datasiqn.arcadia.managers.PlayerManager;
 import com.datasiqn.arcadia.player.PlayerData;
+import com.datasiqn.commandcore.argument.Arguments;
 import com.datasiqn.commandcore.command.builder.ArgumentBuilder;
 import com.datasiqn.commandcore.command.builder.CommandBuilder;
 import com.datasiqn.commandcore.command.builder.LiteralBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DecimalFormat;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class CommandPlayerData {
+    private static final DecimalFormat ATTRIBUTE_FORMAT = new DecimalFormat("#.##");
+
     private final PlayerManager playerManager;
 
-    @Contract(pure = true)
     public CommandPlayerData(@NotNull Arcadia plugin) {
         this.playerManager = plugin.getPlayerManager();
     }
@@ -59,6 +61,15 @@ public class CommandPlayerData {
                                     playerManager.getPlayerData(context.getSource().getPlayer()).getSender().sendMessage("Successfully saved " + player.getName() + "'s data");
                                 });
                             }
-                        }));
+                        }))
+                .then(LiteralBuilder.literal("attribute")
+                        .then(LiteralBuilder.literal("get")
+                                .then(ArgumentBuilder.argument(ArcadiaArgumentType.PLAYER_ATTRIBUTE, "attribute")
+                                        .requiresPlayer()
+                                        .executes(context -> {
+                                            PlayerData playerData = playerManager.getPlayerData(context.getSource().getPlayer());
+                                            Arguments arguments = context.getArguments();
+                                            playerData.getSender().sendMessage(ATTRIBUTE_FORMAT.format(playerData.getAttribute(arguments.get(2, ArcadiaArgumentType.PLAYER_ATTRIBUTE))));
+                                        }))));
     }
 }
