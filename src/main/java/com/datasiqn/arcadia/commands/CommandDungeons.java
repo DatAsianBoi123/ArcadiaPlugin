@@ -63,9 +63,9 @@ public class CommandDungeons {
                                 .requiresPlayer()
                                 .executes(context -> plugin.getDungeonManager().addPlayerTo(plugin.getPlayerManager().getPlayerData(context.getSource().getPlayer()), context.getArguments().get(1, ArcadiaArgumentType.DUNGEON)))))
                 .then(LiteralBuilder.literal("pickup")
-                        .then(ArgumentBuilder.argument(ArcadiaArgumentType.UPGRADE_TYPE, "upgrade")
+                        .then(ArgumentBuilder.argument(ArcadiaArgumentType.UPGRADE, "upgrade")
                                 .requiresPlayer()
-                                .executes(context -> pickupItem(context, context.getArguments().get(1, ArcadiaArgumentType.UPGRADE_TYPE))))
+                                .executes(context -> pickupItem(context, context.getArguments().get(1, ArcadiaArgumentType.UPGRADE))))
                         .requiresPlayer()
                         .executes(context -> pickupItem(context, UpgradeType.getRandomWeighted())));
     }

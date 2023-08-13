@@ -31,6 +31,4 @@ public final class ArcadiaArgumentType {
     public static final ArgumentType<MenuType> GUI = new ArgumentType.EnumArgumentType<>(MenuType.class);
 
     public static final ArgumentType<DungeonInstance> DUNGEON = new DungeonArgumentType();
-
-    public static final ArgumentType<UpgradeType> UPGRADE_TYPE = new ArgumentType.EnumArgumentType<>(UpgradeType.class);
 }
