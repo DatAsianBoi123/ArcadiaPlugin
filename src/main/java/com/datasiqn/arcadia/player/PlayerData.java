@@ -36,12 +36,13 @@ public class PlayerData {
 
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
+    private final Arcadia plugin;
     private final File dataFile;
     private final PlayerEquipment equipment = new PlayerEquipment();
-    private final ArcadiaSender<Player> player;
+    private final ArcadiaSender<Player> sender;
+    private final Player player;
     private final Object2DoubleMap<PlayerAttribute> attributes = new Object2DoubleOpenHashMap<>();
-    private final Arcadia plugin;
-    private Experience xp = new Experience();
+    private final Experience xp = new Experience();
 
     private double health;
     private double hunger;
@@ -50,8 +51,9 @@ public class PlayerData {
     private BukkitTask regenHealthRunnable;
     private BukkitTask getHungryRunnable;
 
-    private PlayerData(ArcadiaSender<Player> player, Arcadia plugin) {
-        this.player = player;
+    private PlayerData(@NotNull ArcadiaSender<Player> sender, Arcadia plugin) {
+        this.sender = sender;
+        this.player = sender.get();
         this.plugin = plugin;
 
         this.health = PlayerAttribute.MAX_HEALTH.getDefaultValue();
@@ -63,7 +65,7 @@ public class PlayerData {
 
         File dataFile = createDataFile();
         if (dataFile == null) {
-            plugin.getLogger().warning("An IO error occurred when creating the data file for " + player.get().getName() + " (" + player.get().getUniqueId() + ")");
+            plugin.getLogger().warning("An IO error occurred when creating the data file for " + player.getName() + " (" + player.getUniqueId() + ")");
             this.dataFile = null;
             return;
         }
@@ -71,8 +73,8 @@ public class PlayerData {
     }
 
     public void updateLevel() {
-        player.get().setLevel(xp.getLevel());
-        player.get().setExp((float) xp.getProgress());
+        player.setLevel(xp.getLevel());
+        player.setExp((float) xp.getProgress());
     }
 
     public void updateValues() {
@@ -105,18 +107,20 @@ public class PlayerData {
 
         if (regenHealth) health = getAttribute(PlayerAttribute.MAX_HEALTH);
         if (health > getAttribute(PlayerAttribute.MAX_HEALTH)) health = getAttribute(PlayerAttribute.MAX_HEALTH);
-        Objects.requireNonNull(player.get().getAttribute(Attribute.GENERIC_MAX_HEALTH)).setBaseValue(getMaxHearts());
+        org.bukkit.attribute.AttributeInstance healthAttribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        if (healthAttribute == null) return;
+        healthAttribute.setBaseValue(getMaxHearts());
 
-        if (!player.get().isDead()) {
+        if (!player.isDead()) {
             if (health <= 0) {
-                player.get().setHealth(0);
+                player.setHealth(0);
                 return;
             }
 
             double expectedHealth = getHearts();
-            if (Math.abs(player.get().getHealth() - expectedHealth) > HEALTH_PRECISION) {
-                if (debugMode) player.sendDebugMessage("Invalid health! Got " + player.get().getHealth() + ", expected " + expectedHealth);
-                player.get().setHealth(expectedHealth);
+            if (Math.abs(player.getHealth() - expectedHealth) > HEALTH_PRECISION) {
+                if (debugMode) sender.sendDebugMessage("Invalid health! Got " + player.getHealth() + ", expected " + expectedHealth);
+                player.setHealth(expectedHealth);
             }
         }
 
@@ -130,11 +134,11 @@ public class PlayerData {
     public void damage(@NotNull EntityDamageEvent event, boolean trueDamage) {
         double rawDamage = event.getDamage();
         double damage = trueDamage ? rawDamage : DamageHelper.getFinalDamageWithDefense(rawDamage, getAttribute(PlayerAttribute.DEFENSE));
-        if (player.get().isBlocking()) damage = 0;
+        if (player.isBlocking()) damage = 0;
         health -= damage;
         if (health <= 0) health = 0;
         double hearts = getHearts();
-        event.setDamage(player.get().getHealth() - hearts);
+        event.setDamage(player.getHealth() - hearts);
         for (EntityDamageEvent.DamageModifier modifier : EntityDamageEvent.DamageModifier.values()) {
             if (!event.isApplicable(modifier)) continue;
             if (modifier == EntityDamageEvent.DamageModifier.BASE || modifier == EntityDamageEvent.DamageModifier.BLOCKING) continue;
@@ -145,21 +149,21 @@ public class PlayerData {
         beginRegenHealth();
 
         if (!debugMode) return;
-        player.sendMessageRaw("-------------------------");
-        player.sendMessageRaw(ChatColor.GOLD + "Damage Summary:");
-        player.sendDebugMessage("Raw damage dealt: " + ChatColor.RED + rawDamage);
-        if (event.getDamage() != event.getFinalDamage()) player.sendDebugMessage(ChatColor.RED + "Damage and raw damage do not match!");
+        sender.sendMessageRaw("-------------------------");
+        sender.sendMessageRaw(ChatColor.GOLD + "Damage Summary:");
+        sender.sendDebugMessage("Raw damage dealt: " + ChatColor.RED + rawDamage);
+        if (event.getDamage() != event.getFinalDamage()) this.sender.sendDebugMessage(ChatColor.RED + "Damage and raw damage do not match!");
         DecimalFormat format = new DecimalFormat("#.##");
         final String sDefense = format.format(DamageHelper.getDamageReduction(getAttribute(PlayerAttribute.DEFENSE)) * 100) + "% (" + getAttribute(PlayerAttribute.DEFENSE) + StatIcon.DEFENSE + ")";
         if (trueDamage) {
-            player.sendDebugMessage("Damage reduction (ignored, true damage): " + ChatColor.GREEN + sDefense);
+            sender.sendDebugMessage("Damage reduction (ignored, true damage): " + ChatColor.GREEN + sDefense);
         } else {
-            player.sendDebugMessage("Damage reduction: " + ChatColor.GREEN + sDefense);
+            sender.sendDebugMessage("Damage reduction: " + ChatColor.GREEN + sDefense);
         }
-        player.sendDebugMessage("Final damage: " + ChatColor.RED + damage);
-        player.sendDebugMessage("Damage to hearts: " + ChatColor.RED + (player.get().getHealth() - hearts));
-        player.sendDebugMessage("Final hearts: " + ChatColor.GREEN + hearts);
-        player.sendMessageRaw("-------------------------");
+        sender.sendDebugMessage("Final damage: " + ChatColor.RED + damage);
+        sender.sendDebugMessage("Damage to hearts: " + ChatColor.RED + (player.getHealth() - hearts));
+        sender.sendDebugMessage("Final hearts: " + ChatColor.GREEN + hearts);
+        sender.sendMessageRaw("-------------------------");
     }
 
     public void heal() {
@@ -174,7 +178,7 @@ public class PlayerData {
 
         // Doing this instead of a simple LivingEntity#setHealth
         // because that method doesn't show the regen health animation
-        CraftPlayer craftPlayer = (CraftPlayer) player.get();
+        CraftPlayer craftPlayer = (CraftPlayer) player;
         craftPlayer.setRealHealth(getHearts());
         craftPlayer.sendHealthUpdate();
 
@@ -201,7 +205,7 @@ public class PlayerData {
         String displayDefense = formatDouble(getAttribute(PlayerAttribute.DEFENSE), format) + ItemAttribute.DEFENSE.getIcon();
         String displayStrength = formatDouble(getAttribute(PlayerAttribute.STRENGTH), format) + ItemAttribute.STRENGTH.getIcon();
         String displayHunger = formatDouble(hunger, format) + "/" + formatDouble(getAttribute(PlayerAttribute.MAX_HUNGER), format) + ItemAttribute.HUNGER.getIcon();
-        player.get().spigot().sendMessage(ChatMessageType.ACTION_BAR,
+        player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
                 new ComponentBuilder()
                         .append(displayHealth + " ").color(ItemAttribute.HEALTH.getColor())
                         .append(displayDefense + " ").color(ItemAttribute.DEFENSE.getColor())
@@ -217,12 +221,12 @@ public class PlayerData {
             JsonElement jsonElement = JsonParser.parseReader(reader);
             jsonObject = jsonElement.getAsJsonObject();
         } catch (FileNotFoundException e) {
-            plugin.getLogger().warning("Data file for player " + player.get().getName() + " (" + player.get().getUniqueId() + ") does not exist");
+            plugin.getLogger().warning("Data file for player " + player.getName() + " (" + player.getUniqueId() + ") does not exist");
             return;
         }
-        xp = new Experience();
+        xp.setAmount(0);
         if (jsonObject.has("xp")) {
-            xp = new Experience(jsonObject.get("xp").getAsLong());
+            xp.setAmount(jsonObject.get("xp").getAsLong());
         }
 
         if (jsonObject.has("amulet")) {
@@ -234,7 +238,7 @@ public class PlayerData {
                 equipment.getAmulet()[index] = item;
             }
         }
-        plugin.getLogger().info("Loaded player data for " + player.get().getName() + " (" + player.get().getUniqueId() + ")");
+        plugin.getLogger().info("Loaded player data for " + player.getName() + " (" + player.getUniqueId() + ")");
     }
 
     public void saveData() {
@@ -254,9 +258,9 @@ public class PlayerData {
             FileWriter writer = new FileWriter(dataFile);
             gson.toJson(jsonObject, writer);
             writer.close();
-            plugin.getLogger().info("Saved data for " + player.get().getName() + " (" + player.get().getUniqueId() + ")");
+            plugin.getLogger().info("Saved data for " + player.getName() + " (" + player.getUniqueId() + ")");
         } catch (IOException e) {
-            plugin.getLogger().warning("Could not save data for " + player.get().getName() + " (" + player.get().getUniqueId() + ")");
+            plugin.getLogger().warning("Could not save data for " + player.getName() + " (" + player.getUniqueId() + ")");
         }
     }
 
@@ -287,15 +291,15 @@ public class PlayerData {
     }
 
     public Player getPlayer() {
-        return player.get();
-    }
-
-    public ArcadiaSender<Player> getSender() {
         return player;
     }
 
+    public ArcadiaSender<Player> getSender() {
+        return sender;
+    }
+
     public UUID getUniqueId() {
-        return player.get().getUniqueId();
+        return player.getUniqueId();
     }
 
     public boolean inDebugMode() {
@@ -329,11 +333,11 @@ public class PlayerData {
 
         PlayerData that = (PlayerData) o;
 
-        return getPlayer().getUniqueId().equals(that.getPlayer().getUniqueId());
+        return player.getUniqueId().equals(that.player.getUniqueId());
     }
 
     private double getHearts() {
-        return health / getAttribute(PlayerAttribute.MAX_HEALTH) * Objects.requireNonNull(player.get().getAttribute(Attribute.GENERIC_MAX_HEALTH)).getValue();
+        return health / getAttribute(PlayerAttribute.MAX_HEALTH) * Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).getValue();
     }
 
     private double getMaxHearts() {
@@ -341,7 +345,7 @@ public class PlayerData {
     }
 
     private @Nullable File createDataFile() {
-        File file = new File(plugin.getPlayerManager().getDataFolder().getPath(), player.get().getUniqueId() + ".json");
+        File file = new File(plugin.getPlayerManager().getDataFolder().getPath(), player.getUniqueId() + ".json");
         try {
             if (file.createNewFile()) {
                 FileWriter writer = new FileWriter(file);
