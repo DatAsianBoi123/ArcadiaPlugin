@@ -52,12 +52,13 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(@NotNull PlayerJoinEvent event) {
-        AttributeInstance attribute = event.getPlayer().getAttribute(Attribute.GENERIC_ATTACK_SPEED);
-        if (attribute != null) attribute.setBaseValue(16);
+        Player player = event.getPlayer();
+        AttributeInstance attribute = player.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
+        if (attribute != null) attribute.setBaseValue(PlayerData.DEFAULT_ATTACK_SPEED);
 
-        PlayerData playerData = playerManager.getPlayerData(event.getPlayer());
+        PlayerData playerData = playerManager.getPlayerData(player);
         playerData.loadData();
-        EntityEquipment equipment = event.getPlayer().getEquipment();
+        EntityEquipment equipment = player.getEquipment();
         if (equipment != null) {
             for (EquipmentSlot slot : EquipmentSlot.values()) {
                 ItemStack item = equipment.getItem(slot);
@@ -71,7 +72,10 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerLeave(@NotNull PlayerQuitEvent event) {
         AttributeInstance attackSpeedAttribute = event.getPlayer().getAttribute(Attribute.GENERIC_ATTACK_SPEED);
-        if (attackSpeedAttribute != null) attackSpeedAttribute.setBaseValue(4);
+        if (attackSpeedAttribute != null) {
+            attackSpeedAttribute.setBaseValue(4);
+            attackSpeedAttribute.getModifiers().forEach(attackSpeedAttribute::removeModifier);
+        }
 
         AttributeInstance healthAttribute = event.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH);
         if (healthAttribute != null) healthAttribute.setBaseValue(20);

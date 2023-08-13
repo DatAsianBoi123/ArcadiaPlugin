@@ -32,6 +32,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class PlayerData {
+    public static final double DEFAULT_ATTACK_SPEED = 16;
     public static final double HEALTH_PRECISION = 0.00001;
 
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -103,6 +104,16 @@ public class PlayerData {
                 AttributeInstance itemAttribute = item.getItemMeta().getItemStats().getAttribute(attribute.getItemAttribute());
                 attributes.put(attribute, getAttribute(attribute) + (itemAttribute == null ? 0 : itemAttribute.getValue()));
             }
+        }
+
+        org.bukkit.attribute.AttributeInstance attackSpeedAttribute = player.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
+        if (attackSpeedAttribute != null) {
+            ScheduleBuilder.create()
+                    .executes(runnable -> {
+                        double currentSpeed = equipment.getItemInMainHand().getItemData().getItemType().getAttackSpeed();
+                        double newSpeed = currentSpeed * Math.pow(Math.pow(DEFAULT_ATTACK_SPEED / currentSpeed, 1 / 100d), getAttackSpeed());
+                        attackSpeedAttribute.setBaseValue(newSpeed);
+                    }).run(plugin);
         }
 
         if (regenHealth) health = getAttribute(PlayerAttribute.MAX_HEALTH);

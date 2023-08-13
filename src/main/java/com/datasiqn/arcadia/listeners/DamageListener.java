@@ -23,10 +23,12 @@ import com.datasiqn.arcadia.upgrade.listeners.actions.DamageEnemyAction;
 import com.datasiqn.arcadia.upgrade.listeners.actions.KillEnemyAction;
 import com.datasiqn.arcadia.util.PdcUtil;
 import com.datasiqn.schedulebuilder.ScheduleBuilder;
+import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_19_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -63,13 +65,15 @@ public class DamageListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityDamageByEntity(@NotNull EntityDamageByEntityEvent event) {
         if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK) return;
         if (((CraftEntity) event.getEntity()).getHandle() instanceof ArcadiaEntity entity) {
             double damage = calcDamage(event, entity);
-            entity.damage(damage, event);
-            spawnDamageIndicator(event.getEntity().getLocation(), damage);
+            if (!(event.getDamager() instanceof Player)) {
+                entity.damage(damage, event);
+                spawnDamageIndicator(event.getEntity().getLocation(), damage);
+            }
 
             Player player;
             if (!(event.getDamager() instanceof Player damager)) {
@@ -77,9 +81,36 @@ public class DamageListener implements Listener {
                     return;
                 }
                 player = shooter;
-            } else player = damager;
+                if (event.getDamager() instanceof Player) {
+                    entity.damage(damage, event);
+                    spawnDamageIndicator(event.getEntity().getLocation(), damage);
+                }
+            } else {
+                player = damager;
+                ServerPlayer nmsPlayer = ((CraftPlayer) damager).getHandle();
+                if (nmsPlayer.getAttackStrengthScale(0.5f) < 1) {
+//                    try {
+//                        Field attackStrengthTicker = net.minecraft.world.entity.LivingEntity.class.getDeclaredField("aO" /* attackStrengthTicker */);
+//                        attackStrengthTicker.setAccessible(true);
+//                        int strength = attackStrengthTicker.getInt(nmsPlayer);
+//                        ScheduleBuilder.create()
+//                                .executes(runnable -> {
+//                                    try {
+//                                        attackStrengthTicker.setInt(nmsPlayer, strength);
+//                                    } catch (IllegalAccessException e) {
+//                                        e.printStackTrace();
+//                                    }
+//                                }).run(plugin);
+//                    } catch (NoSuchFieldException | IllegalAccessException e) {
+//                        e.printStackTrace();
+//                    }
 
-//            ((CraftPlayer) player).getHandle().getAttackStrengthScale(0.5f);
+                    event.setCancelled(true);
+                    return;
+                }
+                entity.damage(damage, event);
+                spawnDamageIndicator(event.getEntity().getLocation(), damage);
+            }
 
             PlayerData playerData = plugin.getPlayerManager().getPlayerData(player);
 
@@ -91,11 +122,10 @@ public class DamageListener implements Listener {
                 if (entity.arcadia().health() <= damage) eventManager.emit(new KillEnemyAction(dungeonPlayer, entity));
             }
 
-            double attackSpeed = event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE ? 100 : playerData.getAttackSpeed();
             ScheduleBuilder.create().executes(runnable -> {
                 Entity eventEntity = event.getEntity();
                 if (!(eventEntity instanceof LivingEntity living)) return;
-                living.setNoDamageTicks((int) Math.round(20 - attackSpeed / 5));
+                living.setNoDamageTicks(0);
             }).run(plugin);
         } else if (event.getEntity() instanceof Player player) {
             event.setDamage(calcPlayerDamage(event));
