@@ -11,6 +11,8 @@ import com.datasiqn.arcadia.util.PdcUtil;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -117,6 +119,9 @@ public class MaterialData<D extends ExtraItemData> {
         if (!stackable) PdcUtil.set(pdc, ArcadiaTag.ITEM_UUID, uuid);
 
         itemModifiers.forEach(modifier -> modifier.modify(uuid, meta));
+
+        // removes the default attack speed of weapons
+        meta.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, new AttributeModifier(uuid, "generic.attack_speed", 0, AttributeModifier.Operation.ADD_NUMBER));
 
         itemStack.setItemMeta(meta);
         return itemStack;
