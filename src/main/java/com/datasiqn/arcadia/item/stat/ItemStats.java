@@ -23,7 +23,10 @@ public class ItemStats {
             for (ItemAttribute attribute : ItemAttribute.values()) {
                 AttributeInstance attributeInstance = getAttribute(attribute);
                 if (attributeInstance == null) continue;
-                lore.add(ChatColor.GRAY + "" + attribute + ": +" + attribute.getColor() + decimalFormat.format(attributeInstance.getValue()) + attribute.getIcon());
+                double value = attributeInstance.getValue();
+                if (value == 0) continue;
+                String sign = value < 0 ? ChatColor.RED + "-" : "+";
+                lore.add(ChatColor.GRAY + "" + attribute + ": " + sign + attribute.getColor() + decimalFormat.format(Math.abs(value)) + attribute.getIcon());
             }
         }
         if (space && hasAttributes()) lore.add("");
