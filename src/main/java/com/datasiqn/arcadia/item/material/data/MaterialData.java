@@ -121,7 +121,8 @@ public class MaterialData<D extends ExtraItemData> {
         itemModifiers.forEach(modifier -> modifier.modify(uuid, meta));
 
         // removes the default attack speed of weapons
-        meta.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, new AttributeModifier(uuid, "generic.attack_speed", 0, AttributeModifier.Operation.ADD_NUMBER));
+        UUID modifierUuid = stackable ? new UUID(0, 0) : uuid;
+        meta.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, new AttributeModifier(modifierUuid, "generic.attack_speed", 0, AttributeModifier.Operation.ADD_NUMBER));
 
         itemStack.setItemMeta(meta);
         return itemStack;
