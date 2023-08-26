@@ -270,6 +270,28 @@ public enum ArcadiaMaterial {
                     .append("we'd die waiting. And that's why you need to choose yourself.\"", ChatColor.GOLD, ChatColor.ITALIC)
                     .build()))
             .build()),
+    PURE_NAIL(new MaterialData.Builder<>(ItemType.NAIL)
+            .name("Pure Nail")
+            .material(Material.IRON_SWORD)
+            .rarity(ItemRarity.SPECIAL)
+            .enchantGlint(true)
+            .stackable(false)
+            .addModifier(new LoreItemModifier(new LoreBuilder()
+                    .append("You can see a faint pail light emanating from this weapon.")
+                    .append("Upon closer inspection, you conclude that this is way too")
+                    .append("big to be considered a nail.")
+                    .emptyLine()
+                    .append("NO MIND TO THINK.", ChatColor.DARK_GRAY, ChatColor.ITALIC)
+                    .append("NO WILL TO BREAK.", ChatColor.DARK_GRAY, ChatColor.ITALIC)
+                    .append("NO VOICE TO CRY SUFFERING.", ChatColor.DARK_GRAY, ChatColor.ITALIC)
+                    .append("BORN OF GOD AND VOID.", ChatColor.DARK_GRAY, ChatColor.ITALIC)
+                    .build()))
+            .build(), meta -> {
+        ItemStats itemStats = meta.getItemStats();
+        itemStats.setAttribute(ItemAttribute.DAMAGE, new AttributeRange(1000, 1500));
+        itemStats.setAttribute(ItemAttribute.STRENGTH, new AttributeRange(50, 100));
+        return meta;
+    }),
 
     FRUITY_APPLE(new MaterialData.Builder<>(ItemType.CONSUMABLE,
             new ConsumableData(new LoreBuilder()

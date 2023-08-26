@@ -13,6 +13,8 @@ public interface ItemType<D extends ExtraItemData> {
 
     ItemType<@Nullable NoneItemData> SWORD = new CustomItemType<>(EquipmentSlot.HAND, "SWORD", false, 1.6);
 
+    ItemType<@Nullable NoneItemData> NAIL = new CustomItemType<>(EquipmentSlot.HAND, "NAIL", false, 2);
+
     ItemType<@Nullable NoneItemData> BOW = new CustomItemType<>(EquipmentSlot.HAND, "BOW", false);
 
     ItemType<@Nullable NoneItemData> HELMET = new CustomItemType<>(EquipmentSlot.HEAD, "HELMET", false);
