@@ -15,7 +15,6 @@ import com.datasiqn.arcadia.item.ArcadiaItem;
 import com.datasiqn.arcadia.item.meta.ArcadiaItemMeta;
 import com.datasiqn.arcadia.item.stat.AttributeInstance;
 import com.datasiqn.arcadia.item.stat.ItemAttribute;
-import com.datasiqn.arcadia.item.type.ItemType;
 import com.datasiqn.arcadia.managers.UpgradeEventManager;
 import com.datasiqn.arcadia.player.ArcadiaSender;
 import com.datasiqn.arcadia.player.PlayerData;
@@ -34,6 +33,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
@@ -177,7 +177,7 @@ public class DamageListener implements Listener {
         PlayerData playerData = plugin.getPlayerManager().getPlayerData(player);
         ArcadiaItem item = playerData.getEquipment().getItemInMainHand();
 
-        if (item.getItemData().getItemType() != ItemType.SWORD) return damage;
+        if (item.getItemData().getItemType().getSlot() != EquipmentSlot.HAND) return damage;
         ArcadiaItemMeta itemMeta = item.getItemMeta();
         AttributeInstance damageAttribute = itemMeta.getItemStats().getAttribute(ItemAttribute.DAMAGE);
         if (damageAttribute == null) return damage;
