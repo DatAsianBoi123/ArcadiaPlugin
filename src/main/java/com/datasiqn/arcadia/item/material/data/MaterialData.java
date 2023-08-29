@@ -8,11 +8,13 @@ import com.datasiqn.arcadia.item.modifiers.ItemModifier;
 import com.datasiqn.arcadia.item.type.ItemType;
 import com.datasiqn.arcadia.item.type.data.ExtraItemData;
 import com.datasiqn.arcadia.util.PdcUtil;
+import net.minecraft.world.entity.EquipmentSlot;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.craftbukkit.v1_19_R3.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -120,9 +122,11 @@ public class MaterialData<D extends ExtraItemData> {
 
         itemModifiers.forEach(modifier -> modifier.modify(uuid, meta));
 
-        // removes the default attack speed of weapons
-        UUID modifierUuid = stackable ? new UUID(0, 0) : uuid;
-        meta.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, new AttributeModifier(modifierUuid, "generic.attack_speed", 0, AttributeModifier.Operation.ADD_NUMBER));
+        if (!CraftItemStack.asNMSCopy(itemStack).getItem().getDefaultAttributeModifiers(EquipmentSlot.MAINHAND).isEmpty()) {
+            // removes the default attack speed of weapons
+            UUID modifierUuid = stackable ? new UUID(0, 0) : uuid;
+            meta.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, new AttributeModifier(modifierUuid, "generic.attack_speed", 0, AttributeModifier.Operation.ADD_NUMBER));
+        }
 
         itemStack.setItemMeta(meta);
         return itemStack;
