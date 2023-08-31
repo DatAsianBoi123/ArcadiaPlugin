@@ -282,6 +282,19 @@ public enum ArcadiaMaterial {
         itemStats.setAttribute(ItemAttribute.DAMAGE, new AttributeRange(1000, 1500));
         itemStats.setAttribute(ItemAttribute.STRENGTH, new AttributeRange(50, 100));
     }),
+    ANCIENT_TRANSLATOR(new MaterialData.Builder<>(ItemType.NONE)
+            .name("Ancient Translator")
+            .material(Material.IRON_AXE)
+            .rarity(ItemRarity.SPECIAL)
+            .stackable(false)
+            .addModifier(new LoreItemModifier(new LoreBuilder()
+                    .append("An ancient translator from a previous universe.")
+                    .append("It is unclear what language it translates from.")
+                    .emptyLine()
+                    .append("\"The future is always built on the past,", ChatColor.WHITE, ChatColor.ITALIC)
+                    .append("even if we won’t get to see it.\"", ChatColor.WHITE, ChatColor.ITALIC)
+                    .build()))
+            .build()),
 
     FRUITY_APPLE(new MaterialData.Builder<>(ItemType.CONSUMABLE,
             new ConsumableData(new LoreBuilder()
