@@ -28,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
-import java.util.function.UnaryOperator;
+import java.util.function.Consumer;
 
 public enum ArcadiaMaterial {
     ENCHANTED_STICK(new MaterialData.Builder<>(ItemType.NONE)
@@ -102,7 +102,6 @@ public enum ArcadiaMaterial {
         itemStats.setAttribute(ItemAttribute.DAMAGE, new AttributeRange(3, 5));
         itemStats.setAttribute(ItemAttribute.DEFENSE, 5);
         itemStats.setAttribute(ItemAttribute.STRENGTH, new AttributeRange(5, 10));
-        return meta;
     }),
     BERSERK_HELMET(new MaterialData.Builder<>(ItemType.HELMET)
             .name("Berserker Helmet")
@@ -115,7 +114,6 @@ public enum ArcadiaMaterial {
         itemStats.setAttribute(ItemAttribute.DEFENSE, new AttributeRange(75, 150));
         itemStats.setAttribute(ItemAttribute.HEALTH, new AttributeRange(400, 800));
         itemStats.setAttribute(ItemAttribute.STRENGTH, new AttributeRange(250, 400));
-        return meta;
     }),
     BERSERK_CHESTPLATE(new MaterialData.Builder<>(ItemType.CHESTPLATE)
             .name("Berserker Chestplate")
@@ -128,7 +126,6 @@ public enum ArcadiaMaterial {
         itemStats.setAttribute(ItemAttribute.DEFENSE, new AttributeRange(100d, 200d));
         itemStats.setAttribute(ItemAttribute.HEALTH, new AttributeRange(500d, 1000d));
         itemStats.setAttribute(ItemAttribute.STRENGTH, new AttributeRange(300d, 500d));
-        return meta;
     }),
     BERSERK_LEGGINGS(new MaterialData.Builder<>(ItemType.LEGGINGS)
             .name("Berserker Leggings")
@@ -141,7 +138,6 @@ public enum ArcadiaMaterial {
         itemStats.setAttribute(ItemAttribute.DEFENSE, new AttributeRange(100, 175));
         itemStats.setAttribute(ItemAttribute.HEALTH, new AttributeRange(450, 900));
         itemStats.setAttribute(ItemAttribute.STRENGTH, new AttributeRange(250, 400));
-        return meta;
     }),
     BERSERK_BOOTS(new MaterialData.Builder<>(ItemType.BOOTS)
             .name("Berserker Boots")
@@ -154,7 +150,6 @@ public enum ArcadiaMaterial {
         itemStats.setAttribute(ItemAttribute.DEFENSE, new AttributeRange(50d, 100d));
         itemStats.setAttribute(ItemAttribute.HEALTH, new AttributeRange(300d, 850d));
         itemStats.setAttribute(ItemAttribute.STRENGTH, new AttributeRange(200d, 400d));
-        return meta;
     }),
     ULTIMATUM(new MaterialData.Builder<>(ItemType.SWORD)
             .name(ChatColor.RED + "" + ChatColor.BOLD + "<<" + ChatColor.RED + "Ultimatum" + ChatColor.BOLD + ">>")
@@ -167,7 +162,6 @@ public enum ArcadiaMaterial {
         ItemStats itemStats = meta.getItemStats();
         itemStats.setAttribute(ItemAttribute.DAMAGE, new AttributeRange(1500, 3000));
         itemStats.setAttribute(ItemAttribute.STRENGTH, 200);
-        return meta;
     }),
     EXCALIBUR(new MaterialData.Builder<>(ItemType.SWORD)
             .name("Excalibur")
@@ -180,7 +174,6 @@ public enum ArcadiaMaterial {
         itemStats.setAttribute(ItemAttribute.DAMAGE, new AttributeRange(2000, 3500));
         itemStats.setAttribute(ItemAttribute.DEFENSE, 200);
         itemStats.setAttribute(ItemAttribute.ATTACK_SPEED, 100);
-        return meta;
     }),
     HAMMER(new MaterialData.Builder<>(ItemType.SWORD)
             .name("War Hammer")
@@ -192,7 +185,6 @@ public enum ArcadiaMaterial {
         ItemStats itemStats = meta.getItemStats();
         itemStats.setAttribute(ItemAttribute.DAMAGE, new AttributeRange(5000, 7000));
         itemStats.setAttribute(ItemAttribute.ATTACK_SPEED, -50);
-        return meta;
     }),
     BOW(new MaterialData.Builder<>(ItemType.BOW)
             .name("Bow")
@@ -201,7 +193,6 @@ public enum ArcadiaMaterial {
             .build(), meta -> {
         ItemStats itemStats = meta.getItemStats();
         itemStats.setAttribute(ItemAttribute.DAMAGE, 5);
-        return meta;
     }),
     AIR_CANNON(new MaterialData.Builder<>(ItemType.NONE)
             .name("Air Cannon")
@@ -290,7 +281,6 @@ public enum ArcadiaMaterial {
         ItemStats itemStats = meta.getItemStats();
         itemStats.setAttribute(ItemAttribute.DAMAGE, new AttributeRange(1000, 1500));
         itemStats.setAttribute(ItemAttribute.STRENGTH, new AttributeRange(50, 100));
-        return meta;
     }),
 
     FRUITY_APPLE(new MaterialData.Builder<>(ItemType.CONSUMABLE,
@@ -310,19 +300,16 @@ public enum ArcadiaMaterial {
             .name("Strength Stone")
             .material(Material.REDSTONE)
             .stackable(false)
-            .build(), meta -> {
-        meta.getItemStats().setAttribute(ItemAttribute.STRENGTH, 1);
-        return meta;
-    }),
+            .build(), meta -> meta.getItemStats().setAttribute(ItemAttribute.STRENGTH, 1)),
     ;
 
     private final MaterialData<?> data;
-    private final UnaryOperator<ArcadiaItemMeta> metaBuilder;
+    private final Consumer<ArcadiaItemMeta> metaBuilder;
 
     ArcadiaMaterial(MaterialData<?> data) {
-        this(data, meta -> meta);
+        this(data, meta -> {});
     }
-    ArcadiaMaterial(MaterialData<?> data, UnaryOperator<ArcadiaItemMeta> metaBuilder) {
+    ArcadiaMaterial(MaterialData<?> data, Consumer<ArcadiaItemMeta> metaBuilder) {
         this.data = data;
         this.metaBuilder = metaBuilder;
     }
@@ -334,7 +321,9 @@ public enum ArcadiaMaterial {
 
     @NotNull
     public ArcadiaItemMeta createItemMeta(UUID uuid) {
-        return metaBuilder.apply(new ArcadiaItemMeta(uuid));
+        ArcadiaItemMeta meta = new ArcadiaItemMeta(uuid);
+        metaBuilder.accept(meta);
+        return meta;
     }
 
     public static @Nullable ArcadiaMaterial fromItemStack(@NotNull ItemStack itemStack) {
