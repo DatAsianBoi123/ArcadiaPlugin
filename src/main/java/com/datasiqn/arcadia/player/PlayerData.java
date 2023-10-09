@@ -28,7 +28,6 @@ import org.jetbrains.annotations.Nullable;
 import java.io.*;
 import java.text.DecimalFormat;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 
 public class PlayerData {
@@ -348,7 +347,9 @@ public class PlayerData {
     }
 
     private double getHearts() {
-        return health / getAttribute(PlayerAttribute.MAX_HEALTH) * Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).getValue();
+        org.bukkit.attribute.AttributeInstance attribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        if (attribute == null) throw new IllegalStateException("unreachable");
+        return health / getAttribute(PlayerAttribute.MAX_HEALTH) * attribute.getValue();
     }
 
     private double getMaxHearts() {

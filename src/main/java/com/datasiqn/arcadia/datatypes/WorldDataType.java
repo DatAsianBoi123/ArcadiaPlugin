@@ -6,8 +6,6 @@ import org.bukkit.persistence.PersistentDataAdapterContext;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-
 public class WorldDataType implements PersistentDataType<String, World> {
     @NotNull
     @Override
@@ -30,6 +28,8 @@ public class WorldDataType implements PersistentDataType<String, World> {
     @NotNull
     @Override
     public World fromPrimitive(@NotNull String primitive, @NotNull PersistentDataAdapterContext context) {
-        return Objects.requireNonNull(Bukkit.getWorld(primitive));
+        World world = Bukkit.getWorld(primitive);
+        if (world == null) throw new IllegalStateException("world " + primitive + " does not exist");
+        return world;
     }
 }
