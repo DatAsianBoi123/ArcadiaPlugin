@@ -96,7 +96,7 @@ public class DungeonManager {
     }
     public @Nullable DungeonInstance getJoinedDungeon(@NotNull UUID uuid) {
         for (Map.Entry<DungeonPlayer, DungeonInstance> entry : playerToDungeonMap.entrySet()) {
-            if (entry.getKey().getPlayerData().getUniqueId().equals(uuid)) return entry.getValue();
+            if (entry.getKey().getUniqueId().equals(uuid)) return entry.getValue();
         }
         return null;
     }

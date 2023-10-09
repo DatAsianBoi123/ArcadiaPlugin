@@ -42,7 +42,7 @@ public final class DungeonInstance {
         return getPlayer(player.getUniqueId());
     }
     public DungeonPlayer getPlayer(@Nullable UUID uuid) {
-        return players.stream().filter(dungeonPlayer -> dungeonPlayer.getPlayerData().getUniqueId().equals(uuid)).findFirst().orElse(null);
+        return players.stream().filter(dungeonPlayer -> dungeonPlayer.getUniqueId().equals(uuid)).findFirst().orElse(null);
     }
 
     public @NotNull DungeonPlayer addPlayer(PlayerData player) {

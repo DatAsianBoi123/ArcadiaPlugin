@@ -1,14 +1,17 @@
 package com.datasiqn.arcadia.dungeon;
 
+import com.datasiqn.arcadia.player.ArcadiaSender;
 import com.datasiqn.arcadia.player.PlayerData;
 import com.datasiqn.arcadia.upgrade.Upgrade;
 import com.datasiqn.arcadia.upgrade.UpgradeType;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 public class DungeonPlayer {
     private final List<Upgrade> upgrades = new ArrayList<>();
@@ -20,6 +23,18 @@ public class DungeonPlayer {
 
     public PlayerData getPlayerData() {
         return playerData;
+    }
+
+    public Player getPlayer() {
+        return playerData.getPlayer();
+    }
+
+    public ArcadiaSender<Player> getSender() {
+        return playerData.getSender();
+    }
+
+    public UUID getUniqueId() {
+        return playerData.getUniqueId();
     }
 
     public void pickupUpgrade(UpgradeType upgradeType) {
