@@ -291,8 +291,9 @@ public enum ArcadiaMaterial {
                     .append("An ancient translator from a previous universe.")
                     .append("It is unclear what language it translates from.")
                     .emptyLine()
-                    .append("\"The future is always built on the past,", ChatColor.WHITE, ChatColor.ITALIC)
-                    .append("even if we won’t get to see it.\"", ChatColor.WHITE, ChatColor.ITALIC)
+                    .append("\"It’s tempting to linger in this moment, while every", ChatColor.WHITE, ChatColor.ITALIC)
+                    .append("possibility still exists. But unless they are collapsed", ChatColor.WHITE, ChatColor.ITALIC)
+                    .append("by an observer, they will never be more than possibilities.\"", ChatColor.WHITE, ChatColor.ITALIC)
                     .build()))
             .build()),
 
