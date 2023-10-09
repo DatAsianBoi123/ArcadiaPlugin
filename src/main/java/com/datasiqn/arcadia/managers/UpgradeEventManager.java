@@ -45,7 +45,7 @@ public class UpgradeEventManager {
     public void emit(@NotNull Action action) {
         for (Handler<Action> handler : handlerList.getHandlers(action)) {
             int upgradeAmount = action.getPlayer().getUpgradeAmount(handler.upgradeType);
-            if (upgradeAmount == 0) break;
+            if (upgradeAmount == 0) continue;
             handler.onAction(action, upgradeAmount);
         }
     }
