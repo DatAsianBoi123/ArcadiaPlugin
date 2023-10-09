@@ -23,7 +23,7 @@ public class MagicQuiverListener implements UpgradeListener {
         Arrow arrow = action.getArrow();
         Vector velocity = arrow.getVelocity();
         Location spawnLocation = arrow.getLocation();
-        Player player = action.getPlayer().getPlayerData().getPlayer();
+        Player player = action.getPlayer().getPlayer();
 
         ScheduleBuilder.create()
                 .executes(runnable -> {

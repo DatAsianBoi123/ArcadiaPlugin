@@ -114,7 +114,7 @@ public final class Arcadia extends JavaPlugin {
         CommandManager commandManager = CommandCore.getInstance().getCommandManager();
         commandManager.registerCommand(new CommandItem().getCommand());
         commandManager.registerCommand(new CommandGUI(this).getCommand());
-        commandManager.registerCommand(new CommandSummon().getCommand());
+        commandManager.registerCommand(new CommandSummon(this).getCommand());
         commandManager.registerCommand(new CommandHeal(this).getCommand());
         commandManager.registerCommand(new CommandDebug(this).getCommand());
         commandManager.registerCommand(new CommandViewRecipe().getCommand());

@@ -1,5 +1,6 @@
 package com.datasiqn.arcadia.entities;
 
+import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.loottable.LootTable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
@@ -29,16 +30,16 @@ public class EntityIronGiant implements ArcadiaEntitySummoner {
     }
 
     @Override
-    public void summonEntity(@NotNull Location location) {
+    public void summonEntity(@NotNull Location location, Arcadia plugin) {
         if (location.getWorld() == null) return;
-        new CustomEntity(location.getWorld(), id).summon(location);
+        new CustomEntity(plugin, location.getWorld(), id).summon(location);
     }
 
     private static class CustomEntity extends ArcadiaHostileEntity {
         private int attackAnimationTick;
 
-        public CustomEntity(@NotNull World world, String id) {
-            super(EntityType.IRON_GOLEM, world, "Iron Giant", id, 100000, 3000);
+        public CustomEntity(com.datasiqn.arcadia.Arcadia plugin, @NotNull World world, String id) {
+            super(EntityType.IRON_GOLEM, plugin, world, "Iron Giant", id, 100000, 3000);
         }
 
         @Override

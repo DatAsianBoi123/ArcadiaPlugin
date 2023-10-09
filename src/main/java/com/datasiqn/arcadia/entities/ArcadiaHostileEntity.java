@@ -20,8 +20,8 @@ import java.util.EnumSet;
 public abstract class ArcadiaHostileEntity extends ArcadiaEntity {
     private final double damage;
 
-    public ArcadiaHostileEntity(EntityType<? extends PathfinderMob> entityType, @NotNull World world, String name, String id, int maxHealth, double damage) {
-        super(entityType, world, name, id, maxHealth);
+    public ArcadiaHostileEntity(EntityType<? extends PathfinderMob> entityType, com.datasiqn.arcadia.Arcadia plugin, @NotNull World world, String name, String id, int maxHealth, double damage) {
+        super(entityType, plugin, world, name, id, maxHealth);
         this.damage = damage;
     }
 

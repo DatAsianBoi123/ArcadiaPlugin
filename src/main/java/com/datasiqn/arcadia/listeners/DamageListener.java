@@ -15,17 +15,12 @@ import com.datasiqn.arcadia.item.ArcadiaItem;
 import com.datasiqn.arcadia.item.meta.ArcadiaItemMeta;
 import com.datasiqn.arcadia.item.stat.AttributeInstance;
 import com.datasiqn.arcadia.item.stat.ItemAttribute;
-import com.datasiqn.arcadia.managers.UpgradeEventManager;
 import com.datasiqn.arcadia.player.ArcadiaSender;
 import com.datasiqn.arcadia.player.PlayerData;
-import com.datasiqn.arcadia.upgrade.listeners.actions.DamageEnemyAction;
-import com.datasiqn.arcadia.upgrade.listeners.actions.KillEnemyAction;
 import com.datasiqn.arcadia.util.PdcUtil;
 import com.datasiqn.schedulebuilder.ScheduleBuilder;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_19_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 import org.bukkit.entity.*;
@@ -33,14 +28,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.Locale;
 
 public class DamageListener implements Listener {
     private final Arcadia plugin;
@@ -51,40 +44,31 @@ public class DamageListener implements Listener {
 
     @EventHandler
     public void onEntityDamage(@NotNull EntityDamageEvent event) {
-        if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK) {
+        DamageCause cause = event.getCause();
+        if (cause == DamageCause.ENTITY_SWEEP_ATTACK) {
             event.setCancelled(true);
             return;
         }
-        if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK || event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) return;
+        if (cause == DamageCause.ENTITY_ATTACK || cause == DamageCause.PROJECTILE) return;
 
         if (((CraftEntity) event.getEntity()).getHandle() instanceof ArcadiaEntity entity) {
-            entity.damage(event.getDamage(), event);
-            spawnDamageIndicator(event.getEntity().getLocation(), event.getDamage());
+            entity.handleDamageEvent(event, null);
         } else if (event.getEntity() instanceof Player player) {
-            plugin.getPlayerManager().getPlayerData(player).damage(event, event.getCause() == EntityDamageEvent.DamageCause.FALL);
+            plugin.getPlayerManager().getPlayerData(player).damage(event, cause == DamageCause.FALL);
         }
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onEntityDamageByEntity(@NotNull EntityDamageByEntityEvent event) {
-        if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK) return;
+        if (event.getCause() == DamageCause.ENTITY_SWEEP_ATTACK) return;
         if (((CraftEntity) event.getEntity()).getHandle() instanceof ArcadiaEntity entity) {
             double damage = calcDamage(event, entity);
-            if (!(event.getDamager() instanceof Player)) {
-                entity.damage(damage, event);
-                spawnDamageIndicator(event.getEntity().getLocation(), damage);
-            }
-
             Player player;
             if (!(event.getDamager() instanceof Player damager)) {
                 if (!(event.getDamager() instanceof Projectile projectile) || !(projectile.getShooter() instanceof Player shooter)) {
                     return;
                 }
                 player = shooter;
-                if (event.getDamager() instanceof Player) {
-                    entity.damage(damage, event);
-                    spawnDamageIndicator(event.getEntity().getLocation(), damage);
-                }
             } else {
                 player = damager;
                 ServerPlayer nmsPlayer = ((CraftPlayer) damager).getHandle();
@@ -108,19 +92,13 @@ public class DamageListener implements Listener {
                     event.setCancelled(true);
                     return;
                 }
-                entity.damage(damage, event);
-                spawnDamageIndicator(event.getEntity().getLocation(), damage);
             }
-
             PlayerData playerData = plugin.getPlayerManager().getPlayerData(player);
 
             DungeonPlayer dungeonPlayer = plugin.getDungeonManager().getDungeonPlayer(playerData.getUniqueId());
-            if (dungeonPlayer != null) {
-                UpgradeEventManager eventManager = plugin.getUpgradeEventManager();
-                eventManager.emit(new DamageEnemyAction(dungeonPlayer, entity, damage));
 
-                if (entity.arcadia().health() <= damage) eventManager.emit(new KillEnemyAction(dungeonPlayer, entity));
-            }
+            event.setDamage(damage);
+            entity.handleDamageEvent(event, dungeonPlayer);
 
             ScheduleBuilder.create().executes(runnable -> {
                 Entity eventEntity = event.getEntity();
@@ -131,25 +109,6 @@ public class DamageListener implements Listener {
             event.setDamage(calcPlayerDamage(event));
             plugin.getPlayerManager().getPlayerData(player).damage(event);
         }
-    }
-
-    private void spawnDamageIndicator(@NotNull Location center, double damage) {
-        World world = center.getWorld();
-        if (world == null) return;
-        Vector direction = new Vector(Math.random() - 0.5, 0, Math.random() - 0.5);
-        direction.normalize();
-        direction.setY(1);
-        center.add(direction);
-        NumberFormat numberFormat = NumberFormat.getInstance(Locale.ENGLISH);
-        TextDisplay entity = world.spawn(center, TextDisplay.class, display -> {
-            display.setText(ChatColor.RED + numberFormat.format(Math.round(damage)));
-            display.setAlignment(TextDisplay.TextAlignment.CENTER);
-            display.setBillboard(Display.Billboard.CENTER);
-        });
-        ScheduleBuilder.create()
-                .wait(1.0).seconds()
-                .executes(runnable -> entity.remove())
-                .run(plugin);
     }
 
     private double calcPlayerDamage(@NotNull EntityDamageByEntityEvent event) {

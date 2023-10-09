@@ -30,7 +30,7 @@ public enum UpgradeType {
 
     BLOOD_CHALICE("Blood Chalice", Lore.of("Killing enemies heal you"), Material.POTION, ItemRarity.RARE, new BloodChaliceListener()),
     MAGIC_QUIVER("Magic Quiver", Lore.of("Bows shoot extra arrows"), Material.LEATHER_HORSE_ARMOR, ItemRarity.RARE, MagicQuiverListener::new),
-    LIGHTNING_BOTTLE("Lightning in a Bottle", Lore.of("Chance on hit to strike lightning"), Material.GLASS_BOTTLE, ItemRarity.RARE, new LightningBottleListener()),
+    LIGHTNING_BOTTLE("Lightning in a Bottle", Lore.of("Chance on hit to strike lightning"), Material.GLASS_BOTTLE, ItemRarity.RARE, LightningBottleListener::new),
 
     LEGENDARY_ITEM("This is some legendary item", Lore.of("Cool item"), Material.GRASS, ItemRarity.LEGENDARY),
 

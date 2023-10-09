@@ -1,17 +1,18 @@
 package com.datasiqn.arcadia.entities;
 
+import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.loottable.LootTable;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.Objects;
 
 public class EntityUndeadGuardian implements ArcadiaEntitySummoner {
     private final String id;
@@ -21,17 +22,19 @@ public class EntityUndeadGuardian implements ArcadiaEntitySummoner {
     }
 
     @Override
-    public void summonEntity(@NotNull Location location) {
+    public void summonEntity(@NotNull Location location, Arcadia plugin) {
         if (location.getWorld() == null) return;
-        new CustomEntity(location.getWorld(), id).summon(location);
+        new CustomEntity(plugin, location.getWorld(), id).summon(location);
     }
 
     private static class CustomEntity extends ArcadiaHostileEntity {
-        public CustomEntity(World world, String id) {
-            super(EntityType.SKELETON, world, "Undead Guardian", id, 200, 250);
+        public CustomEntity(com.datasiqn.arcadia.Arcadia plugin, World world, String id) {
+            super(EntityType.SKELETON, plugin, world, "Undead Guardian", id, 200, 250);
 
-            Objects.requireNonNull(getAttribute(Attributes.MOVEMENT_SPEED)).setBaseValue(0.4);
-            Objects.requireNonNull(getAttribute(Attributes.KNOCKBACK_RESISTANCE)).setBaseValue(1);
+            AttributeInstance moveSpeed = getAttribute(Attributes.MOVEMENT_SPEED);
+            if (moveSpeed != null) moveSpeed.setBaseValue(0.4);
+            AttributeInstance knockbackResistance = getAttribute(Attributes.KNOCKBACK_RESISTANCE);
+            if (knockbackResistance != null) knockbackResistance.setBaseValue(1);
         }
 
         @Override

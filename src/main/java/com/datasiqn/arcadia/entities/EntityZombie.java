@@ -1,5 +1,6 @@
 package com.datasiqn.arcadia.entities;
 
+import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.loottable.LootTable;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -22,14 +23,14 @@ public class EntityZombie implements ArcadiaEntitySummoner {
     }
 
     @Override
-    public void summonEntity(@NotNull Location location) {
+    public void summonEntity(@NotNull Location location, Arcadia plugin) {
         if (location.getWorld() == null) return;
-        new CustomEntity(location.getWorld(), id).summon(location);
+        new CustomEntity(plugin, location.getWorld(), id).summon(location);
     }
 
     private static class CustomEntity extends ArcadiaHostileEntity {
-        public CustomEntity(@NotNull World world, String id) {
-            super(EntityType.ZOMBIE, world, "Zombie", id, 10, 1.5);
+        public CustomEntity(com.datasiqn.arcadia.Arcadia plugin, @NotNull World world, String id) {
+            super(EntityType.ZOMBIE, plugin, world, "Zombie", id, 10, 1.5);
             setItemInHand(InteractionHand.MAIN_HAND, new net.minecraft.world.item.ItemStack(Items.WOODEN_SWORD));
             setItemSlot(EquipmentSlot.HEAD, new net.minecraft.world.item.ItemStack(Items.LEATHER_HELMET));
         }
