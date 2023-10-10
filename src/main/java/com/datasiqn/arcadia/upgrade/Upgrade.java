@@ -1,9 +1,5 @@
 package com.datasiqn.arcadia.upgrade;
 
-import com.datasiqn.arcadia.item.material.data.MaterialData;
-import com.datasiqn.arcadia.item.modifiers.LoreItemModifier;
-import com.datasiqn.arcadia.item.type.ItemType;
-import com.datasiqn.arcadia.item.type.data.NoneItemData;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
@@ -34,13 +30,7 @@ public class Upgrade {
     }
 
     public ItemStack toItemStack() {
-        MaterialData<NoneItemData> materialData = new MaterialData.Builder<>(ItemType.NONE)
-                .name(type.getDisplayName())
-                .material(type.getMaterial())
-                .rarity(type.getRarity())
-                .addModifier(new LoreItemModifier(type.getDescription()))
-                .build();
-        return materialData.toItemStack(amount, UUID.randomUUID());
+        return type.getData().toItemStack(amount, UUID.randomUUID());
     }
 
     @Override

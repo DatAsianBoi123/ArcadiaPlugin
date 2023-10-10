@@ -2,6 +2,9 @@ package com.datasiqn.arcadia.upgrade;
 
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.item.ItemRarity;
+import com.datasiqn.arcadia.item.material.data.MaterialData;
+import com.datasiqn.arcadia.item.modifiers.LoreItemModifier;
+import com.datasiqn.arcadia.item.modifiers.PotionModifier;
 import com.datasiqn.arcadia.upgrade.listeners.BloodChaliceListener;
 import com.datasiqn.arcadia.upgrade.listeners.LightningBottleListener;
 import com.datasiqn.arcadia.upgrade.listeners.MagicQuiverListener;
@@ -15,6 +18,7 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2DoubleLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -26,20 +30,54 @@ import java.util.Comparator;
 import java.util.function.Function;
 
 public enum UpgradeType {
-    COMMON_ITEM("This is some common item", Lore.of("Cool item"), Material.DIRT, ItemRarity.COMMON),
+    //<editor-fold desc="Common Items">
+    BLOOD_CHALICE(UpgradeData.builder()
+            .name("Blood Chalice")
+            .material(Material.POTION)
+            .rarity(ItemRarity.COMMON)
+            .addModifier(new LoreItemModifier(Lore.of("Killing enemies heal you")))
+            .addModifier(new PotionModifier(Color.RED))
+            .build(), new BloodChaliceListener()),
+    //</editor-fold>
 
-    BLOOD_CHALICE("Blood Chalice", Lore.of("Killing enemies heal you"), Material.POTION, ItemRarity.RARE, new BloodChaliceListener()),
-    MAGIC_QUIVER("Magic Quiver", Lore.of("Bows shoot extra arrows"), Material.LEATHER_HORSE_ARMOR, ItemRarity.RARE, MagicQuiverListener::new),
-    LIGHTNING_BOTTLE("Lightning in a Bottle", Lore.of("Chance on hit to strike lightning"), Material.GLASS_BOTTLE, ItemRarity.RARE, LightningBottleListener::new),
+    //<editor-fold desc="Rare Items">,
+    MAGIC_QUIVER(UpgradeData.builder()
+            .name("Magic Quiver")
+            .material(Material.LEATHER_HORSE_ARMOR)
+            .rarity(ItemRarity.RARE)
+            .addModifier(new LoreItemModifier(Lore.of("Bows shoot extra arrows")))
+            .build(), MagicQuiverListener::new),
+    LIGHTNING_BOTTLE(UpgradeData.builder()
+            .name("Lightning in a Bottle")
+            .material(Material.POTION)
+            .rarity(ItemRarity.RARE)
+            .addModifier(new LoreItemModifier(Lore.of("Chance on hit to strike lightning")))
+            .addModifier(new PotionModifier(Color.BLUE))
+            .build(), LightningBottleListener::new),
+    //</editor-fold>
 
-    LEGENDARY_ITEM("This is some legendary item", Lore.of("Cool item"), Material.GRASS, ItemRarity.LEGENDARY),
+    //<editor-fold desc="Legendary Items">
+    LEGENDARY_ITEM(UpgradeData.builder()
+            .name("This is some legendary item")
+            .material(Material.GRASS)
+            .rarity(ItemRarity.LEGENDARY)
+            .addModifier(new LoreItemModifier(Lore.of("Cool item")))
+            .build()),
+    //</editor-fold>
 
-    MYTHIC_ITEM("This is some mythic item", Lore.of("Cool item"), Material.MYCELIUM, ItemRarity.MYTHIC),
+    //<editor-fold desc="Mythic Items">
+    MYTHIC_ITEM(UpgradeData.builder()
+            .name("This is some mythic item")
+            .material(Material.MYCELIUM)
+            .rarity(ItemRarity.MYTHIC)
+            .addModifier(new LoreItemModifier(Lore.of("Cool item")))
+            .build()),
     ;
+    //</editor-fold>
 
     private static final Multimap<ItemRarity, UpgradeType> UPGRADES = LinkedHashMultimap.create();
     static {
-        Arrays.stream(values()).sorted(Comparator.comparing(type -> type.rarity)).forEach(type -> UPGRADES.put(type.rarity, type));
+        Arrays.stream(values()).sorted(Comparator.comparing(type -> type.data.getRarity())).forEach(type -> UPGRADES.put(type.data.getRarity(), type));
     }
     private static final Object2DoubleMap<ItemRarity> RARITY_WEIGHTS = new Object2DoubleLinkedOpenHashMap<>();
     private static final double[] PROBABILITIES;
@@ -86,41 +124,23 @@ public enum UpgradeType {
         }
     }
 
-    private final String displayName;
-    private final Lore description;
-    private final Material material;
-    private final ItemRarity rarity;
+    private final UpgradeData data;
 
-    UpgradeType(String displayName, @NotNull Lore description, Material material, ItemRarity rarity) {
-        this(displayName, description, material, rarity, (UpgradeListener) null);
+    UpgradeType(UpgradeData data) {
+        this(data, (UpgradeListener) null);
     }
-    UpgradeType(String displayName, @NotNull Lore description, Material material, ItemRarity rarity, @NotNull Function<Arcadia, UpgradeListener> listenerFunction) {
-        this(displayName, description, material, rarity, listenerFunction.apply(JavaPlugin.getPlugin(Arcadia.class)));
+    UpgradeType(UpgradeData data, @NotNull Function<Arcadia, UpgradeListener> listenerFunction) {
+        this(data, listenerFunction.apply(JavaPlugin.getPlugin(Arcadia.class)));
     }
-    UpgradeType(String displayName, @NotNull Lore description, Material material, ItemRarity rarity, UpgradeListener listener) {
-        this.displayName = displayName;
-        this.description = description;
-        this.material = material;
-        this.rarity = rarity;
+    UpgradeType(UpgradeData data, UpgradeListener listener) {
+        this.data = data;
 
         if (listener == null) return;
         JavaPlugin.getPlugin(Arcadia.class).getUpgradeEventManager().register(listener, this);
     }
 
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public Lore getDescription() {
-        return description;
-    }
-
-    public Material getMaterial() {
-        return material;
-    }
-
-    public ItemRarity getRarity() {
-        return rarity;
+    public MaterialData<?> getData() {
+        return data;
     }
 
     public static UpgradeType getRandomWeighted() {
