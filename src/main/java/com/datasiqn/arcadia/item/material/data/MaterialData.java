@@ -23,9 +23,13 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class MaterialData<D extends ExtraItemData> {
     private final @NotNull ItemType<D> itemType;
@@ -40,17 +44,17 @@ public class MaterialData<D extends ExtraItemData> {
     private final Map<AbilityType, ItemAbility> itemAbilities;
 
     @Contract(pure = true)
-    public MaterialData(@NotNull Builder<D> builder) {
-        itemType = builder.itemType;
-        itemData = builder.itemData;
-        itemModifiers = builder.itemModifiers;
+    public MaterialData(@NotNull ItemBuilder<D, ?, ?> builder) {
+        itemType = builder.itemType();
+        itemData = builder.itemData();
+        itemModifiers = builder.modifiers();
 
-        name = builder.name;
-        material = builder.material;
-        rarity = builder.rarity;
-        enchantGlint = builder.enchantGlint;
-        stackable = builder.stackable;
-        itemAbilities = builder.itemAbilities;
+        name = builder.name();
+        material = builder.material();
+        rarity = builder.rarity();
+        enchantGlint = builder.enchantGlint();
+        stackable = builder.stackable();
+        itemAbilities = builder.abilities();
     }
 
     public @NotNull ItemType<D> getItemType() {
@@ -81,8 +85,10 @@ public class MaterialData<D extends ExtraItemData> {
         return stackable;
     }
 
-    public @NotNull Map<AbilityType, ItemAbility> getItemAbilities() {
-        return new HashMap<>(itemAbilities);
+    @NotNull
+    @UnmodifiableView
+    public Map<AbilityType, ItemAbility> getItemAbilities() {
+        return itemAbilities;
     }
 
     public @NotNull ItemStack toItemStack() {
@@ -146,59 +152,22 @@ public class MaterialData<D extends ExtraItemData> {
         meta.addEnchant(Enchantment.DURABILITY, 0, true);
     }
 
-    public static final class Builder<D extends ExtraItemData> {
-        private final ItemType<D> itemType;
-        private final D itemData;
-        private final List<ItemModifier> itemModifiers = new ArrayList<>();
-        private final Map<AbilityType, ItemAbility> itemAbilities = new HashMap<>();
+    @Contract("_ -> new")
+    public static <D extends ExtraItemData> @NotNull Builder<D> builder(ItemType<D> type) {
+        return builder(type, null);
+    }
+    @Contract("_, _ -> new")
+    public static <D extends ExtraItemData> @NotNull Builder<D> builder(ItemType<D> type, D itemData) {
+        return new Builder<>(type, itemData);
+    }
 
-        private String name;
-        private Material material = Material.STONE;
-        private ItemRarity rarity = ItemRarity.COMMON;
-        private boolean enchantGlint;
-        private boolean stackable = true;
-
-        public Builder(ItemType<D> itemType) {
-            this(itemType, null);
-        }
-        public Builder(ItemType<D> itemType, D itemData) {
-            if (itemData == null && itemType.requiresData()) throw new RuntimeException("item type " + itemType + " requires data");
-            this.itemType = itemType;
-            this.itemData = itemData;
+    public static class Builder<D extends ExtraItemData> extends ItemBuilder<D, MaterialData<D>, Builder<D>> {
+        protected Builder(ItemType<D> itemType, D itemData) {
+            super(itemType, itemData);
         }
 
-        public Builder<D> name(@Nullable String name) {
-            this.name = name;
-            return this;
-        }
-
-        public Builder<D> material(@NotNull Material material) {
-            this.material = material;
-            return this;
-        }
-
-        public Builder<D> rarity(@NotNull ItemRarity rarity) {
-            this.rarity = rarity;
-            return this;
-        }
-
-        public Builder<D> enchantGlint(boolean enchantGlint) {
-            this.enchantGlint = enchantGlint;
-            return this;
-        }
-
-        public Builder<D> stackable(boolean stackable) {
-            this.stackable = stackable;
-            return this;
-        }
-
-        public Builder<D> addAbility(AbilityType type, @NotNull ItemAbility itemAbility) {
-            this.itemAbilities.put(type, itemAbility);
-            return this;
-        }
-
-        public Builder<D> addModifier(@NotNull ItemModifier modifier) {
-            itemModifiers.add(modifier);
+        @Override
+        protected Builder<D> getThis() {
             return this;
         }
 

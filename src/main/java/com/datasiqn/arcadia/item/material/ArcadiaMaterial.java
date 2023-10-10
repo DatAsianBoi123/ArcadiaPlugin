@@ -31,12 +31,12 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 public enum ArcadiaMaterial {
-    ENCHANTED_STICK(new MaterialData.Builder<>(ItemType.NONE)
+    ENCHANTED_STICK(MaterialData.builder(ItemType.NONE)
             .name("Enchanted Stick")
             .material(Material.STICK)
             .enchantGlint(true)
             .build()),
-    ANCIENT_CORE(new MaterialData.Builder<>(ItemType.NONE)
+    ANCIENT_CORE(MaterialData.builder(ItemType.NONE)
             .name("Ancient Core")
             .material(Material.PLAYER_HEAD)
             .rarity(ItemRarity.LEGENDARY)
@@ -45,7 +45,7 @@ public enum ArcadiaMaterial {
             .addModifier(new SkullItemModifier("843968ce4bcc31c3b35e2bcd4a5ac2e98a746b3355e5f8063c323d2ba57ab6e2"))
             .addModifier(new LoreItemModifier(Lore.of("An ancient core taken from the", "heart of a mysterious beast.")))
             .build()),
-    ANCIENT_CORE_AWAKENED(new MaterialData.Builder<>(ItemType.NONE)
+    ANCIENT_CORE_AWAKENED(MaterialData.builder(ItemType.NONE)
             .name("Awakened Core")
             .material(Material.PLAYER_HEAD)
             .rarity(ItemRarity.LEGENDARY)
@@ -54,14 +54,14 @@ public enum ArcadiaMaterial {
             .addModifier(new SkullItemModifier("a4ad229d80308059fa7aed86543779cf933f91b6a437431293d0bb31a0955b71"))
             .addModifier(new LoreItemModifier(Lore.of("A core brought back to its former glory.")))
             .build()),
-    GUARDIAN_KEY(new MaterialData.Builder<>(ItemType.NONE)
+    GUARDIAN_KEY(MaterialData.builder(ItemType.NONE)
             .name("Guardian's Key")
             .material(Material.TRIPWIRE_HOOK)
             .rarity(ItemRarity.RARE)
             .enchantGlint(true)
             .stackable(false)
             .build()),
-    SPACE_REWRITER(new MaterialData.Builder<>(ItemType.NONE)
+    SPACE_REWRITER(MaterialData.builder(ItemType.NONE)
             .name("Space Time Rewriter")
             .material(Material.PLAYER_HEAD)
             .rarity(ItemRarity.MYTHIC)
@@ -79,20 +79,20 @@ public enum ArcadiaMaterial {
                             .build())
                     .build()))
             .build()),
-    ESSENCE_OF_BOB(new MaterialData.Builder<>(ItemType.NONE)
+    ESSENCE_OF_BOB(MaterialData.builder(ItemType.NONE)
             .name("Bob's Essence")
             .material(Material.DRAGON_BREATH)
             .rarity(ItemRarity.LEGENDARY)
             .enchantGlint(true)
             .stackable(false)
             .build()),
-    ENCHANTED_BOOK(new MaterialData.Builder<>(ItemType.NONE)
+    ENCHANTED_BOOK(MaterialData.builder(ItemType.NONE)
             .name("Enchanted Book")
             .material(Material.ENCHANTED_BOOK)
             .enchantGlint(true)
             .stackable(false)
             .build()),
-    CROOKED_SWORD(new MaterialData.Builder<>(ItemType.SWORD)
+    CROOKED_SWORD(MaterialData.builder(ItemType.SWORD)
             .name("Crooked Sword")
             .material(Material.WOODEN_SWORD)
             .stackable(false)
@@ -103,7 +103,7 @@ public enum ArcadiaMaterial {
         itemStats.setAttribute(ItemAttribute.DEFENSE, 5);
         itemStats.setAttribute(ItemAttribute.STRENGTH, new AttributeRange(5, 10));
     }),
-    BERSERK_HELMET(new MaterialData.Builder<>(ItemType.HELMET)
+    BERSERK_HELMET(MaterialData.builder(ItemType.HELMET)
             .name("Berserker Helmet")
             .material(Material.PLAYER_HEAD)
             .rarity(ItemRarity.MYTHIC)
@@ -115,7 +115,7 @@ public enum ArcadiaMaterial {
         itemStats.setAttribute(ItemAttribute.HEALTH, new AttributeRange(400, 800));
         itemStats.setAttribute(ItemAttribute.STRENGTH, new AttributeRange(250, 400));
     }),
-    BERSERK_CHESTPLATE(new MaterialData.Builder<>(ItemType.CHESTPLATE)
+    BERSERK_CHESTPLATE(MaterialData.builder(ItemType.CHESTPLATE)
             .name("Berserker Chestplate")
             .material(Material.LEATHER_CHESTPLATE)
             .rarity(ItemRarity.MYTHIC)
@@ -127,7 +127,7 @@ public enum ArcadiaMaterial {
         itemStats.setAttribute(ItemAttribute.HEALTH, new AttributeRange(500d, 1000d));
         itemStats.setAttribute(ItemAttribute.STRENGTH, new AttributeRange(300d, 500d));
     }),
-    BERSERK_LEGGINGS(new MaterialData.Builder<>(ItemType.LEGGINGS)
+    BERSERK_LEGGINGS(MaterialData.builder(ItemType.LEGGINGS)
             .name("Berserker Leggings")
             .material(Material.LEATHER_LEGGINGS)
             .rarity(ItemRarity.MYTHIC)
@@ -139,7 +139,7 @@ public enum ArcadiaMaterial {
         itemStats.setAttribute(ItemAttribute.HEALTH, new AttributeRange(450, 900));
         itemStats.setAttribute(ItemAttribute.STRENGTH, new AttributeRange(250, 400));
     }),
-    BERSERK_BOOTS(new MaterialData.Builder<>(ItemType.BOOTS)
+    BERSERK_BOOTS(MaterialData.builder(ItemType.BOOTS)
             .name("Berserker Boots")
             .material(Material.LEATHER_BOOTS)
             .rarity(ItemRarity.MYTHIC)
@@ -151,7 +151,7 @@ public enum ArcadiaMaterial {
         itemStats.setAttribute(ItemAttribute.HEALTH, new AttributeRange(300d, 850d));
         itemStats.setAttribute(ItemAttribute.STRENGTH, new AttributeRange(200d, 400d));
     }),
-    ULTIMATUM(new MaterialData.Builder<>(ItemType.SWORD)
+    ULTIMATUM(MaterialData.builder(ItemType.SWORD)
             .name(ChatColor.RED + "" + ChatColor.BOLD + "<<" + ChatColor.RED + "Ultimatum" + ChatColor.BOLD + ">>")
             .material(Material.NETHERITE_AXE)
             .rarity(ItemRarity.MYTHIC)
@@ -163,7 +163,7 @@ public enum ArcadiaMaterial {
         itemStats.setAttribute(ItemAttribute.DAMAGE, new AttributeRange(1500, 3000));
         itemStats.setAttribute(ItemAttribute.STRENGTH, 200);
     }),
-    EXCALIBUR(new MaterialData.Builder<>(ItemType.SWORD)
+    EXCALIBUR(MaterialData.builder(ItemType.SWORD)
             .name("Excalibur")
             .material(Material.GOLDEN_SWORD)
             .rarity(ItemRarity.LEGENDARY)
@@ -175,7 +175,7 @@ public enum ArcadiaMaterial {
         itemStats.setAttribute(ItemAttribute.DEFENSE, 200);
         itemStats.setAttribute(ItemAttribute.ATTACK_SPEED, 100);
     }),
-    HAMMER(new MaterialData.Builder<>(ItemType.SWORD)
+    HAMMER(MaterialData.builder(ItemType.SWORD)
             .name("War Hammer")
             .material(Material.GOLDEN_AXE)
             .rarity(ItemRarity.LEGENDARY)
@@ -186,7 +186,7 @@ public enum ArcadiaMaterial {
         itemStats.setAttribute(ItemAttribute.DAMAGE, new AttributeRange(5000, 7000));
         itemStats.setAttribute(ItemAttribute.ATTACK_SPEED, -50);
     }),
-    BOW(new MaterialData.Builder<>(ItemType.BOW)
+    BOW(MaterialData.builder(ItemType.BOW)
             .name("Bow")
             .material(Material.BOW)
             .stackable(false)
@@ -194,7 +194,7 @@ public enum ArcadiaMaterial {
         ItemStats itemStats = meta.getItemStats();
         itemStats.setAttribute(ItemAttribute.DAMAGE, 5);
     }),
-    AIR_CANNON(new MaterialData.Builder<>(ItemType.NONE)
+    AIR_CANNON(MaterialData.builder(ItemType.NONE)
             .name("Air Cannon")
             .material(Material.DIAMOND_HOE)
             .rarity(ItemRarity.LEGENDARY)
@@ -202,7 +202,7 @@ public enum ArcadiaMaterial {
             .stackable(false)
             .addAbility(AbilityType.LEFT_CLICK, new PullAbility())
             .build()),
-    TEST_ITEM(new MaterialData.Builder<>(ItemType.SWORD)
+    TEST_ITEM(MaterialData.builder(ItemType.SWORD)
             .name("Test Sword")
             .material(Material.NETHERITE_SWORD)
             .rarity(ItemRarity.MYTHIC)
@@ -210,7 +210,7 @@ public enum ArcadiaMaterial {
             .stackable(false)
             .addAbility(AbilityType.RIGHT_CLICK, new MarkAbility())
             .build()),
-    STRANGE_JOURNAL(new MaterialData.Builder<>(ItemType.NONE)
+    STRANGE_JOURNAL(MaterialData.builder(ItemType.NONE)
             .name("Strange Journal")
             .material(Material.BOOK)
             .rarity(ItemRarity.SPECIAL)
@@ -229,7 +229,7 @@ public enum ArcadiaMaterial {
                     .append("Waiting.\"", ChatColor.YELLOW, ChatColor.ITALIC)
                     .build()))
             .build()),
-    CALAMITY_BOX(new MaterialData.Builder<>(ItemType.NONE)
+    CALAMITY_BOX(MaterialData.builder(ItemType.NONE)
             .name("Calamity Box")
             .material(Material.CHEST)
             .rarity(ItemRarity.SPECIAL)
@@ -246,7 +246,7 @@ public enum ArcadiaMaterial {
                     .append("makes its way back to you.\"", ChatColor.GREEN, ChatColor.ITALIC)
                     .build()))
             .build()),
-    TITAN_BLOOD(new MaterialData.Builder<>(ItemType.NONE)
+    TITAN_BLOOD(MaterialData.builder(ItemType.NONE)
             .name("Titan's Blood")
             .material(Material.POTION)
             .rarity(ItemRarity.SPECIAL)
@@ -261,7 +261,7 @@ public enum ArcadiaMaterial {
                     .append("we'd die waiting. And that's why you need to choose yourself.\"", ChatColor.GOLD, ChatColor.ITALIC)
                     .build()))
             .build()),
-    PURE_NAIL(new MaterialData.Builder<>(ItemType.NAIL)
+    PURE_NAIL(MaterialData.builder(ItemType.NAIL)
             .name("Pure Nail")
             .material(Material.IRON_SWORD)
             .rarity(ItemRarity.SPECIAL)
@@ -282,7 +282,7 @@ public enum ArcadiaMaterial {
         itemStats.setAttribute(ItemAttribute.DAMAGE, new AttributeRange(1000, 1500));
         itemStats.setAttribute(ItemAttribute.STRENGTH, new AttributeRange(50, 100));
     }),
-    ANCIENT_TRANSLATOR(new MaterialData.Builder<>(ItemType.NONE)
+    ANCIENT_TRANSLATOR(MaterialData.builder(ItemType.NONE)
             .name("Ancient Translator")
             .material(Material.IRON_AXE)
             .rarity(ItemRarity.SPECIAL)
@@ -297,7 +297,7 @@ public enum ArcadiaMaterial {
                     .build()))
             .build()),
 
-    FRUITY_APPLE(new MaterialData.Builder<>(ItemType.CONSUMABLE,
+    FRUITY_APPLE(MaterialData.builder(ItemType.CONSUMABLE,
             new ConsumableData(new LoreBuilder()
                     .append(new ComponentBuilder()
                             .text("Eating this heals you by ")
@@ -310,7 +310,7 @@ public enum ArcadiaMaterial {
             .material(Material.APPLE)
             .build()),
 
-    STRENGTH_STONE(new MaterialData.Builder<>(ItemType.POWER_STONE)
+    STRENGTH_STONE(MaterialData.builder(ItemType.POWER_STONE)
             .name("Strength Stone")
             .material(Material.REDSTONE)
             .stackable(false)

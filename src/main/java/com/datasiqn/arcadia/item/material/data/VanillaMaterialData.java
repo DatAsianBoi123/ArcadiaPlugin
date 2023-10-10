@@ -15,7 +15,7 @@ import java.util.UUID;
 
 public class VanillaMaterialData extends MaterialData<@Nullable NoneItemData> {
     public VanillaMaterialData(@NotNull Material material) {
-        super(new Builder<>(ItemType.NONE).material(material));
+        super(builder(ItemType.NONE).material(material));
     }
 
     @Override
