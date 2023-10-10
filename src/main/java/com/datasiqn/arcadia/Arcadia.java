@@ -5,6 +5,7 @@ import com.datasiqn.arcadia.item.ArcadiaItem;
 import com.datasiqn.arcadia.listeners.*;
 import com.datasiqn.arcadia.managers.DungeonManager;
 import com.datasiqn.arcadia.managers.PlayerManager;
+import com.datasiqn.arcadia.managers.ScoreboardManager;
 import com.datasiqn.arcadia.managers.UpgradeEventManager;
 import com.datasiqn.arcadia.player.PlayerData;
 import com.datasiqn.arcadia.util.ItemUtil;
@@ -35,6 +36,7 @@ public final class Arcadia extends JavaPlugin {
     private final PlayerManager playerManager = new PlayerManager(this);
     private final DungeonManager dungeonManager = new DungeonManager(this);
     private final UpgradeEventManager upgradeEventManager = new UpgradeEventManager(this);
+    private final ScoreboardManager scoreboardManager = new ScoreboardManager(this);
     private final MenuApi menuApi = MenuApi.getInstance();
 
     private final long lastModified = getFile().lastModified();
@@ -108,6 +110,10 @@ public final class Arcadia extends JavaPlugin {
 
     public UpgradeEventManager getUpgradeEventManager() {
         return upgradeEventManager;
+    }
+
+    public ScoreboardManager getScoreboardManager() {
+        return scoreboardManager;
     }
 
     private void registerAllCommands() {

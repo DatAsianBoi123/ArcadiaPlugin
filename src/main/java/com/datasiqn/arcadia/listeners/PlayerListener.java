@@ -13,6 +13,7 @@ import com.datasiqn.arcadia.player.PlayerEquipment;
 import com.datasiqn.arcadia.upgrade.listeners.actions.ShootBowAction;
 import com.datasiqn.arcadia.util.PdcUtil;
 import com.datasiqn.schedulebuilder.ScheduleBuilder;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -37,6 +38,7 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.scoreboard.ScoreboardManager;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -67,27 +69,34 @@ public class PlayerListener implements Listener {
         }
         playerData.updateValues();
         playerData.updateLevel();
+        plugin.getScoreboardManager().createScoreboard(player);
+        plugin.getScoreboardManager().updateScoreboard(player);
     }
 
     @EventHandler
     public void onPlayerLeave(@NotNull PlayerQuitEvent event) {
-        AttributeInstance attackSpeedAttribute = event.getPlayer().getAttribute(Attribute.GENERIC_ATTACK_SPEED);
+        Player player = event.getPlayer();
+        AttributeInstance attackSpeedAttribute = player.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
         if (attackSpeedAttribute != null) {
             attackSpeedAttribute.setBaseValue(4);
             attackSpeedAttribute.getModifiers().forEach(attackSpeedAttribute::removeModifier);
         }
 
-        AttributeInstance healthAttribute = event.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        AttributeInstance healthAttribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
         if (healthAttribute != null) healthAttribute.setBaseValue(20);
 
-        new Thread(playerManager.getPlayerData(event.getPlayer())::saveData).start();
-        playerManager.removePlayer(event.getPlayer());
+        ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
+        if (scoreboardManager != null) player.setScoreboard(scoreboardManager.getMainScoreboard());
+
+        new Thread(playerManager.getPlayerData(player)::saveData).start();
+        playerManager.removePlayer(player);
     }
 
     @EventHandler
     public void onPlayerPickupXp(@NotNull PlayerExpChangeEvent event) {
         PlayerData playerData = playerManager.getPlayerData(event.getPlayer());
         playerData.addXp(event.getAmount());
+        plugin.getScoreboardManager().updateScoreboard(playerData.getPlayer());
 
         event.setAmount(0);
     }
