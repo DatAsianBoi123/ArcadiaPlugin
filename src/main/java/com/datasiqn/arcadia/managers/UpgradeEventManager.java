@@ -27,11 +27,17 @@ public class UpgradeEventManager {
     public void register(@NotNull UpgradeListener listener, UpgradeType upgradeType) {
         for (Method method : listener.getClass().getMethods()) {
             if (!method.isAnnotationPresent(ActionHandler.class)) return;
-            if (method.getParameterCount() != 2) return;
+            if (method.getParameterCount() != 2) {
+                plugin.getLogger().severe("The action handler " + method.getName() + "'s signature is incorrect! (in listener " + listener.getClass().getSimpleName() + ")");
+                return;
+            }
             Class<?>[] parameterTypes = method.getParameterTypes();
             Class<?> actionClass = parameterTypes[0];
-            if (!Action.class.isAssignableFrom(actionClass) || !int.class.isAssignableFrom(parameterTypes[1])) return;
-            handlerList.add(actionClass.asSubclass(Action.class), new Handler<>(upgradeType, (action, stackAmount) -> {
+            if (!Action.class.isAssignableFrom(actionClass) || !int.class.isAssignableFrom(parameterTypes[1])) {
+                plugin.getLogger().severe("The action handler " + method.getName() + "'s signature is incorrect! (in listener " + listener.getClass().getSimpleName() + ")");
+                return;
+            }
+            handlerList.add(actionClass.asSubclass(Action.class), new Handler<>(method.getAnnotation(ActionHandler.class).priority(), upgradeType, (action, stackAmount) -> {
                 try {
                     method.invoke(listener, action, stackAmount);
                 } catch (IllegalAccessException | InvocationTargetException e) {
