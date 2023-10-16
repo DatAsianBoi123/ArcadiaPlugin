@@ -7,6 +7,8 @@ import com.datasiqn.arcadia.dungeon.DungeonInstance;
 import com.datasiqn.arcadia.dungeon.DungeonPlayer;
 import com.datasiqn.arcadia.player.ArcadiaSender;
 import com.datasiqn.arcadia.upgrade.UpgradeType;
+import com.datasiqn.commandcore.argument.Arguments;
+import com.datasiqn.commandcore.argument.type.ArgumentType;
 import com.datasiqn.commandcore.command.CommandContext;
 import com.datasiqn.commandcore.command.CommandSource;
 import com.datasiqn.commandcore.command.builder.ArgumentBuilder;
@@ -64,19 +66,35 @@ public class CommandDungeons {
                                 .executes(context -> plugin.getDungeonManager().addPlayerTo(plugin.getPlayerManager().getPlayerData(context.getSource().getPlayer()), context.getArguments().get(1, ArcadiaArgumentType.DUNGEON)))))
                 .then(LiteralBuilder.literal("pickup")
                         .then(ArgumentBuilder.argument(ArcadiaArgumentType.UPGRADE, "upgrade")
+                                .then(ArgumentBuilder.argument(ArgumentType.NATURAL_NUMBER, "amount")
+                                        .requiresPlayer()
+                                        .executes(context -> {
+                                            Arguments arguments = context.getArguments();
+                                            pickupItem(context, arguments.get(1, ArcadiaArgumentType.UPGRADE), arguments.get(2, ArgumentType.NATURAL_NUMBER));
+                                        }))
                                 .requiresPlayer()
-                                .executes(context -> pickupItem(context, context.getArguments().get(1, ArcadiaArgumentType.UPGRADE))))
+                                .executes(context -> pickupItem(context, context.getArguments().get(1, ArcadiaArgumentType.UPGRADE), 1)))
+                        .then(ArgumentBuilder.argument(ArgumentType.NATURAL_NUMBER, "amount")
+                                .requiresPlayer()
+                                .executes(context -> {
+                                    int amount = context.getArguments().get(1, ArgumentType.NATURAL_NUMBER);
+                                    for (int i = 0; i < amount; i++) {
+                                        pickupItem(context, UpgradeType.getRandomWeighted(), 1);
+                                    }
+                                }))
                         .requiresPlayer()
-                        .executes(context -> pickupItem(context, UpgradeType.getRandomWeighted())));
+                        .executes(context -> pickupItem(context, UpgradeType.getRandomWeighted(), 1)));
     }
 
-    private void pickupItem(@NotNull CommandContext context, UpgradeType upgrade) {
+    private void pickupItem(@NotNull CommandContext context, UpgradeType upgrade, int amount) {
         Player player = context.getSource().getPlayer();
         DungeonPlayer dungeonPlayer = plugin.getDungeonManager().getDungeonPlayer(player.getUniqueId());
+        ArcadiaSender<Player> sender = plugin.getPlayerManager().getPlayerData(player).getSender();
         if (dungeonPlayer == null) {
-            plugin.getPlayerManager().getPlayerData(player).getSender().sendError("You are not in a dungeon");
+            sender.sendError("You are not in a dungeon");
             return;
         }
-        dungeonPlayer.pickupUpgrade(upgrade);
+        dungeonPlayer.pickupUpgrade(upgrade, amount);
+        sender.sendMessage("Picked up item " + upgrade + "x" + amount);
     }
 }

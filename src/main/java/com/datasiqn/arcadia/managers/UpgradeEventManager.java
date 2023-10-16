@@ -6,14 +6,15 @@ import com.datasiqn.arcadia.upgrade.listeners.ActionHandler;
 import com.datasiqn.arcadia.upgrade.listeners.UpgradeListener;
 import com.datasiqn.arcadia.upgrade.listeners.actions.Action;
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
+import com.google.common.collect.ListMultimap;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Comparator;
+import java.util.List;
 import java.util.function.BiConsumer;
 
 public class UpgradeEventManager {
@@ -57,18 +58,20 @@ public class UpgradeEventManager {
     }
 
     public static final class HandlerList {
-        private final Multimap<String, Handler<? extends Action>> handlers = ArrayListMultimap.create();
+        private final ListMultimap<String, Handler<? extends Action>> handlers = ArrayListMultimap.create();
 
-        public <T extends Action> @NotNull Collection<Handler<T>> getHandlers(@NotNull T action) {
-            Collection<Handler<? extends Action>> handlerCollection = handlers.get(action.getClass().getSimpleName());
-            Set<Handler<T>> castedHandlers = new HashSet<>(handlerCollection.size());
+        public <T extends Action> @NotNull List<Handler<T>> getHandlers(@NotNull T action) {
+            List<Handler<? extends Action>> handlerList = handlers.get(action.getClass().getSimpleName());
+            List<Handler<T>> castedHandlers = new ArrayList<>(handlerList.size());
             //noinspection unchecked
-            handlerCollection.forEach(handler -> castedHandlers.add((Handler<T>) handler));
+            handlerList.forEach(handler -> castedHandlers.add((Handler<T>) handler));
             return castedHandlers;
         }
 
         public <T extends Action> boolean add(@NotNull Class<T> action, Handler<T> handler) {
-            return handlers.put(action.getSimpleName(), handler);
+            boolean putResult = handlers.put(action.getSimpleName(), handler);
+            handlers.get(action.getSimpleName()).sort(Comparator.comparingInt(handler1 -> handler1.priority));
+            return putResult;
         }
 
         public @NotNull Collection<Handler<? extends Action>> remove(@NotNull Action action) {
@@ -77,10 +80,12 @@ public class UpgradeEventManager {
     }
 
     public static class Handler<T extends Action> {
+        private final int priority;
         private final UpgradeType upgradeType;
         private final BiConsumer<T, Integer> onActionConsumer;
 
-        public Handler(UpgradeType upgradeType, BiConsumer<T, Integer> onActionConsumer) {
+        public Handler(int priority, UpgradeType upgradeType, BiConsumer<T, Integer> onActionConsumer) {
+            this.priority = priority;
             this.upgradeType = upgradeType;
             this.onActionConsumer = onActionConsumer;
         }

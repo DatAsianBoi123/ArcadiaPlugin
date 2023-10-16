@@ -2,13 +2,9 @@ package com.datasiqn.arcadia.upgrade;
 
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.item.ItemRarity;
-import com.datasiqn.arcadia.item.material.data.MaterialData;
 import com.datasiqn.arcadia.item.modifiers.LoreItemModifier;
 import com.datasiqn.arcadia.item.modifiers.PotionModifier;
-import com.datasiqn.arcadia.upgrade.listeners.BloodChaliceListener;
-import com.datasiqn.arcadia.upgrade.listeners.LightningBottleListener;
-import com.datasiqn.arcadia.upgrade.listeners.MagicQuiverListener;
-import com.datasiqn.arcadia.upgrade.listeners.UpgradeListener;
+import com.datasiqn.arcadia.upgrade.listeners.*;
 import com.datasiqn.arcadia.util.lorebuilder.Lore;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
@@ -21,16 +17,14 @@ import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.function.Function;
 
 public enum UpgradeType {
-    //<editor-fold desc="Common Items">
+    //<editor-fold desc="Common Upgrades">
     BLOOD_CHALICE(UpgradeData.builder()
             .name("Blood Chalice")
             .material(Material.POTION)
@@ -40,38 +34,44 @@ public enum UpgradeType {
             .build(), new BloodChaliceListener()),
     //</editor-fold>
 
-    //<editor-fold desc="Rare Items">,
+    //<editor-fold desc="Rare Upgrades">,
     MAGIC_QUIVER(UpgradeData.builder()
             .name("Magic Quiver")
             .material(Material.LEATHER_HORSE_ARMOR)
             .rarity(ItemRarity.RARE)
             .addModifier(new LoreItemModifier(Lore.of("Bows shoot extra arrows")))
-            .build(), MagicQuiverListener::new),
+            .build(), new MagicQuiverListener()),
     LIGHTNING_BOTTLE(UpgradeData.builder()
             .name("Lightning in a Bottle")
             .material(Material.POTION)
             .rarity(ItemRarity.RARE)
             .addModifier(new LoreItemModifier(Lore.of("Chance on hit to strike lightning")))
             .addModifier(new PotionModifier(Color.BLUE))
-            .build(), LightningBottleListener::new),
+            .build(), new LightningBottleListener()),
     //</editor-fold>
 
-    //<editor-fold desc="Legendary Items">
-    LEGENDARY_ITEM(UpgradeData.builder()
-            .name("This is some legendary item")
-            .material(Material.GRASS)
+    //<editor-fold desc="Legendary Upgrades">
+    UPGRADE_COMPRESSOR(UpgradeData.builder()
+            .name("Upgrade Compressor")
+            .material(Material.PISTON)
             .rarity(ItemRarity.LEGENDARY)
-            .addModifier(new LoreItemModifier(Lore.of("Cool item")))
-            .build()),
+            .addModifier(new LoreItemModifier(Lore.of("Deal more damage the more upgrades you have")))
+            .build(), new UpgradeCompressorListener()),
+    LOTTERY_TICKET(UpgradeData.builder()
+            .name("Lottery Ticket")
+            .material(Material.PAPER)
+            .rarity(ItemRarity.LEGENDARY)
+            .addModifier(new LoreItemModifier(Lore.of("You have a higher chance to proc items")))
+            .build(), new LotteryTicketListener()),
     //</editor-fold>
 
-    //<editor-fold desc="Mythic Items">
-    MYTHIC_ITEM(UpgradeData.builder()
-            .name("This is some mythic item")
-            .material(Material.MYCELIUM)
+    //<editor-fold desc="Mythic Upgrades">
+    RABBITS_FOOT(UpgradeData.builder()
+            .name("Rabbit's Foot")
+            .material(Material.RABBIT_FOOT)
             .rarity(ItemRarity.MYTHIC)
-            .addModifier(new LoreItemModifier(Lore.of("Cool item")))
-            .build()),
+            .addModifier(new LoreItemModifier(Lore.of("Your upgrades will be higher quality")))
+            .build(), new RabbitFootListener()),
     ;
     //</editor-fold>
 
@@ -127,10 +127,7 @@ public enum UpgradeType {
     private final UpgradeData data;
 
     UpgradeType(UpgradeData data) {
-        this(data, (UpgradeListener) null);
-    }
-    UpgradeType(UpgradeData data, @NotNull Function<Arcadia, UpgradeListener> listenerFunction) {
-        this(data, listenerFunction.apply(JavaPlugin.getPlugin(Arcadia.class)));
+        this(data, null);
     }
     UpgradeType(UpgradeData data, UpgradeListener listener) {
         this.data = data;
@@ -139,7 +136,7 @@ public enum UpgradeType {
         JavaPlugin.getPlugin(Arcadia.class).getUpgradeEventManager().register(listener, this);
     }
 
-    public MaterialData<?> getData() {
+    public UpgradeData getData() {
         return data;
     }
 

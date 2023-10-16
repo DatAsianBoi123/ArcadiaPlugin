@@ -1,6 +1,5 @@
 package com.datasiqn.arcadia.upgrade.listeners;
 
-import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.entities.ArcadiaEntity;
 import com.datasiqn.arcadia.upgrade.listeners.actions.DamageEnemyAction;
 import net.minecraft.server.level.ServerPlayer;
@@ -10,19 +9,13 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class LightningBottleListener implements UpgradeListener {
-    private final Arcadia plugin;
-
-    public LightningBottleListener(Arcadia plugin) {
-        this.plugin = plugin;
-    }
-
-    @ActionHandler
-    public void onHit(@NotNull DamageEnemyAction action, int stackSize) {
-        if (Math.random() < 0.5) {
+    @ActionHandler(priority = 99)
+    public void onDamage(@NotNull DamageEnemyAction action, int stackSize) {
+        if (action.getProcGenerator().tryProc(0.1)) {
             Player player = action.getPlayer().getPlayer();
             ArcadiaEntity arcadiaEntity = action.getEntity();
 
-            Bukkit.getScheduler().runTaskLater(plugin, task -> {
+            Bukkit.getScheduler().runTaskLater(action.getPlugin(), task -> {
                 if (arcadiaEntity.isDeadOrDying()) return;
                 player.getWorld().strikeLightningEffect(arcadiaEntity.getBukkitEntity().getLocation());
                 ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();

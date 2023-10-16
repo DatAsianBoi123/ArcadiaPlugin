@@ -1,6 +1,5 @@
 package com.datasiqn.arcadia.upgrade.listeners;
 
-import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.upgrade.listeners.actions.ShootBowAction;
 import com.datasiqn.schedulebuilder.ScheduleBuilder;
 import net.minecraft.nbt.CompoundTag;
@@ -12,13 +11,7 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 public class MagicQuiverListener implements UpgradeListener {
-    private final Arcadia plugin;
-
-    public MagicQuiverListener(Arcadia plugin) {
-        this.plugin = plugin;
-    }
-
-    @ActionHandler
+    @ActionHandler(priority = 0)
     public void onShootBow(@NotNull ShootBowAction action, int stackSize) {
         Arrow arrow = action.getArrow();
         Vector velocity = arrow.getVelocity();
@@ -37,6 +30,6 @@ public class MagicQuiverListener implements UpgradeListener {
                 })
                 .wait(1d).ticks()
                 .repeat(stackSize).every(1d).ticks()
-                .run(plugin);
+                .run(action.getPlugin());
     }
 }

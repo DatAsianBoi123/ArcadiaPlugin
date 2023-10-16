@@ -16,6 +16,7 @@ import java.util.UUID;
 public class DungeonPlayer {
     private final List<Upgrade> upgrades = new ArrayList<>();
     private final PlayerData playerData;
+    private int totalUpgrades = 0;
 
     public DungeonPlayer(PlayerData playerData) {
         this.playerData = playerData;
@@ -38,19 +39,28 @@ public class DungeonPlayer {
     }
 
     public void pickupUpgrade(UpgradeType upgradeType) {
+        pickupUpgrade(upgradeType, 1);
+    }
+    public void pickupUpgrade(UpgradeType upgradeType, int amount) {
         for (Upgrade upgrade : upgrades) {
             if (upgrade.getType() == upgradeType) {
-                upgrade.setAmount(upgrade.getAmount() + 1);
+                totalUpgrades += amount;
+                upgrade.setAmount(upgrade.getAmount() + amount);
                 return;
             }
         }
-        upgrades.add(new Upgrade(upgradeType));
+        totalUpgrades++;
+        upgrades.add(new Upgrade(upgradeType, amount));
     }
 
     @UnmodifiableView
     @NotNull
     public List<Upgrade> getUpgrades() {
         return Collections.unmodifiableList(upgrades);
+    }
+
+    public int getTotalUpgrades() {
+        return totalUpgrades;
     }
 
     public int getUpgradeAmount(UpgradeType upgradeType) {

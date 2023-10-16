@@ -25,9 +25,13 @@ public class EntityDummy implements ArcadiaEntitySummoner {
     public static class CustomEntity extends ArcadiaEntity {
         public CustomEntity(com.datasiqn.arcadia.Arcadia plugin, @NotNull World world, String id) {
             super(EntityType.ZOMBIE, plugin, world, "Dummy", id, Integer.MAX_VALUE);
-            this.expToDrop = 100;
             AttributeInstance attribute = getAttribute(Attributes.KNOCKBACK_RESISTANCE);
             if (attribute != null) attribute.setBaseValue(1);
+        }
+
+        @Override
+        public int getExperienceReward() {
+            return 100;
         }
 
         @Override

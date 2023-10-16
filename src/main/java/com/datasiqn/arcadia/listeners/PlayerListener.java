@@ -7,6 +7,7 @@ import com.datasiqn.arcadia.dungeon.DungeonPlayer;
 import com.datasiqn.arcadia.item.ArcadiaItem;
 import com.datasiqn.arcadia.item.stat.ItemAttribute;
 import com.datasiqn.arcadia.item.type.ItemType;
+import com.datasiqn.arcadia.managers.DungeonManager;
 import com.datasiqn.arcadia.managers.PlayerManager;
 import com.datasiqn.arcadia.player.PlayerData;
 import com.datasiqn.arcadia.player.PlayerEquipment;
@@ -71,6 +72,10 @@ public class PlayerListener implements Listener {
         playerData.updateLevel();
         plugin.getScoreboardManager().createScoreboard(player);
         plugin.getScoreboardManager().updateScoreboard(player);
+
+        if (player.getWorld().getName().startsWith(DungeonManager.DUNGEON_WORLD_PREFIX)) {
+            player.teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
+        }
     }
 
     @EventHandler
@@ -200,7 +205,7 @@ public class PlayerListener implements Listener {
 
         DungeonPlayer dungeonPlayer = plugin.getDungeonManager().getDungeonPlayer(playerData.getUniqueId());
         if (dungeonPlayer != null) {
-            plugin.getUpgradeEventManager().emit(new ShootBowAction(dungeonPlayer, arrow));
+            plugin.getUpgradeEventManager().emit(new ShootBowAction(dungeonPlayer, arrow, plugin));
         }
     }
 }

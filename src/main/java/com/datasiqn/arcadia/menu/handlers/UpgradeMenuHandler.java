@@ -39,6 +39,6 @@ public class UpgradeMenuHandler extends MenuHandler {
 
     @Override
     public @NotNull Inventory createInventory() {
-        return Bukkit.createInventory(null, InventoryType.DISPENSER, upgradeType.getDisplayName());
+        return Bukkit.createInventory(null, InventoryType.DISPENSER, upgradeType.getData().getName());
     }
 }

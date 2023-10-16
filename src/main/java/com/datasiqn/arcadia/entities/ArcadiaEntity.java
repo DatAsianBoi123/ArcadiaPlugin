@@ -130,14 +130,16 @@ public abstract class ArcadiaEntity extends PathfinderMob {
     }
 
     private void handleDamage(double damage, Runnable deathRunnable, @Nullable DungeonPlayer player) {
-        health = Mth.clamp(health - damage, 0, maxHealth);
+        DamageEnemyAction action = new DamageEnemyAction(player, this, damage, plugin);
+        if (player != null) plugin.getUpgradeEventManager().emit(action);
+        double finalDamage = action.getDamage();
+        health = Mth.clamp(health - finalDamage, 0, maxHealth);
         if (health <= 0) {
             deathRunnable.run();
-            if (player != null) plugin.getUpgradeEventManager().emit(new KillEnemyAction(player, this));
+            if (player != null) plugin.getUpgradeEventManager().emit(new KillEnemyAction(player, this, plugin));
         }
-        if (player != null) plugin.getUpgradeEventManager().emit(new DamageEnemyAction(player, this, damage));
         updateName();
-        spawnDamageIndicator(damage);
+        spawnDamageIndicator(finalDamage);
     }
 
     private void spawnDamageIndicator(double damage) {
