@@ -44,7 +44,7 @@ public class BagMenuHandler extends MenuHandler {
 
     @Override
     public void populate(@NotNull HumanEntity humanEntity) {
-        DungeonPlayer dungeonPlayer = plugin.getDungeonManager().getDungeonPlayer(humanEntity.getUniqueId());
+        DungeonPlayer dungeonPlayer = plugin.getDungeonManager().getDungeonPlayer(humanEntity);
         if (dungeonPlayer == null) return;
 
         ItemStack empty = ItemUtil.createEmpty(Material.GRAY_STAINED_GLASS_PANE);

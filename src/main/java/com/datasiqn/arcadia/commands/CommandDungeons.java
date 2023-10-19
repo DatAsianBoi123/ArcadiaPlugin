@@ -88,7 +88,7 @@ public class CommandDungeons {
 
     private void pickupItem(@NotNull CommandContext context, UpgradeType upgrade, int amount) {
         Player player = context.getSource().getPlayer();
-        DungeonPlayer dungeonPlayer = plugin.getDungeonManager().getDungeonPlayer(player.getUniqueId());
+        DungeonPlayer dungeonPlayer = plugin.getDungeonManager().getDungeonPlayer(player);
         ArcadiaSender<Player> sender = plugin.getPlayerManager().getPlayerData(player).getSender();
         if (dungeonPlayer == null) {
             sender.sendError("You are not in a dungeon");

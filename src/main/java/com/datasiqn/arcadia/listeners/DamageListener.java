@@ -95,7 +95,7 @@ public class DamageListener implements Listener {
             }
             PlayerData playerData = plugin.getPlayerManager().getPlayerData(player);
 
-            DungeonPlayer dungeonPlayer = plugin.getDungeonManager().getDungeonPlayer(playerData.getUniqueId());
+            DungeonPlayer dungeonPlayer = plugin.getDungeonManager().getDungeonPlayer(playerData);
 
             event.setDamage(damage);
             entity.handleDamageEvent(event, dungeonPlayer);

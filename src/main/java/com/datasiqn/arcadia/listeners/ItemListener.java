@@ -61,7 +61,7 @@ public class ItemListener implements Listener {
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
         if (!PdcUtil.getOrDefault(pdc, ArcadiaTag.UPGRADE_BAG, false)) return;
 
-        DungeonPlayer dungeonPlayer = plugin.getDungeonManager().getDungeonPlayer(event.getWhoClicked().getUniqueId());
+        DungeonPlayer dungeonPlayer = plugin.getDungeonManager().getDungeonPlayer(event.getWhoClicked());
         if (dungeonPlayer == null) return;
 
         event.setCancelled(true);

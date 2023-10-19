@@ -59,7 +59,7 @@ public class UpgradeListener implements Listener {
         block.getWorld().spawnParticle(Particle.CLOUD, location.clone().add(0.5, 1.1, 0.5), 20, 0.1, 0.1, 0.1, 0.05);
         block.getWorld().spawn(location.clone().add(0.5, 1, 0.5), Item.class, item -> {
             UpgradeType upgradeType = UpgradeType.getRandomWeighted();
-            DungeonPlayer dungeonPlayer = plugin.getDungeonManager().getDungeonPlayer(playerData.getUniqueId());
+            DungeonPlayer dungeonPlayer = plugin.getDungeonManager().getDungeonPlayer(playerData);
             if (dungeonPlayer != null) {
                 GenerateUpgradeAction action = new GenerateUpgradeAction(dungeonPlayer, upgradeType, plugin);
                 plugin.getUpgradeEventManager().emit(action);
@@ -105,7 +105,7 @@ public class UpgradeListener implements Listener {
         ItemStack itemStack = event.getItem().getItemStack();
         itemStack.setType(Material.AIR);
         event.getItem().setItemStack(itemStack);
-        DungeonPlayer dungeonPlayer = plugin.getDungeonManager().getDungeonPlayer(plugin.getPlayerManager().getPlayerData(player).getUniqueId());
+        DungeonPlayer dungeonPlayer = plugin.getDungeonManager().getDungeonPlayer(player);
         if (dungeonPlayer == null) return;
         dungeonPlayer.pickupUpgrade(PdcUtil.get(pdc, ArcadiaTag.UPGRADE_TYPE));
         player.playSound(chestLocation, Sound.BLOCK_ENDER_CHEST_CLOSE, 1, 1);

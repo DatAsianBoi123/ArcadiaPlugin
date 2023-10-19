@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -101,6 +102,12 @@ public class DungeonManager {
         return null;
     }
 
+    public @Nullable DungeonPlayer getDungeonPlayer(@NotNull HumanEntity player) {
+        return getDungeonPlayer(player.getUniqueId());
+    }
+    public @Nullable DungeonPlayer getDungeonPlayer(@NotNull PlayerData playerData) {
+        return getDungeonPlayer(playerData.getUniqueId());
+    }
     public @Nullable DungeonPlayer getDungeonPlayer(@NotNull UUID uuid) {
         DungeonInstance instance = getJoinedDungeon(uuid);
         if (instance == null) return null;
