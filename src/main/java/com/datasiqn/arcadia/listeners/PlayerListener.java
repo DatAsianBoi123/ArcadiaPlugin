@@ -203,7 +203,7 @@ public class PlayerListener implements Listener {
         double damage = damageValue + DamageHelper.getStrengthBonus(playerData.getStrength(), damageValue) * event.getForce();
         PdcUtil.set(pdc, ArcadiaTag.ARROW_DAMAGE, damage);
 
-        DungeonPlayer dungeonPlayer = plugin.getDungeonManager().getDungeonPlayer(playerData.getUniqueId());
+        DungeonPlayer dungeonPlayer = plugin.getDungeonManager().getDungeonPlayer(playerData);
         if (dungeonPlayer != null) {
             plugin.getUpgradeEventManager().emit(new ShootBowAction(dungeonPlayer, arrow, plugin));
         }
