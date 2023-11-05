@@ -40,7 +40,7 @@ public class Upgrade {
 
         Upgrade upgrade = (Upgrade) o;
 
-        return type == upgrade.type;
+        return type == upgrade.type && amount == upgrade.amount;
     }
 
     @Override
