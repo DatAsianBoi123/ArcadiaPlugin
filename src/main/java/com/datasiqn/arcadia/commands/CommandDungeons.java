@@ -10,10 +10,10 @@ import com.datasiqn.arcadia.upgrade.UpgradeType;
 import com.datasiqn.commandcore.argument.Arguments;
 import com.datasiqn.commandcore.argument.type.ArgumentType;
 import com.datasiqn.commandcore.command.CommandContext;
-import com.datasiqn.commandcore.command.CommandSource;
 import com.datasiqn.commandcore.command.builder.ArgumentBuilder;
 import com.datasiqn.commandcore.command.builder.CommandBuilder;
 import com.datasiqn.commandcore.command.builder.LiteralBuilder;
+import com.datasiqn.commandcore.command.source.CommandSource;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
