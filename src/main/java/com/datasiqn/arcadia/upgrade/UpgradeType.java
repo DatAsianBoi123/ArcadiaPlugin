@@ -9,19 +9,13 @@ import com.datasiqn.arcadia.upgrade.listeners.*;
 import com.datasiqn.arcadia.util.lorebuilder.Lore;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
-import it.unimi.dsi.fastutil.ints.Int2LongMap;
-import it.unimi.dsi.fastutil.ints.Int2LongOpenHashMap;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2DoubleLinkedOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 
 public enum UpgradeType {
