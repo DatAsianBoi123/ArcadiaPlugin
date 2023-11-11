@@ -110,7 +110,7 @@ public class PlayerData {
             ScheduleBuilder.create()
                     .executes(runnable -> {
                         double currentSpeed = equipment.getItemInMainHand().getItemData().getItemType().getAttackSpeed();
-                        double newSpeed = currentSpeed * Math.pow(Math.pow(DEFAULT_ATTACK_SPEED / currentSpeed, 1 / 100d), getAttackSpeed());
+                        double newSpeed = currentSpeed * Math.pow(DEFAULT_ATTACK_SPEED / currentSpeed, getAttackSpeed() / 100);
                         attackSpeedAttribute.setBaseValue(newSpeed);
                     }).run(plugin);
         }
