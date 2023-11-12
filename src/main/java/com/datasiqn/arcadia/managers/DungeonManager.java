@@ -89,7 +89,7 @@ public class DungeonManager {
         DungeonPlayer dungeonPlayer = instance.getPlayer(player);
         playerToDungeonMap.remove(dungeonPlayer);
         instance.removePlayer(dungeonPlayer);
-        plugin.getLogger().info("Player " + player.getName() + " (" + player.getUniqueId() + ") just left the dungeon they were in (" + instance.getId());
+        plugin.getLogger().info("Player " + player.getName() + " (" + player.getUniqueId() + ") just left the dungeon they were in (" + instance.getId() + ")");
     }
 
     public @Nullable DungeonInstance getJoinedDungeon(@NotNull Player player) {
