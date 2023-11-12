@@ -92,6 +92,9 @@ public class DungeonManager {
         plugin.getLogger().info("Player " + player.getName() + " (" + player.getUniqueId() + ") just left the dungeon they were in (" + instance.getId() + ")");
     }
 
+    public @Nullable DungeonInstance getJoinedDungeon(@NotNull PlayerData playerData) {
+        return getJoinedDungeon(playerData.getPlayer());
+    }
     public @Nullable DungeonInstance getJoinedDungeon(@NotNull Player player) {
         return getJoinedDungeon(player.getUniqueId());
     }
