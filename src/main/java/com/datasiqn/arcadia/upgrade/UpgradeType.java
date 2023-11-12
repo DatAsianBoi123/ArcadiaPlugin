@@ -75,13 +75,13 @@ public enum UpgradeType {
         Arrays.stream(values()).sorted(Comparator.comparing(type -> type.data.getRarity())).forEach(type -> UPGRADES.put(type.data.getRarity(), type));
     }
     private static final Object2DoubleLinkedOpenHashMap<ItemRarity> RARITY_WEIGHTS = new Object2DoubleLinkedOpenHashMap<>();
-    private static final WeightedRandom<ItemRarity> WEIGHTED_RANDOM = new WeightedRandom<>(RARITY_WEIGHTS);
     static {
         RARITY_WEIGHTS.put(ItemRarity.COMMON, 100);     // ~76%
         RARITY_WEIGHTS.put(ItemRarity.RARE, 28);        // ~21%
         RARITY_WEIGHTS.put(ItemRarity.LEGENDARY, 2);    // ~2%
         RARITY_WEIGHTS.put(ItemRarity.MYTHIC, 1);       // ~1%
     }
+    private static final WeightedRandom<ItemRarity> WEIGHTED_RANDOM = new WeightedRandom<>(RARITY_WEIGHTS);
 
     private final UpgradeData data;
 
