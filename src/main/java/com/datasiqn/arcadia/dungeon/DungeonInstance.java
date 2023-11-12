@@ -1,8 +1,17 @@
 package com.datasiqn.arcadia.dungeon;
 
+import com.datasiqn.arcadia.ArcadiaTag;
 import com.datasiqn.arcadia.player.PlayerData;
+import com.datasiqn.arcadia.upgrade.UpgradeType;
+import com.datasiqn.arcadia.util.PdcUtil;
+import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scoreboard.Team;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,6 +21,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public final class DungeonInstance {
     private final Set<DungeonPlayer> players = new HashSet<>();
@@ -64,5 +74,30 @@ public final class DungeonInstance {
 
     public int getPlayers() {
         return players.size();
+    }
+
+    public @NotNull Item dropUpgrade(Location location, @NotNull UpgradeType type) {
+        return dropUpgrade(location, type, item -> {});
+    }
+    public @NotNull Item dropUpgrade(Location location, @NotNull UpgradeType type, Consumer<Item> consumer) {
+        ItemStack upgrade = type.getData().toItemStack();
+        return world.dropItem(location, upgrade, item -> {
+            item.setUnlimitedLifetime(true);
+            item.setGlowing(true);
+            item.setCustomNameVisible(true);
+            item.setVelocity(new Vector());
+            ItemMeta meta = upgrade.getItemMeta();
+            if (meta != null) item.setCustomName(meta.getDisplayName());
+
+            for (DungeonPlayer player : players) {
+                Team rarityTeam = type.getData().getRarity().getTeam(player.getPlayer().getScoreboard());
+                if (rarityTeam == null) continue;
+                rarityTeam.addEntry(item.getUniqueId().toString());
+            }
+
+            PdcUtil.set(item.getPersistentDataContainer(), ArcadiaTag.UPGRADE_TYPE, type);
+
+            consumer.accept(item);
+        });
     }
 }
