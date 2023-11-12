@@ -5,6 +5,7 @@ import com.datasiqn.arcadia.ArcadiaTag;
 import com.datasiqn.arcadia.DamageHelper;
 import com.datasiqn.arcadia.dungeon.DungeonPlayer;
 import com.datasiqn.arcadia.item.ArcadiaItem;
+import com.datasiqn.arcadia.item.ItemRarity;
 import com.datasiqn.arcadia.item.stat.ItemAttribute;
 import com.datasiqn.arcadia.item.type.ItemType;
 import com.datasiqn.arcadia.managers.DungeonManager;
@@ -72,6 +73,7 @@ public class PlayerListener implements Listener {
         playerData.updateLevel();
         plugin.getScoreboardManager().createScoreboard(player);
         plugin.getScoreboardManager().updateScoreboard(player);
+        ItemRarity.createTeams(player.getScoreboard());
 
         if (player.getWorld().getName().startsWith(DungeonManager.DUNGEON_WORLD_PREFIX)) {
             player.teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
