@@ -19,7 +19,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -74,14 +73,6 @@ public class ItemListener implements Listener {
             whoClicked.getWorld().playSound(whoClicked, Sound.BLOCK_CHEST_OPEN, 1, 1);
             whoClicked.openInventory(bagInventory);
         }).run(plugin);
-    }
-
-    @EventHandler
-    public void onPlayerPlaceBlock(@NotNull BlockPlaceEvent event) {
-        ItemStack itemInMainHand = event.getPlayer().getInventory().getItemInMainHand();
-        ArcadiaItem arcadiaItem = new ArcadiaItem(itemInMainHand);
-        if (arcadiaItem.isDefaultMaterial()) return;
-        event.setCancelled(true);
     }
 
     @EventHandler
