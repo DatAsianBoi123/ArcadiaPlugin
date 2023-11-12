@@ -85,7 +85,7 @@
                         <phase>package</phase>
                         <configuration>
                             <target>
-                                <copy file="${project.build.directory}/${project.build.finalName}.jar" todir="D:\Desktop\MinecraftServers\ArcadiaRPG\plugins"/>
+                                <copy file="${project.build.directory}/${project.build.finalName}.jar" todir="D:\Desktop\MinecraftServers\Arcadia\plugins"/>
                             </target>
                         </configuration>
                         <goals>
