@@ -19,7 +19,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class BagMenuHandler extends MenuHandler {
     private final Arcadia plugin;
@@ -51,15 +53,29 @@ public class BagMenuHandler extends MenuHandler {
         for (int i = 0; i < 9; i++) setItem(53 - i, new StaticMenuItem(empty));
 
         ItemStack closeItem = new ItemStack(Material.BARRIER);
-        ItemMeta meta = closeItem.getItemMeta();
-        if (meta == null) return;
-        meta.setDisplayName(ChatColor.RED + "Close");
-        closeItem.setItemMeta(meta);
+        ItemMeta closeMeta = closeItem.getItemMeta();
+        if (closeMeta == null) return;
+        closeMeta.setDisplayName(ChatColor.RED + "Close");
+        closeItem.setItemMeta(closeMeta);
         setItem(49, new MenuButton(closeItem).onClick(event -> ScheduleBuilder.create().executes(runnable -> event.getWhoClicked().closeInventory()).run(plugin)));
 
         List<Upgrade> upgrades = dungeonPlayer.getUpgrades();
-        for (int i = 0; i < upgrades.size(); i++) {
-            setItem(i, new StaticMenuItem(upgrades.get(i).toItemStack()));
+        List<ItemStack> items = new ArrayList<>();
+        for (Upgrade upgrade : upgrades) {
+            int amount = upgrade.getAmount();
+            int totalItems = amount / 65 + 1;
+            for (int j = 0; j < totalItems; j++) {
+                ItemStack itemStack = upgrade.getType().getData().toItemStack(amount - 64 * j, UUID.randomUUID());
+                ItemMeta meta = itemStack.getItemMeta();
+                if (meta != null) {
+                    meta.setDisplayName(meta.getDisplayName() + ChatColor.GRAY + " (" + amount + ")");
+                    itemStack.setItemMeta(meta);
+                }
+                items.add(itemStack);
+            }
+        }
+        for (int i = 0; i < items.size(); i++) {
+            setItem(i, new StaticMenuItem(items.get(i)));
         }
     }
 
