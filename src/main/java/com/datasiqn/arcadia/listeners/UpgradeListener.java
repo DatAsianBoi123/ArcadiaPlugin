@@ -8,12 +8,20 @@ import com.datasiqn.arcadia.player.PlayerData;
 import com.datasiqn.arcadia.upgrade.UpgradeType;
 import com.datasiqn.arcadia.upgrade.listeners.actions.GenerateUpgradeAction;
 import com.datasiqn.arcadia.util.PdcUtil;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.ItemTag;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Item;
+import net.minecraft.nbt.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.EnderChest;
+import org.bukkit.craftbukkit.v1_19_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,8 +30,11 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.ItemMergeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.UUID;
 
 public class UpgradeListener implements Listener {
     private final Arcadia plugin;
@@ -94,7 +105,19 @@ public class UpgradeListener implements Listener {
         event.getItem().setItemStack(itemStack);
         DungeonPlayer dungeonPlayer = plugin.getDungeonManager().getDungeonPlayer(player);
         if (dungeonPlayer == null) return;
-        dungeonPlayer.pickupUpgrade(PdcUtil.get(pdc, ArcadiaTag.UPGRADE_TYPE));
+        UpgradeType upgradeType = PdcUtil.get(pdc, ArcadiaTag.UPGRADE_TYPE);
+        dungeonPlayer.pickupUpgrade(upgradeType);
+        ItemStack upgradeItem = upgradeType.getData().toItemStack(1, UUID.randomUUID());
+        CompoundTag itemTag = CraftItemStack.asNMSCopy(upgradeItem).getTag();
+        ItemMeta meta = upgradeItem.getItemMeta();
+        if (itemTag == null || meta == null) return;
+        String tag = itemTag.getAsString();
+        dungeonPlayer.getPlayer().spigot().sendMessage(new ComponentBuilder()
+                .append("You picked up ").color(ChatColor.GRAY)
+                .append(TextComponent.fromLegacyText(meta.getDisplayName()))
+                .event(new HoverEvent(HoverEvent.Action.SHOW_ITEM, new Item(upgradeItem.getType().getKey().getKey(), 1, ItemTag.ofNbt(tag))))
+                .append(" (" + dungeonPlayer.getUpgradeAmount(upgradeType) + ")").color(ChatColor.GRAY)
+                .create());
     }
 
     @EventHandler
