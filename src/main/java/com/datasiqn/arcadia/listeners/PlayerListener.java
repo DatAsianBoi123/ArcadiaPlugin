@@ -176,7 +176,7 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onEntityRegen(@NotNull EntityRegainHealthEvent event) {
+    public void onPlayerRegen(@NotNull EntityRegainHealthEvent event) {
         if (!(event.getEntity() instanceof Player)) return;
         event.setCancelled(true);
     }
