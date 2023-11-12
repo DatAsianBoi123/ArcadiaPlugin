@@ -83,6 +83,7 @@ public final class Arcadia extends JavaPlugin {
                         if (!newItem.equals(player.getInventory().getItemInMainHand()))
                             player.getInventory().setItemInMainHand(newItem);
                         playerData.getEquipment().setItemInMainHand(arcadiaItem);
+                        playerData.updateValues();
                     }
                 }).run(this);
 
