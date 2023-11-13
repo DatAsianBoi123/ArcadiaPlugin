@@ -34,7 +34,7 @@ public class DungeonManager {
     public void loadDungeonsFromDisk() {
         for (World world : Bukkit.getWorlds()) {
             if (world.getName().startsWith(DUNGEON_WORLD_PREFIX)) {
-                dungeonInstances.add(new DungeonInstance(world, world.getName().substring(DUNGEON_WORLD_PREFIX.length())));
+                dungeonInstances.add(new DungeonInstance(world, world.getName().substring(DUNGEON_WORLD_PREFIX.length()), plugin));
             }
         }
     }
@@ -55,7 +55,7 @@ public class DungeonManager {
         world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
         world.setSpawnFlags(false, false);
         long after = System.currentTimeMillis();
-        DungeonInstance instance = new DungeonInstance(world, id);
+        DungeonInstance instance = new DungeonInstance(world, id, plugin);
         dungeonInstances.add(instance);
         plugin.getLogger().info("Created new dungeon with the id of " + id + ". Creation took " + (after - before) + "ms");
         return instance;
@@ -122,7 +122,7 @@ public class DungeonManager {
         if (dungeonInstance.isEmpty()) {
             World world = Bukkit.getWorld(DUNGEON_WORLD_PREFIX + id);
             if (world == null) return null;
-            DungeonInstance instance = new DungeonInstance(world, id);
+            DungeonInstance instance = new DungeonInstance(world, id, plugin);
             dungeonInstances.add(instance);
             return instance;
         }
