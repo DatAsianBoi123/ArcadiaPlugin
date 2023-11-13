@@ -6,7 +6,6 @@ import com.datasiqn.arcadia.dungeon.DungeonInstance;
 import com.datasiqn.arcadia.dungeon.DungeonPlayer;
 import com.datasiqn.arcadia.player.PlayerData;
 import com.datasiqn.arcadia.upgrade.UpgradeType;
-import com.datasiqn.arcadia.upgrade.listeners.actions.GenerateUpgradeAction;
 import com.datasiqn.arcadia.util.PdcUtil;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -46,15 +45,17 @@ public class UpgradeListener implements Listener {
     @EventHandler
     public void onPlayerOpenChest(@NotNull PlayerInteractEvent event) {
         Block block = event.getClickedBlock();
-        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
-        if (block == null) return;
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK || block == null) return;
         if (block.getType() != Material.ENDER_CHEST) return;
+
+        EnderChest enderChest = (EnderChest) block.getState();
+        PersistentDataContainer pdc = enderChest.getPersistentDataContainer();
+
+        if (!PdcUtil.getOrDefault(pdc, ArcadiaTag.UPGRADE_CHEST, false)) return;
 
         event.setCancelled(true);
 
         PlayerData playerData = plugin.getPlayerManager().getPlayerData(event.getPlayer());
-        EnderChest enderChest = (EnderChest) block.getState();
-        PersistentDataContainer pdc = enderChest.getPersistentDataContainer();
 
         if (PdcUtil.getOrDefault(pdc, ArcadiaTag.CHEST_OPENED, false)) {
             playerData.getSender().sendError("You have already opened this chest!");
@@ -90,15 +91,6 @@ public class UpgradeListener implements Listener {
 
         PersistentDataContainer pdc = event.getItem().getPersistentDataContainer();
         if (!PdcUtil.has(pdc, ArcadiaTag.UPGRADE_TYPE)) return;
-
-        if (PdcUtil.has(pdc, ArcadiaTag.UPGRADE_CHEST)) {
-            Location chestLocation = PdcUtil.get(pdc, ArcadiaTag.CHEST_LOC);
-            Block block = player.getWorld().getBlockAt(chestLocation);
-            if (block.getType() != Material.ENDER_CHEST) return;
-            EnderChest enderChest = (EnderChest) block.getState();
-            enderChest.close();
-            player.playSound(chestLocation, Sound.BLOCK_ENDER_CHEST_CLOSE, 1, 1);
-        }
 
         ItemStack itemStack = event.getItem().getItemStack();
         itemStack.setType(Material.AIR);
