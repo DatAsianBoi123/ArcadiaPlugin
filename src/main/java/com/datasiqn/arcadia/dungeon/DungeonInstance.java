@@ -1,8 +1,10 @@
 package com.datasiqn.arcadia.dungeon;
 
+import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.ArcadiaTag;
 import com.datasiqn.arcadia.player.PlayerData;
 import com.datasiqn.arcadia.upgrade.UpgradeType;
+import com.datasiqn.arcadia.upgrade.listeners.actions.GenerateUpgradeAction;
 import com.datasiqn.arcadia.util.PdcUtil;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -27,10 +29,12 @@ public final class DungeonInstance {
     private final Set<DungeonPlayer> players = new HashSet<>();
     private final World world;
     private final String id;
+    private final Arcadia plugin;
 
-    public DungeonInstance(World world, String id) {
+    public DungeonInstance(World world, String id, Arcadia plugin) {
         this.world = world;
         this.id = id;
+        this.plugin = plugin;
     }
 
     public World getWorld() {
@@ -99,5 +103,20 @@ public final class DungeonInstance {
 
             consumer.accept(item);
         });
+    }
+
+    public @NotNull Item generateUpgrade(Location location, DungeonPlayer generator) {
+        return generateUpgrade(location, UpgradeType.getRandomWeighted(), generator);
+    }
+    public @NotNull Item generateUpgrade(Location location, DungeonPlayer generator, Consumer<Item> consumer) {
+        return generateUpgrade(location, UpgradeType.getRandomWeighted(), generator, consumer);
+    }
+    public @NotNull Item generateUpgrade(Location location, @NotNull UpgradeType type, DungeonPlayer generator) {
+        return generateUpgrade(location, type, generator, item -> {});
+    }
+    public @NotNull Item generateUpgrade(Location location, @NotNull UpgradeType type, DungeonPlayer generator, Consumer<Item> consumer) {
+        GenerateUpgradeAction action = new GenerateUpgradeAction(generator, type, plugin);
+        plugin.getUpgradeEventManager().emit(action);
+        return dropUpgrade(location, action.getGenerated(), consumer);
     }
 }

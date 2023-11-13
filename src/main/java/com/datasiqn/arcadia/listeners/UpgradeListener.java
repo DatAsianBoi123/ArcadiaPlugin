@@ -70,11 +70,7 @@ public class UpgradeListener implements Listener {
         Location upgradeLocation = location.clone().add(0.5, 1, 0.5);
         DungeonInstance dungeon = plugin.getDungeonManager().getJoinedDungeon(playerData);
         if (dungeon == null) return;
-        UpgradeType upgradeType = UpgradeType.getRandomWeighted();
-        GenerateUpgradeAction action = new GenerateUpgradeAction(dungeon.getPlayer(playerData), upgradeType, plugin);
-        plugin.getUpgradeEventManager().emit(action);
-        upgradeType = action.getGenerated();
-        dungeon.dropUpgrade(upgradeLocation, upgradeType, item -> {
+        dungeon.generateUpgrade(upgradeLocation, dungeon.getPlayer(playerData), item -> {
             item.setGravity(false);
             item.setPickupDelay(40);
 
