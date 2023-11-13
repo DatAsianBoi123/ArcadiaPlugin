@@ -67,6 +67,12 @@ public enum UpgradeType {
             .rarity(ItemRarity.MYTHIC)
             .addModifier(new LoreItemModifier(Lore.of("Your upgrades will be higher quality")))
             .build(), new RabbitFootListener()),
+    UPGRADE_SYNTHESIZER(UpgradeData.builder()
+            .name("Item Synthesizer")
+            .material(Material.CRAFTING_TABLE)
+            .rarity(ItemRarity.MYTHIC)
+            .addModifier(new LoreItemModifier(Lore.of("Enemies have a chance to drop items on death")))
+            .build(), new UpgradeSynthesizerListener()),
     ;
     //</editor-fold>
 
