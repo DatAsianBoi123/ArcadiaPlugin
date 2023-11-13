@@ -16,10 +16,12 @@ import java.util.UUID;
 public class DungeonPlayer {
     private final List<Upgrade> upgrades = new ArrayList<>();
     private final PlayerData playerData;
+    private final DungeonInstance dungeon;
     private int totalUpgrades = 0;
 
-    public DungeonPlayer(PlayerData playerData) {
+    public DungeonPlayer(PlayerData playerData, DungeonInstance dungeon) {
         this.playerData = playerData;
+        this.dungeon = dungeon;
     }
 
     public PlayerData getPlayerData() {
@@ -65,6 +67,10 @@ public class DungeonPlayer {
 
     public int getUpgradeAmount(UpgradeType upgradeType) {
         return upgrades.stream().filter(upgrade -> upgrade.getType() == upgradeType).findFirst().map(Upgrade::getAmount).orElse(0);
+    }
+
+    public @NotNull DungeonInstance getDungeon() {
+        return dungeon;
     }
 
     @Override

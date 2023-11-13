@@ -60,7 +60,7 @@ public final class DungeonInstance {
     }
 
     public @NotNull DungeonPlayer addPlayer(PlayerData player) {
-        DungeonPlayer dungeonPlayer = new DungeonPlayer(player);
+        DungeonPlayer dungeonPlayer = new DungeonPlayer(player, this);
         if (hasPlayer(dungeonPlayer)) return getPlayer(player);
         players.add(dungeonPlayer);
         return dungeonPlayer;
