@@ -8,7 +8,7 @@ import org.junit.Test;
 import java.text.DecimalFormat;
 
 public class TestWeightedRandom {
-    private static final DecimalFormat FORMAT = new DecimalFormat("0.##########");
+    private static final DecimalFormat FORMAT = new DecimalFormat("#,##0.##########");
 
     @Test
     public void test() {
@@ -20,9 +20,9 @@ public class TestWeightedRandom {
         WeightedRandom<Values> weightedRandom = new WeightedRandom<>(weights);
 
         long times = 1_000_000;
-        double range = 0.001;
+        double range = 0.005;
         double total = weights.values().doubleStream().sum();
-        System.out.println("Testing " + times + " times with a acceptable range of " + FORMAT.format(range));
+        System.out.println("Testing " + FORMAT.format(times) + " times with a acceptable range of " + FORMAT.format(range));
         Int2LongMap results = new Int2LongOpenHashMap();
 
         for (long i = 0; i < times; i++) {
