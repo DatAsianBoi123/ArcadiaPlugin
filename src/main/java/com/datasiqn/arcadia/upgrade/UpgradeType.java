@@ -27,6 +27,12 @@ public enum UpgradeType {
             .addModifier(new LoreItemModifier(Lore.of("Killing enemies heal you")))
             .addModifier(new PotionModifier(Color.RED))
             .build(), new BloodChaliceListener()),
+    SNEAKERS(UpgradeData.builder()
+            .name("Sneakers")
+            .material(Material.LEATHER_BOOTS)
+            .rarity(ItemRarity.COMMON)
+            .addModifier(new LoreItemModifier(Lore.of("Increases movement speed")))
+            .build(), new SneakerListener()),
     //</editor-fold>
 
     //<editor-fold desc="Rare Upgrades">,
