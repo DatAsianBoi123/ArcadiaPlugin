@@ -105,7 +105,12 @@ public class PlayerData {
             }
         }
 
-        org.bukkit.attribute.AttributeInstance attackSpeedAttribute = player.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
+        DungeonPlayer dungeonPlayer = plugin.getDungeonManager().getDungeonPlayer(this);
+        if (dungeonPlayer != null) {
+            plugin.getUpgradeEventManager().emit(new UpdateAttributesAction(dungeonPlayer, attributes, plugin));
+        }
+
+        var attackSpeedAttribute = player.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
         if (attackSpeedAttribute != null) {
             ScheduleBuilder.create()
                     .executes(runnable -> {
@@ -117,7 +122,7 @@ public class PlayerData {
 
         if (regenHealth) health = getAttribute(PlayerAttribute.MAX_HEALTH);
         if (health > getAttribute(PlayerAttribute.MAX_HEALTH)) health = getAttribute(PlayerAttribute.MAX_HEALTH);
-        org.bukkit.attribute.AttributeInstance healthAttribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        var healthAttribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
         if (healthAttribute == null) return;
         healthAttribute.setBaseValue(getMaxHearts());
 
