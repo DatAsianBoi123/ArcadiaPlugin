@@ -1,9 +1,11 @@
 package com.datasiqn.arcadia.util.lorebuilder;
 
+import org.bukkit.ChatColor;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
+import java.util.Arrays;
 import java.util.List;
 
 public interface Lore {
@@ -19,10 +21,6 @@ public interface Lore {
 
     @Contract(value = "_ -> new", pure = true)
     static @NotNull Lore of(String @NotNull ... lore) {
-        LoreBuilder builder = new LoreBuilder();
-        for (String s : lore) {
-            builder.append(s);
-        }
-        return builder.build();
+        return new LoreOf(Arrays.stream(lore).map(s -> ChatColor.GRAY + s).toList());
     }
 }
