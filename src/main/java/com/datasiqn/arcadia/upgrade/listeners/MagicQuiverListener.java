@@ -1,6 +1,6 @@
 package com.datasiqn.arcadia.upgrade.listeners;
 
-import com.datasiqn.arcadia.upgrade.listeners.actions.ShootBowAction;
+import com.datasiqn.arcadia.upgrade.actions.ShootBowAction;
 import com.datasiqn.schedulebuilder.ScheduleBuilder;
 import net.minecraft.nbt.CompoundTag;
 import org.bukkit.Location;

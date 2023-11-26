@@ -1,7 +1,7 @@
 package com.datasiqn.arcadia.upgrade.listeners;
 
 import com.datasiqn.arcadia.entities.ArcadiaEntity;
-import com.datasiqn.arcadia.upgrade.listeners.actions.DamageEnemyAction;
+import com.datasiqn.arcadia.upgrade.actions.DamageEnemyAction;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;

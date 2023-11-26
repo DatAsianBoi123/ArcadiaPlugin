@@ -2,7 +2,7 @@ package com.datasiqn.arcadia.upgrade.listeners;
 
 import com.datasiqn.arcadia.dungeon.DungeonPlayer;
 import com.datasiqn.arcadia.player.ArcadiaSender;
-import com.datasiqn.arcadia.upgrade.listeners.actions.DamageEnemyAction;
+import com.datasiqn.arcadia.upgrade.actions.DamageEnemyAction;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 

@@ -4,7 +4,7 @@ import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.ArcadiaTag;
 import com.datasiqn.arcadia.player.PlayerData;
 import com.datasiqn.arcadia.upgrade.UpgradeType;
-import com.datasiqn.arcadia.upgrade.listeners.actions.GenerateUpgradeAction;
+import com.datasiqn.arcadia.upgrade.actions.GenerateUpgradeAction;
 import com.datasiqn.arcadia.util.PdcUtil;
 import org.bukkit.Location;
 import org.bukkit.World;

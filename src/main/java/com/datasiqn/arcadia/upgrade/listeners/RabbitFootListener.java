@@ -1,7 +1,7 @@
 package com.datasiqn.arcadia.upgrade.listeners;
 
 import com.datasiqn.arcadia.upgrade.UpgradeType;
-import com.datasiqn.arcadia.upgrade.listeners.actions.GenerateUpgradeAction;
+import com.datasiqn.arcadia.upgrade.actions.GenerateUpgradeAction;
 import org.jetbrains.annotations.NotNull;
 
 public class RabbitFootListener implements UpgradeListener {

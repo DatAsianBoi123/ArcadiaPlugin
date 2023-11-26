@@ -1,7 +1,7 @@
 package com.datasiqn.arcadia.upgrade.listeners;
 
 import com.datasiqn.arcadia.entities.ArcadiaHostileEntity;
-import com.datasiqn.arcadia.upgrade.listeners.actions.KillEnemyAction;
+import com.datasiqn.arcadia.upgrade.actions.KillEnemyAction;
 import org.jetbrains.annotations.NotNull;
 
 public class BloodChaliceListener implements UpgradeListener {

@@ -12,7 +12,7 @@ import com.datasiqn.arcadia.managers.DungeonManager;
 import com.datasiqn.arcadia.managers.PlayerManager;
 import com.datasiqn.arcadia.player.PlayerData;
 import com.datasiqn.arcadia.player.PlayerEquipment;
-import com.datasiqn.arcadia.upgrade.listeners.actions.ShootBowAction;
+import com.datasiqn.arcadia.upgrade.actions.ShootBowAction;
 import com.datasiqn.arcadia.util.PdcUtil;
 import com.datasiqn.schedulebuilder.ScheduleBuilder;
 import org.bukkit.Bukkit;

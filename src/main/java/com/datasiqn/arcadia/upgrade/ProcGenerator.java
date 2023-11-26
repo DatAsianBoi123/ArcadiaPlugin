@@ -2,7 +2,7 @@ package com.datasiqn.arcadia.upgrade;
 
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.dungeon.DungeonPlayer;
-import com.datasiqn.arcadia.upgrade.listeners.actions.TryProcAction;
+import com.datasiqn.arcadia.upgrade.actions.TryProcAction;
 
 import java.util.random.RandomGenerator;
 

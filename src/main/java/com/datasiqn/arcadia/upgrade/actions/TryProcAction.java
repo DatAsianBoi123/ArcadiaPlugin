@@ -1,4 +1,4 @@
-package com.datasiqn.arcadia.upgrade.listeners.actions;
+package com.datasiqn.arcadia.upgrade.actions;
 
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.dungeon.DungeonPlayer;

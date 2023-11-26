@@ -2,9 +2,9 @@ package com.datasiqn.arcadia.managers;
 
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.upgrade.UpgradeType;
+import com.datasiqn.arcadia.upgrade.actions.Action;
 import com.datasiqn.arcadia.upgrade.listeners.ActionHandler;
 import com.datasiqn.arcadia.upgrade.listeners.UpgradeListener;
-import com.datasiqn.arcadia.upgrade.listeners.actions.Action;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import org.jetbrains.annotations.NotNull;

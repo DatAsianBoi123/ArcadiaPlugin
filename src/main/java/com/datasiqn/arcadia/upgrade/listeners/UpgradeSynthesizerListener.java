@@ -2,7 +2,7 @@ package com.datasiqn.arcadia.upgrade.listeners;
 
 import com.datasiqn.arcadia.dungeon.DungeonPlayer;
 import com.datasiqn.arcadia.entities.ArcadiaHostileEntity;
-import com.datasiqn.arcadia.upgrade.listeners.actions.KillEnemyAction;
+import com.datasiqn.arcadia.upgrade.actions.KillEnemyAction;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;

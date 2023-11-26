@@ -1,6 +1,6 @@
 package com.datasiqn.arcadia.upgrade.listeners;
 
-import com.datasiqn.arcadia.upgrade.listeners.actions.TryProcAction;
+import com.datasiqn.arcadia.upgrade.actions.TryProcAction;
 import org.jetbrains.annotations.NotNull;
 
 public class LotteryTicketListener implements UpgradeListener {
