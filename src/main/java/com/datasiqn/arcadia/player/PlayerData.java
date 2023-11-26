@@ -2,12 +2,14 @@ package com.datasiqn.arcadia.player;
 
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.DamageHelper;
+import com.datasiqn.arcadia.dungeon.DungeonPlayer;
 import com.datasiqn.arcadia.item.ArcadiaItem;
 import com.datasiqn.arcadia.item.stat.AttributeInstance;
 import com.datasiqn.arcadia.item.stat.ItemAttribute;
 import com.datasiqn.arcadia.item.stat.ItemStats;
 import com.datasiqn.arcadia.item.stat.StatIcon;
 import com.datasiqn.arcadia.item.type.ItemType;
+import com.datasiqn.arcadia.upgrade.actions.UpdateAttributesAction;
 import com.datasiqn.schedulebuilder.ScheduleBuilder;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.*;
@@ -16,6 +18,8 @@ import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -137,6 +141,15 @@ public class PlayerData {
                 if (debugMode) sender.sendDebugMessage("Invalid health! Got " + player.getHealth() + ", expected " + expectedHealth);
                 player.setHealth(expectedHealth);
             }
+        }
+
+        ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
+        serverPlayer.getAbilities().walkingSpeed = 0.1f * (float) getAttribute(PlayerAttribute.SPEED);
+        serverPlayer.onUpdateAbilities();
+        // idk why i can't just use the serverPlayer variable here, but it breaks if i do
+        var moveSpeedAttribute = ((CraftPlayer) player).getHandle().getAttribute(Attributes.MOVEMENT_SPEED);
+        if (moveSpeedAttribute != null) {
+            moveSpeedAttribute.setBaseValue(serverPlayer.getAbilities().walkingSpeed);
         }
 
         beginRegenHealth();

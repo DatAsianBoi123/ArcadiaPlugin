@@ -8,6 +8,7 @@ public enum PlayerAttribute {
     STRENGTH(ItemAttribute.STRENGTH, 0),
     ATTACK_SPEED(ItemAttribute.ATTACK_SPEED, 0),
     MAX_HUNGER(ItemAttribute.HUNGER, 100),
+    SPEED(ItemAttribute.SPEED, 1),
     ;
 
     private final ItemAttribute itemAttribute;

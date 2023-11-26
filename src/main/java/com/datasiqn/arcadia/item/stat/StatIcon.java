@@ -6,7 +6,8 @@ public enum StatIcon {
     HEALTH("♥"),
     STRENGTH("⁂"),
     ATTACK_SPEED("⚔"),
-    HUNGER("🍖")
+    HUNGER("🍖"),
+    SPEED("🦶"),
     ;
 
     private final String icon;

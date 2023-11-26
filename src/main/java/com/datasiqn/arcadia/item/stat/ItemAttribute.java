@@ -9,6 +9,7 @@ public enum ItemAttribute {
     STRENGTH("Strength", ChatColor.DARK_RED, StatIcon.STRENGTH),
     ATTACK_SPEED("Attack Speed", ChatColor.YELLOW, StatIcon.ATTACK_SPEED),
     HUNGER("Hunger", ChatColor.of("#743600"), StatIcon.HUNGER),
+    SPEED("Speed", ChatColor.WHITE, StatIcon.SPEED),
     ;
 
     private final String displayName;
