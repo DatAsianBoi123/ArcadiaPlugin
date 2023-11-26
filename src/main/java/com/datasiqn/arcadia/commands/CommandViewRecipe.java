@@ -15,11 +15,11 @@ public class CommandViewRecipe {
                 .description("Views a custom Arcadia Recipe")
                 .then(ArgumentBuilder.argument(ArcadiaArgumentType.RECIPE, "recipe")
                         .requiresPlayer()
-                        .executes(context -> {
-                            RecipeMenuHandler gui = new RecipeMenuHandler(context.getArguments().get(0, ArcadiaArgumentType.RECIPE));
+                        .executes((context, source, arguments) -> {
+                            RecipeMenuHandler gui = new RecipeMenuHandler(arguments.get(0, ArcadiaArgumentType.RECIPE));
                             Inventory inventory = gui.createInventory();
                             MenuApi.getInstance().getMenuManager().registerHandler(inventory, gui);
-                            context.getSource().getPlayer().openInventory(inventory);
+                            source.getPlayer().openInventory(inventory);
                         }));
     }
 }

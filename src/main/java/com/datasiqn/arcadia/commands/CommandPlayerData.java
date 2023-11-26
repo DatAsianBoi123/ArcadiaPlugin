@@ -5,7 +5,6 @@ import com.datasiqn.arcadia.ArcadiaPermission;
 import com.datasiqn.arcadia.commands.argument.ArcadiaArgumentType;
 import com.datasiqn.arcadia.managers.PlayerManager;
 import com.datasiqn.arcadia.player.PlayerData;
-import com.datasiqn.commandcore.argument.Arguments;
 import com.datasiqn.commandcore.command.builder.ArgumentBuilder;
 import com.datasiqn.commandcore.command.builder.CommandBuilder;
 import com.datasiqn.commandcore.command.builder.LiteralBuilder;
@@ -32,33 +31,33 @@ public class CommandPlayerData {
                 .description("Manages player data")
                 .then(LiteralBuilder.literal("load")
                         .then(ArgumentBuilder.argument(ArcadiaArgumentType.PLAYER, "player")
-                                .executes(context -> new Thread(() -> {
-                                    PlayerData playerData = context.getArguments().get(1, ArcadiaArgumentType.PLAYER);
+                                .executes((context, source, arguments) -> new Thread(() -> {
+                                    PlayerData playerData = arguments.get(1, ArcadiaArgumentType.PLAYER);
                                     playerData.loadData();
                                     playerData.getSender().sendMessage("Successfully loaded " + playerData.getPlayer().getName() + "'s player data");
                                 }).start()))
-                        .executes(context -> {
+                        .executes((context, source, arguments) -> {
                             ExecutorService threadPool = Executors.newFixedThreadPool(4);
                             for (Player player : Bukkit.getOnlinePlayers()) {
                                 threadPool.submit(() -> {
                                     playerManager.getPlayerData(player).loadData();
-                                    playerManager.getPlayerData(context.getSource().getPlayer()).getSender().sendMessage("Successfully loaded " + player.getName() + "'s data");
+                                    playerManager.getPlayerData(source.getPlayer()).getSender().sendMessage("Successfully loaded " + player.getName() + "'s data");
                                 });
                             }
                         }))
                 .then(LiteralBuilder.literal("save")
                         .then(ArgumentBuilder.argument(ArcadiaArgumentType.PLAYER, "player")
-                                .executes(context -> new Thread(() -> {
-                                    PlayerData playerData = context.getArguments().get(1, ArcadiaArgumentType.PLAYER);
+                                .executes((context, source, arguments) -> new Thread(() -> {
+                                    PlayerData playerData = arguments.get(1, ArcadiaArgumentType.PLAYER);
                                     playerData.saveData();
                                     playerData.getSender().sendMessage("Successfully saved " + playerData.getPlayer().getName() + "'s player data");
                                 }).start()))
-                        .executes(context -> {
+                        .executes((context, source, arguments) -> {
                             ExecutorService threadPool = Executors.newFixedThreadPool(4);
                             for (Player player : Bukkit.getOnlinePlayers()) {
                                 threadPool.submit(() -> {
                                     playerManager.getPlayerData(player).saveData();
-                                    playerManager.getPlayerData(context.getSource().getPlayer()).getSender().sendMessage("Successfully saved " + player.getName() + "'s data");
+                                    playerManager.getPlayerData(source.getPlayer()).getSender().sendMessage("Successfully saved " + player.getName() + "'s data");
                                 });
                             }
                         }))
@@ -66,9 +65,8 @@ public class CommandPlayerData {
                         .then(LiteralBuilder.literal("get")
                                 .then(ArgumentBuilder.argument(ArcadiaArgumentType.PLAYER_ATTRIBUTE, "attribute")
                                         .requiresPlayer()
-                                        .executes(context -> {
-                                            PlayerData playerData = playerManager.getPlayerData(context.getSource().getPlayer());
-                                            Arguments arguments = context.getArguments();
+                                        .executes((context, source, arguments) -> {
+                                            PlayerData playerData = playerManager.getPlayerData(source.getPlayer());
                                             playerData.getSender().sendMessage(ATTRIBUTE_FORMAT.format(playerData.getAttribute(arguments.get(2, ArcadiaArgumentType.PLAYER_ATTRIBUTE))));
                                         }))));
     }

@@ -16,7 +16,7 @@ class DungeonArgumentType implements SimpleArgumentType<DungeonInstance> {
     private final DungeonManager dungeonManager = JavaPlugin.getPlugin(Arcadia.class).getDungeonManager();
 
     @Override
-    public @NotNull String getTypeName() {
+    public @NotNull String getName() {
         return "dungeon";
     }
 
@@ -28,5 +28,10 @@ class DungeonArgumentType implements SimpleArgumentType<DungeonInstance> {
     @Override
     public @NotNull List<String> getTabComplete(@NotNull CommandContext context) {
         return dungeonManager.getAllDungeonInstances().stream().map(DungeonInstance::getId).toList();
+    }
+
+    @Override
+    public @NotNull Class<DungeonInstance> getArgumentClass() {
+        return DungeonInstance.class;
     }
 }

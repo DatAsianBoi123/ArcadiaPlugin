@@ -7,13 +7,11 @@ import com.datasiqn.arcadia.dungeon.DungeonInstance;
 import com.datasiqn.arcadia.dungeon.DungeonPlayer;
 import com.datasiqn.arcadia.player.ArcadiaSender;
 import com.datasiqn.arcadia.upgrade.UpgradeType;
-import com.datasiqn.commandcore.argument.Arguments;
 import com.datasiqn.commandcore.argument.type.ArgumentType;
 import com.datasiqn.commandcore.command.CommandContext;
 import com.datasiqn.commandcore.command.builder.ArgumentBuilder;
 import com.datasiqn.commandcore.command.builder.CommandBuilder;
 import com.datasiqn.commandcore.command.builder.LiteralBuilder;
-import com.datasiqn.commandcore.command.source.CommandSource;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,8 +27,8 @@ public class CommandDungeons {
                 .permission(ArcadiaPermission.PERMISSION_MANAGE_DUNGEONS)
                 .description("Manages different dungeon instances")
                 .requiresPlayer()
-                .executes(context -> {
-                    Player player = context.getSource().getPlayer();
+                .executes((context, source, arguments) -> {
+                    Player player = source.getPlayer();
                     DungeonInstance dungeon = plugin.getDungeonManager().getJoinedDungeon(player);
                     if (dungeon == null) {
                         player.sendMessage("You are not in a dungeon currently");
@@ -39,9 +37,8 @@ public class CommandDungeons {
                     player.sendMessage("You are in the dungeon " + dungeon.getId() + " with " + dungeon.getPlayers() + " other people");
                 })
                 .then(LiteralBuilder.literal("create")
-                        .executes(context -> {
-                            CommandSource source = context.getSource();
-                            ArcadiaSender<?> sender = source.getPlayerChecked().matchResult(player -> plugin.getPlayerManager().getPlayerData(player).getSender(), err -> new ArcadiaSender<>(source.getSender()));
+                        .executes((context, source, arguments) -> {
+                            ArcadiaSender<?> sender = source.getPlayerChecked().matchResult(player -> plugin.getPlayerManager().getPlayerData(player).getSender(), err -> new ArcadiaSender<>(source.sender()));
                             DungeonInstance instance = plugin.getDungeonManager().createDungeon();
                             if (instance == null) {
                                 sender.sendError("An unexpected error occurred. Please try again later");
@@ -51,9 +48,9 @@ public class CommandDungeons {
                         }))
                 .then(LiteralBuilder.literal("delete")
                         .then(ArgumentBuilder.argument(ArcadiaArgumentType.DUNGEON, "world name")
-                                .executes(context -> {
-                                    DungeonInstance instance = context.getArguments().get(1, ArcadiaArgumentType.DUNGEON);
-                                    ArcadiaSender<?> sender = context.getSource().getPlayerChecked().matchResult(player -> plugin.getPlayerManager().getPlayerData(player).getSender(), err -> new ArcadiaSender<>(context.getSource().getSender()));
+                                .executes((context, source, arguments) -> {
+                                    DungeonInstance instance = arguments.get(1, ArcadiaArgumentType.DUNGEON);
+                                    ArcadiaSender<?> sender = source.getPlayerChecked().matchResult(player -> plugin.getPlayerManager().getPlayerData(player).getSender(), err -> new ArcadiaSender<>(source.sender()));
                                     if (!plugin.getDungeonManager().deleteDungeon(instance)) {
                                         sender.sendError("An error occurred when deleting the world. Please try again later");
                                         return;
@@ -63,31 +60,28 @@ public class CommandDungeons {
                 .then(LiteralBuilder.literal("tp")
                         .then(ArgumentBuilder.argument(ArcadiaArgumentType.DUNGEON, "dungeon id")
                                 .requiresPlayer()
-                                .executes(context -> plugin.getDungeonManager().addPlayerTo(plugin.getPlayerManager().getPlayerData(context.getSource().getPlayer()), context.getArguments().get(1, ArcadiaArgumentType.DUNGEON)))))
+                                .executes((context, source, arguments) -> plugin.getDungeonManager().addPlayerTo(plugin.getPlayerManager().getPlayerData(source.getPlayer()), arguments.get(1, ArcadiaArgumentType.DUNGEON)))))
                 .then(LiteralBuilder.literal("pickup")
                         .then(ArgumentBuilder.argument(ArcadiaArgumentType.UPGRADE, "upgrade")
-                                .then(ArgumentBuilder.argument(ArgumentType.NATURAL_NUMBER, "amount")
+                                .then(ArgumentBuilder.argument(ArgumentType.rangedNumber(int.class, 1), "amount")
                                         .requiresPlayer()
-                                        .executes(context -> {
-                                            Arguments arguments = context.getArguments();
-                                            pickupItem(context, arguments.get(1, ArcadiaArgumentType.UPGRADE), arguments.get(2, ArgumentType.NATURAL_NUMBER));
-                                        }))
+                                        .executes((context, source, arguments) -> pickupItem(context, arguments.get(1, ArcadiaArgumentType.UPGRADE), arguments.get(2, ArgumentType.rangedNumber(int.class, 1)))))
                                 .requiresPlayer()
-                                .executes(context -> pickupItem(context, context.getArguments().get(1, ArcadiaArgumentType.UPGRADE), 1)))
-                        .then(ArgumentBuilder.argument(ArgumentType.NATURAL_NUMBER, "amount")
+                                .executes((context, source, arguments) -> pickupItem(context, arguments.get(1, ArcadiaArgumentType.UPGRADE), 1)))
+                        .then(ArgumentBuilder.argument(ArgumentType.rangedNumber(int.class, 1), "amount")
                                 .requiresPlayer()
-                                .executes(context -> {
-                                    int amount = context.getArguments().get(1, ArgumentType.NATURAL_NUMBER);
+                                .executes((context, source, arguments) -> {
+                                    int amount = arguments.get(1, ArgumentType.rangedNumber(int.class, 1));
                                     for (int i = 0; i < amount; i++) {
                                         pickupItem(context, UpgradeType.getRandomWeighted(), 1);
                                     }
                                 }))
                         .requiresPlayer()
-                        .executes(context -> pickupItem(context, UpgradeType.getRandomWeighted(), 1)));
+                        .executes((context, source, arguments) -> pickupItem(context, UpgradeType.getRandomWeighted(), 1)));
     }
 
     private void pickupItem(@NotNull CommandContext context, UpgradeType upgrade, int amount) {
-        Player player = context.getSource().getPlayer();
+        Player player = context.source().getPlayer();
         DungeonPlayer dungeonPlayer = plugin.getDungeonManager().getDungeonPlayer(player);
         ArcadiaSender<Player> sender = plugin.getPlayerManager().getPlayerData(player).getSender();
         if (dungeonPlayer == null) {

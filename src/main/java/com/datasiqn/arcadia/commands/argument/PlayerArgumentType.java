@@ -13,6 +13,11 @@ import java.util.List;
 
 class PlayerArgumentType implements ArgumentType<PlayerData> {
     @Override
+    public @NotNull String getName() {
+        return "player";
+    }
+
+    @Override
     public @NotNull Result<PlayerData, String> parse(@NotNull ArgumentReader reader) {
         return PLAYER.parse(reader).map(player -> JavaPlugin.getPlugin(Arcadia.class).getPlayerManager().getPlayerData(player));
     }
@@ -20,5 +25,10 @@ class PlayerArgumentType implements ArgumentType<PlayerData> {
     @Override
     public @NotNull List<String> getTabComplete(@NotNull CommandContext context) {
         return PLAYER.getTabComplete(context);
+    }
+
+    @Override
+    public @NotNull Class<PlayerData> getArgumentClass() {
+        return PlayerData.class;
     }
 }

@@ -17,11 +17,11 @@ public class CommandItem {
                 .permission(ArcadiaPermission.PERMISSION_USE_ITEM)
                 .description("Gives you a custom Arcadia Item")
                 .then(ArgumentBuilder.argument(ArcadiaArgumentType.ITEM, "item")
-                        .then(ArgumentBuilder.argument(ArgumentType.NATURAL_NUMBER, "amount")
+                        .then(ArgumentBuilder.argument(ArgumentType.rangedNumber(int.class, 1), "amount")
                                 .requiresPlayer()
-                                .executes(context -> giveItem(context.getSource().getPlayer(), context.getArguments().get(0, ArcadiaArgumentType.ITEM), context.getArguments().get(1, ArgumentType.NATURAL_NUMBER))))
+                                .executes((context, source, arguments) -> giveItem(source.getPlayer(), arguments.get(0, ArcadiaArgumentType.ITEM), arguments.get(1, ArgumentType.rangedNumber(int.class, 1)))))
                         .requiresPlayer()
-                        .executes(context -> giveItem(context.getSource().getPlayer(), context.getArguments().get(0, ArcadiaArgumentType.ITEM), 1)));
+                        .executes((context, source, arguments) -> giveItem(source.getPlayer(), arguments.get(0, ArcadiaArgumentType.ITEM), 1)));
     }
 
     private void giveItem(@NotNull Player player, @NotNull ArcadiaMaterial material, int amount) {

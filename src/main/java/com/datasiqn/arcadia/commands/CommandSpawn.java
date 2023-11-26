@@ -24,8 +24,8 @@ public class CommandSpawn {
                 .description("Spawns different types of chests")
                 .then(LiteralBuilder.literal("upgradechest")
                         .requiresLocatable()
-                        .executes(context -> {
-                            LocatableCommandSender locatable = context.getSource().getLocatable();
+                        .executes((context, source, arguments) -> {
+                            LocatableCommandSender locatable = source.getLocatable();
                             Location location = locatable.getLocation();
                             World world = locatable.getWorld();
                             world.setType(location, Material.ENDER_CHEST);
@@ -37,12 +37,12 @@ public class CommandSpawn {
                 .then(LiteralBuilder.literal("lootchest")
                         .then(ArgumentBuilder.argument(ArcadiaArgumentType.LOOT_TABLE, "loot table")
                                 .requiresLocatable()
-                                .executes(context -> {
-                                    LootTable lootTable = context.getArguments().get(1, ArcadiaArgumentType.LOOT_TABLE);
-                                    spawnLootChest(context.getSource().getLocatable().getLocation(), lootTable);
+                                .executes((context, source, arguments) -> {
+                                    LootTable lootTable = arguments.get(1, ArcadiaArgumentType.LOOT_TABLE);
+                                    spawnLootChest(source.getLocatable().getLocation(), lootTable);
                                 }))
                         .requiresPlayer()
-                        .executes(context -> spawnLootChest(context.getSource().getPlayer().getLocation(), LootTable.CHEST_DEFAULT)));
+                        .executes((context, source, arguments) -> spawnLootChest(source.getPlayer().getLocation(), LootTable.CHEST_DEFAULT)));
     }
 
     private void spawnLootChest(@NotNull Location location, LootTable lootTable) {

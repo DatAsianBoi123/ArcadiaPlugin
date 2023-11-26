@@ -19,6 +19,6 @@ public class CommandGUI {
                 .description("Opens a custom Arcadia GUI")
                 .then(ArgumentBuilder.argument(ArcadiaArgumentType.GUI, "gui")
                         .requiresPlayer()
-                        .executes(context -> context.getArguments().get(0, ArcadiaArgumentType.GUI).openInventory(context.getSource().getPlayer(), plugin)));
+                        .executes((context, source, arguments) -> arguments.get(0, ArcadiaArgumentType.GUI).openInventory(source.getPlayer(), plugin)));
     }
 }

@@ -134,7 +134,7 @@ public final class Arcadia extends JavaPlugin {
         commandManager.registerCommand(new CommandPlayerData(this).getCommand());
         commandManager.registerCommand(new CommandBuilder("bag")
                 .requiresPlayer()
-                .executes(context -> {
+                .executes((context, source, arguments) -> {
                     ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD);
                     SkullMeta meta = (SkullMeta) itemStack.getItemMeta();
                     if (meta == null) return;
@@ -150,7 +150,7 @@ public final class Arcadia extends JavaPlugin {
                     PersistentDataContainer pdc = meta.getPersistentDataContainer();
                     PdcUtil.set(pdc, ArcadiaTag.UPGRADE_BAG, true);
                     itemStack.setItemMeta(meta);
-                    context.getSource().getPlayer().getInventory().addItem(itemStack);
+                    source.getPlayer().getInventory().addItem(itemStack);
                 }));
     }
 
