@@ -73,22 +73,23 @@ public class CommandDungeons {
                                 .executes((context, source, arguments) -> {
                                     int amount = arguments.get(1, ArgumentType.rangedNumber(int.class, 1));
                                     for (int i = 0; i < amount; i++) {
-                                        pickupItem(context, UpgradeType.getRandomWeighted(), 1);
+                                        if (!pickupItem(context, UpgradeType.getRandomWeighted(), 1)) break;
                                     }
                                 }))
                         .requiresPlayer()
                         .executes((context, source, arguments) -> pickupItem(context, UpgradeType.getRandomWeighted(), 1)));
     }
 
-    private void pickupItem(@NotNull CommandContext context, UpgradeType upgrade, int amount) {
+    private boolean pickupItem(@NotNull CommandContext context, UpgradeType upgrade, int amount) {
         Player player = context.source().getPlayer();
         DungeonPlayer dungeonPlayer = plugin.getDungeonManager().getDungeonPlayer(player);
         ArcadiaSender<Player> sender = plugin.getPlayerManager().getPlayerData(player).getSender();
         if (dungeonPlayer == null) {
             sender.sendError("You are not in a dungeon");
-            return;
+            return false;
         }
         dungeonPlayer.pickupUpgrade(upgrade, amount);
         sender.sendMessage("Picked up item " + upgrade + "x" + amount);
+        return true;
     }
 }
