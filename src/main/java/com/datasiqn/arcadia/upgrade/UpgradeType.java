@@ -35,7 +35,7 @@ public enum UpgradeType {
             .build(), new SneakerListener()),
     //</editor-fold>
 
-    //<editor-fold desc="Rare Upgrades">,
+    //<editor-fold desc="Rare Upgrades">
     MAGIC_QUIVER(UpgradeData.builder()
             .name("Magic Quiver")
             .material(Material.LEATHER_HORSE_ARMOR)
