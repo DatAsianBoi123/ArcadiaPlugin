@@ -19,12 +19,12 @@ class PlayerArgumentType implements ArgumentType<PlayerData> {
 
     @Override
     public @NotNull Result<PlayerData, String> parse(@NotNull ArgumentReader reader) {
-        return PLAYER.parse(reader).map(player -> JavaPlugin.getPlugin(Arcadia.class).getPlayerManager().getPlayerData(player));
+        return ONLINE_PLAYER.parse(reader).map(player -> JavaPlugin.getPlugin(Arcadia.class).getPlayerManager().getPlayerData(player));
     }
 
     @Override
     public @NotNull List<String> getTabComplete(@NotNull CommandContext context) {
-        return PLAYER.getTabComplete(context);
+        return ONLINE_PLAYER.getTabComplete(context);
     }
 
     @Override
