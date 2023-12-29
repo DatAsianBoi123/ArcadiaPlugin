@@ -4,6 +4,7 @@ import com.datasiqn.arcadia.ArcadiaTag;
 import com.datasiqn.arcadia.item.ItemRarity;
 import com.datasiqn.arcadia.item.abilities.AbilityType;
 import com.datasiqn.arcadia.item.abilities.ItemAbility;
+import com.datasiqn.arcadia.item.components.ItemComponent;
 import com.datasiqn.arcadia.item.modifiers.ItemModifier;
 import com.datasiqn.arcadia.item.type.ItemType;
 import com.datasiqn.arcadia.item.type.data.ExtraItemData;
@@ -42,6 +43,7 @@ public class MaterialData<D extends ExtraItemData> {
     private final boolean enchantGlint;
     private final boolean stackable;
     private final Map<AbilityType, ItemAbility> itemAbilities;
+    private final List<ItemComponent> itemComponents;
 
     @Contract(pure = true)
     public MaterialData(@NotNull ItemBuilder<D, ?, ?> builder) {
@@ -55,6 +57,7 @@ public class MaterialData<D extends ExtraItemData> {
         enchantGlint = builder.enchantGlint();
         stackable = builder.stackable();
         itemAbilities = builder.abilities();
+        itemComponents = builder.components();
     }
 
     public @NotNull ItemType<D> getItemType() {
@@ -89,6 +92,12 @@ public class MaterialData<D extends ExtraItemData> {
     @UnmodifiableView
     public Map<AbilityType, ItemAbility> getItemAbilities() {
         return itemAbilities;
+    }
+
+    @NotNull
+    @UnmodifiableView
+    public List<ItemComponent> getItemComponents() {
+        return itemComponents;
     }
 
     public @NotNull ItemStack toItemStack() {

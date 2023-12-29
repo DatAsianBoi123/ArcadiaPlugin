@@ -12,6 +12,7 @@ import com.datasiqn.arcadia.enchants.modifiers.EntityEnchantModifier;
 import com.datasiqn.arcadia.entities.ArcadiaEntity;
 import com.datasiqn.arcadia.entities.ArcadiaHostileEntity;
 import com.datasiqn.arcadia.item.ArcadiaItem;
+import com.datasiqn.arcadia.item.material.data.MaterialData;
 import com.datasiqn.arcadia.item.meta.ArcadiaItemMeta;
 import com.datasiqn.arcadia.item.stat.AttributeInstance;
 import com.datasiqn.arcadia.item.stat.ItemAttribute;
@@ -126,7 +127,7 @@ public class DamageListener implements Listener {
             double arrowDamage = calcArrowDamage(arrow, damage);
             if (arrow.getShooter() instanceof Player player) {
                 PlayerData playerData = plugin.getPlayerManager().getPlayerData(player);
-                if (playerData.inDebugMode()) sendDebugInfo(playerData.getSender(), arrowDamage, -1, arrowDamage, 1, 1);
+                if (playerData.inDebugMode()) sendDebugInfo(playerData.getSender(), arrowDamage, -1, arrowDamage, arrowDamage, 1, 1);
             }
             return arrowDamage;
         }
@@ -136,10 +137,10 @@ public class DamageListener implements Listener {
         PlayerData playerData = plugin.getPlayerManager().getPlayerData(player);
         ArcadiaItem item = playerData.getEquipment().getItemInMainHand();
 
-        if (item.getItemData().getItemType().getSlot() != EquipmentSlot.HAND) return damage;
+        MaterialData<?> itemData = item.getItemData();
+        if (itemData.getItemType().getSlot() != EquipmentSlot.HAND) return damage;
         ArcadiaItemMeta itemMeta = item.getItemMeta();
         AttributeInstance damageAttribute = itemMeta.getItemStats().getAttribute(ItemAttribute.DAMAGE);
-        if (damageAttribute == null) return damage;
 
         double finalDamage;
 
@@ -165,14 +166,16 @@ public class DamageListener implements Listener {
             }
         }
 
-        double damageValue = damageAttribute.getValue();
+        double damageValue = damageAttribute == null ? 1 : damageAttribute.getValue();
         finalDamage = (damageValue + DamageHelper.getStrengthBonus(strength, damageValue)) * (additiveBonus * multiplicativeBonus);
 
+        double damageAfterComponents = itemData.getItemComponents().stream().reduce(finalDamage, (prev, curr) -> curr.modifyAttackDamage(entity, prev, item), Double::sum);
+
         if (playerData.inDebugMode()) {
-            sendDebugInfo(playerData.getSender(), damageValue, strength, finalDamage, additiveBonus, multiplicativeBonus);
+            sendDebugInfo(playerData.getSender(), damageValue, strength, finalDamage, damageAfterComponents, additiveBonus, multiplicativeBonus);
         }
 
-        return finalDamage;
+        return damageAfterComponents;
     }
 
     private double calcArrowDamage(@NotNull Arrow arrow, double defaultDamage) {
@@ -180,7 +183,7 @@ public class DamageListener implements Listener {
         return PdcUtil.getOrDefault(pdc, ArcadiaTag.ARROW_DAMAGE, defaultDamage);
     }
 
-    private void sendDebugInfo(@NotNull ArcadiaSender<Player> sender, double rawDamage, double strength, double finalDamage, double additiveMultiplier, double multiplicativeMultiplier) {
+    private void sendDebugInfo(@NotNull ArcadiaSender<Player> sender, double rawDamage, double strength, double finalDamage, double damageAfterComponents, double additiveMultiplier, double multiplicativeMultiplier) {
         sender.sendMessageRaw("-------------------------");
         sender.sendMessageRaw(ChatColor.GOLD + "Damage Summary:");
         DecimalFormat format = new DecimalFormat("#.###");
@@ -190,7 +193,8 @@ public class DamageListener implements Listener {
             sender.sendDebugMessage("Strength Bonus: " + ChatColor.RED + format.format(DamageHelper.getStrengthBonus(strength, rawDamage)));
         }
         sender.sendDebugMessage("Multiplier: " + ChatColor.RED + format.format(additiveMultiplier * multiplicativeMultiplier) + " (" + format.format(additiveMultiplier) + " * " + format.format(multiplicativeMultiplier) + ")");
-        sender.sendDebugMessage("Final damage: " + ChatColor.RED + format.format(finalDamage));
+        sender.sendDebugMessage("Final damage (without components): " + ChatColor.RED + format.format(finalDamage));
+        sender.sendDebugMessage("Final damage (with components): " + ChatColor.RED + format.format(damageAfterComponents));
         sender.sendMessageRaw("-------------------------");
     }
 }

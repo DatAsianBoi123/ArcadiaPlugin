@@ -3,6 +3,7 @@ package com.datasiqn.arcadia.item.material.data;
 import com.datasiqn.arcadia.item.ItemRarity;
 import com.datasiqn.arcadia.item.abilities.AbilityType;
 import com.datasiqn.arcadia.item.abilities.ItemAbility;
+import com.datasiqn.arcadia.item.components.ItemComponent;
 import com.datasiqn.arcadia.item.modifiers.ItemModifier;
 import com.datasiqn.arcadia.item.type.ItemType;
 import com.datasiqn.arcadia.item.type.data.ExtraItemData;
@@ -19,6 +20,7 @@ public abstract class ItemBuilder<D extends ExtraItemData, V, T extends ItemBuil
     private final D itemData;
     private final List<ItemModifier> itemModifiers = new ArrayList<>();
     private final Map<AbilityType, ItemAbility> itemAbilities = new HashMap<>();
+    private final List<ItemComponent> itemComponents = new ArrayList<>();
 
     private String name;
     private Material material = Material.STONE;
@@ -101,6 +103,15 @@ public abstract class ItemBuilder<D extends ExtraItemData, V, T extends ItemBuil
 
     public @UnmodifiableView List<ItemModifier> modifiers() {
         return Collections.unmodifiableList(itemModifiers);
+    }
+
+    public T addComponent(@NotNull ItemComponent component) {
+        itemComponents.add(component);
+        return getThis();
+    }
+
+    public @UnmodifiableView List<ItemComponent> components() {
+        return Collections.unmodifiableList(itemComponents);
     }
 
     protected abstract T getThis();

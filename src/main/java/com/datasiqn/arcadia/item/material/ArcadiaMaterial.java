@@ -1,8 +1,10 @@
 package com.datasiqn.arcadia.item.material;
 
+import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.ArcadiaTag;
 import com.datasiqn.arcadia.item.ItemRarity;
 import com.datasiqn.arcadia.item.abilities.*;
+import com.datasiqn.arcadia.item.components.TestItemComponent;
 import com.datasiqn.arcadia.item.material.data.MaterialData;
 import com.datasiqn.arcadia.item.meta.ArcadiaItemMeta;
 import com.datasiqn.arcadia.item.modifiers.LeatherArmorItemModifier;
@@ -24,6 +26,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -202,14 +205,21 @@ public enum ArcadiaMaterial {
             .stackable(false)
             .addAbility(AbilityType.LEFT_CLICK, new PullAbility())
             .build()),
-    TEST_ITEM(MaterialData.builder(ItemType.SWORD)
-            .name("Test Sword")
+    OBSIDIAN_KUNAI(MaterialData.builder(ItemType.SWORD)
+            .name("Obsidian Kunai")
             .material(Material.NETHERITE_SWORD)
-            .rarity(ItemRarity.MYTHIC)
+            .rarity(ItemRarity.RARE)
             .enchantGlint(true)
             .stackable(false)
-            .addAbility(AbilityType.RIGHT_CLICK, new MarkAbility())
-            .build()),
+            .addAbility(AbilityType.RIGHT_CLICK, new MarkAbility(JavaPlugin.getPlugin(Arcadia.class)))
+            .addComponent(new TestItemComponent())
+            .build(), meta -> {
+        ItemStats stats = meta.getItemStats();
+        stats.setAttribute(ItemAttribute.DAMAGE, new AttributeRange(800, 1200));
+        stats.setAttribute(ItemAttribute.STRENGTH, new AttributeRange(60, 75));
+        stats.setAttribute(ItemAttribute.SPEED, 0.1);
+        stats.setAttribute(ItemAttribute.ATTACK_SPEED, 0.2);
+    }),
     STRANGE_JOURNAL(MaterialData.builder(ItemType.NONE)
             .name("Strange Journal")
             .material(Material.BOOK)

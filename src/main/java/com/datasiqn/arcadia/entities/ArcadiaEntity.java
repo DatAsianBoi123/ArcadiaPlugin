@@ -33,12 +33,15 @@ import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Random;
+import java.util.Set;
 
 public abstract class ArcadiaEntity extends PathfinderMob {
     protected final Random rand = new Random();
     protected final com.datasiqn.arcadia.Arcadia plugin;
+    protected final Set<String> marks = new HashSet<>();
     protected final World world;
     protected final String customName;
     protected final double maxHealth;
@@ -89,6 +92,18 @@ public abstract class ArcadiaEntity extends PathfinderMob {
     public void summon(@NotNull Location location) {
         setPos(location.getX(), location.getY(), location.getZ());
         ((CraftWorld) world).addEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM);
+    }
+
+    public void mark(String mark) {
+        marks.add(mark);
+    }
+
+    public void unmark(String mark) {
+        marks.remove(mark);
+    }
+
+    public boolean isMarked(String mark) {
+        return marks.contains(mark);
     }
 
     public Arcadia arcadia() {
