@@ -4,22 +4,13 @@ import org.bukkit.persistence.PersistentDataAdapterContext;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.InvocationTargetException;
-
 public class EnumDataType<Z extends Enum<Z>> implements PersistentDataType<String, Z> {
     private final Class<Z> enumClass;
     private final ValueOfMethod<Z> valueOfMethod;
 
     public EnumDataType(@NotNull Class<Z> enumClass) {
         this.enumClass = enumClass;
-        this.valueOfMethod = str -> {
-            try {
-                //noinspection unchecked
-                return (Z) enumClass.getMethod("valueOf", Class.class, String.class).invoke(null, enumClass, str);
-            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                throw new RuntimeException(e);
-            }
-        };
+        this.valueOfMethod = str -> Enum.valueOf(enumClass, str);
     }
 
     @NotNull

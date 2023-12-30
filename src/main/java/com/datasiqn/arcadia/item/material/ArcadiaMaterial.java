@@ -4,7 +4,7 @@ import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.ArcadiaTag;
 import com.datasiqn.arcadia.item.ItemRarity;
 import com.datasiqn.arcadia.item.abilities.*;
-import com.datasiqn.arcadia.item.components.TestItemComponent;
+import com.datasiqn.arcadia.item.components.ObsidianKunaiComponent;
 import com.datasiqn.arcadia.item.material.data.MaterialData;
 import com.datasiqn.arcadia.item.meta.ArcadiaItemMeta;
 import com.datasiqn.arcadia.item.modifiers.LeatherArmorItemModifier;
@@ -212,7 +212,7 @@ public enum ArcadiaMaterial {
             .enchantGlint(true)
             .stackable(false)
             .addAbility(AbilityType.RIGHT_CLICK, new MarkAbility(JavaPlugin.getPlugin(Arcadia.class)))
-            .addComponent(new TestItemComponent())
+            .addComponent(new ObsidianKunaiComponent())
             .build(), meta -> {
         ItemStats stats = meta.getItemStats();
         stats.setAttribute(ItemAttribute.DAMAGE, new AttributeRange(800, 1200));

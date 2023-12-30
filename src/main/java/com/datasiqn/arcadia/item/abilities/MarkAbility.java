@@ -27,7 +27,7 @@ public class MarkAbility extends ItemAbility {
     }
 
     @Override
-    public void execute(@NotNull AbilityExecutor executor) {
+    public void execute(@NotNull AbilityExecuteContext executor) {
         Player player = executor.playerData().getPlayer();
         Location location = player.getEyeLocation();
         Vector direction = location.getDirection();

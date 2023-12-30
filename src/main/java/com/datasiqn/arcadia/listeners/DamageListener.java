@@ -137,8 +137,8 @@ public class DamageListener implements Listener {
         PlayerData playerData = plugin.getPlayerManager().getPlayerData(player);
         ArcadiaItem item = playerData.getEquipment().getItemInMainHand();
 
-        MaterialData<?> itemData = item.getItemData();
-        if (itemData.getItemType().getSlot() != EquipmentSlot.HAND) return damage;
+        MaterialData<?> itemData = item.getData();
+        if (itemData.getType().getSlot() != EquipmentSlot.HAND) return damage;
         ArcadiaItemMeta itemMeta = item.getItemMeta();
         AttributeInstance damageAttribute = itemMeta.getItemStats().getAttribute(ItemAttribute.DAMAGE);
 
@@ -169,7 +169,7 @@ public class DamageListener implements Listener {
         double damageValue = damageAttribute == null ? 1 : damageAttribute.getValue();
         finalDamage = (damageValue + DamageHelper.getStrengthBonus(strength, damageValue)) * (additiveBonus * multiplicativeBonus);
 
-        double damageAfterComponents = itemData.getItemComponents().stream().reduce(finalDamage, (prev, curr) -> curr.modifyAttackDamage(entity, prev, item), Double::sum);
+        double damageAfterComponents = itemData.getComponents().stream().reduce(finalDamage, (prev, curr) -> curr.modifyAttackDamage(entity, prev, item), Double::sum);
 
         if (playerData.inDebugMode()) {
             sendDebugInfo(playerData.getSender(), damageValue, strength, finalDamage, damageAfterComponents, additiveBonus, multiplicativeBonus);

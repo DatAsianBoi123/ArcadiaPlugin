@@ -111,7 +111,7 @@ public class CraftingMenuHandler extends MenuHandler {
                 }
                 amount = Math.min(amount, itemCanBeAdded(resultItemStack, whoClicked.getInventory()));
                 event.setCancelled(true);
-                if (currentRecipe.getResult().getItemData().isStackable()) {
+                if (currentRecipe.getResult().getData().isStackable()) {
                     resultItemStack.setAmount(amount);
                     whoClicked.getInventory().addItem(resultItemStack);
                 } else {
@@ -124,7 +124,7 @@ public class CraftingMenuHandler extends MenuHandler {
             case SWAP_WITH_CURSOR -> {
                 ItemStack itemOnCursor = whoClicked.getItemOnCursor();
                 event.setCancelled(true);
-                if (currentRecipe == null || !currentRecipe.getResult().isSimilar(new ArcadiaItem(itemOnCursor)) || !currentRecipe.getResult().getItemData().isStackable()) {
+                if (currentRecipe == null || !currentRecipe.getResult().isSimilar(new ArcadiaItem(itemOnCursor)) || !currentRecipe.getResult().getData().isStackable()) {
                     return;
                 }
                 itemOnCursor.setAmount(itemOnCursor.getAmount() + resultItemStack.getAmount());

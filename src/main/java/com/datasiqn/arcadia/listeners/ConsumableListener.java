@@ -29,9 +29,9 @@ public class ConsumableListener implements Listener {
         if (item == null) return;
         PlayerData playerData = plugin.getPlayerManager().getPlayerData(event.getPlayer());
         ArcadiaItem arcadiaItem = playerData.getEquipment().getItem(event.getHand());
-        if (arcadiaItem.getItemData().getItemType() != ItemType.CONSUMABLE) return;
+        if (arcadiaItem.getData().getType() != ItemType.CONSUMABLE) return;
         if (event.getHand() != ItemType.CONSUMABLE.getSlot()) return;
-        ConsumableData data = (ConsumableData) arcadiaItem.getItemData().getData();
+        ConsumableData data = (ConsumableData) arcadiaItem.getData().getData();
 
         if (!playerData.eat(data.hungerCost())) {
             playerData.getSender().sendError("You are not hungry enough to eat this!");
@@ -41,6 +41,6 @@ public class ConsumableListener implements Listener {
         Player player = playerData.getPlayer();
         player.playSound(player, Sound.ENTITY_PLAYER_BURP, SoundCategory.PLAYERS, 1, (float) Math.floor(Math.random() * 0.15) + 0.85f);
         data.eat(playerData);
-        player.sendMessage("You ate one " + arcadiaItem.getItemData().getName() + ". Yum!");
+        player.sendMessage("You ate one " + arcadiaItem.getData().getName() + ". Yum!");
     }
 }

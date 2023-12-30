@@ -13,7 +13,7 @@ public class PullAbility extends ItemAbility {
     }
 
     @Override
-    public void execute(@NotNull AbilityExecutor executor) {
+    public void execute(@NotNull AbilityExecuteContext executor) {
         Player player = executor.playerData().getSender().get();
         player.setVelocity(player.getVelocity().setY(0).add(player.getLocation().getDirection().multiply(2).add(new Vector(0, 0.75, 0))));
         player.playSound(player, Sound.ENTITY_GENERIC_EXPLODE, 0.5f, 1);

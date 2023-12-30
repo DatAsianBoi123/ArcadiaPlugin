@@ -4,7 +4,7 @@ import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.ArcadiaTag;
 import com.datasiqn.arcadia.dungeon.DungeonPlayer;
 import com.datasiqn.arcadia.item.ArcadiaItem;
-import com.datasiqn.arcadia.item.abilities.AbilityExecutor;
+import com.datasiqn.arcadia.item.abilities.AbilityExecuteContext;
 import com.datasiqn.arcadia.item.abilities.AbilityType;
 import com.datasiqn.arcadia.item.abilities.ItemAbility;
 import com.datasiqn.arcadia.menu.handlers.BagMenuHandler;
@@ -81,7 +81,7 @@ public class ItemListener implements Listener {
         ArcadiaItem arcadiaItem = new ArcadiaItem(event.getItem());
         if (arcadiaItem.getMaterial() == null) return;
 
-        Map<AbilityType, ItemAbility> itemAbilities = arcadiaItem.getItemData().getItemAbilities();
+        Map<AbilityType, ItemAbility> itemAbilities = arcadiaItem.getData().getAbilities();
         if (itemAbilities.isEmpty()) return;
         for (Map.Entry<AbilityType, ItemAbility> entry : itemAbilities.entrySet()) {
             AbilityType type = entry.getKey();
@@ -95,7 +95,7 @@ public class ItemListener implements Listener {
                 playerData.getSender().sendError("This ability is on cooldown for " + decimalFormat.format(cooldown / 1000d) + "s");
                 return;
             }
-            ability.execute(new AbilityExecutor(playerData, ability));
+            ability.execute(new AbilityExecuteContext(playerData, ability));
             event.setCancelled(true);
         }
     }

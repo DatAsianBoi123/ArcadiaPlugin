@@ -196,7 +196,7 @@ public class PlayerListener implements Listener {
         PlayerData playerData = playerManager.getPlayerData(player);
 
         ArcadiaItem bowItem = new ArcadiaItem(event.getBow());
-        if (bowItem.getItemData().getItemType() != ItemType.BOW) return;
+        if (bowItem.getData().getType() != ItemType.BOW) return;
 
         if (!(event.getProjectile() instanceof Arrow arrow)) return;
         PersistentDataContainer pdc = arrow.getPersistentDataContainer();

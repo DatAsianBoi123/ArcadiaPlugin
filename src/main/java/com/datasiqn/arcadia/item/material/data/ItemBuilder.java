@@ -16,11 +16,11 @@ import org.jetbrains.annotations.UnmodifiableView;
 import java.util.*;
 
 public abstract class ItemBuilder<D extends ExtraItemData, V, T extends ItemBuilder<D, V, T>> {
-    private final ItemType<D> itemType;
-    private final D itemData;
-    private final List<ItemModifier> itemModifiers = new ArrayList<>();
-    private final Map<AbilityType, ItemAbility> itemAbilities = new HashMap<>();
-    private final List<ItemComponent> itemComponents = new ArrayList<>();
+    private final ItemType<D> type;
+    private final D data;
+    private final List<ItemModifier> modifiers = new ArrayList<>();
+    private final Map<AbilityType, ItemAbility> abilities = new HashMap<>();
+    private final List<ItemComponent> components = new ArrayList<>();
 
     private String name;
     private Material material = Material.STONE;
@@ -28,18 +28,18 @@ public abstract class ItemBuilder<D extends ExtraItemData, V, T extends ItemBuil
     private boolean enchantGlint;
     private boolean stackable = true;
 
-    protected ItemBuilder(ItemType<D> itemType, D itemData) {
-        if (itemData == null && itemType.requiresData()) throw new RuntimeException("item type " + itemType + " requires data");
-        this.itemType = itemType;
-        this.itemData = itemData;
+    protected ItemBuilder(ItemType<D> type, D data) {
+        if (data == null && type.requiresData()) throw new RuntimeException("item type " + type + " requires data");
+        this.type = type;
+        this.data = data;
     }
 
     public ItemType<D> itemType() {
-        return itemType;
+        return type;
     }
 
     public @Nullable D itemData() {
-        return itemData;
+        return data;
     }
 
     public T name(@Nullable String name) {
@@ -87,31 +87,31 @@ public abstract class ItemBuilder<D extends ExtraItemData, V, T extends ItemBuil
         return stackable;
     }
 
-    public T addAbility(AbilityType type, @NotNull ItemAbility itemAbility) {
-        this.itemAbilities.put(type, itemAbility);
+    public T addAbility(AbilityType type, @NotNull ItemAbility ability) {
+        this.abilities.put(type, ability);
         return getThis();
     }
 
     public @UnmodifiableView Map<AbilityType, ItemAbility> abilities() {
-        return Collections.unmodifiableMap(itemAbilities);
+        return Collections.unmodifiableMap(abilities);
     }
 
     public T addModifier(@NotNull ItemModifier modifier) {
-        itemModifiers.add(modifier);
+        modifiers.add(modifier);
         return getThis();
     }
 
     public @UnmodifiableView List<ItemModifier> modifiers() {
-        return Collections.unmodifiableList(itemModifiers);
+        return Collections.unmodifiableList(modifiers);
     }
 
     public T addComponent(@NotNull ItemComponent component) {
-        itemComponents.add(component);
+        components.add(component);
         return getThis();
     }
 
     public @UnmodifiableView List<ItemComponent> components() {
-        return Collections.unmodifiableList(itemComponents);
+        return Collections.unmodifiableList(components);
     }
 
     protected abstract T getThis();

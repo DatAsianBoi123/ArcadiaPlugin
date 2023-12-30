@@ -52,7 +52,7 @@ public class AmuletMenuHandler extends MenuHandler {
         if (itemStack == null) return;
         ArcadiaItem arcadiaItem = new ArcadiaItem(itemStack);
         arcadiaItem.setAmount(1);
-        if (arcadiaItem.getItemData().getItemType() == ItemType.POWER_STONE) {
+        if (arcadiaItem.getData().getType() == ItemType.POWER_STONE) {
             PlayerData playerData = plugin.getPlayerManager().getPlayerData(event.getWhoClicked().getUniqueId());
             if (playerData == null) {
                 new ArcadiaSender<>(event.getWhoClicked()).sendError("Failed to get player data");

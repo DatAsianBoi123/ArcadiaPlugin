@@ -11,6 +11,12 @@ import com.datasiqn.arcadia.player.PlayerData;
 import com.datasiqn.arcadia.recipe.ArcadiaRecipe;
 import com.datasiqn.arcadia.upgrade.UpgradeType;
 import com.datasiqn.commandcore.argument.type.ArgumentType;
+import com.datasiqn.commandcore.command.source.CommandSource;
+import com.datasiqn.resultapi.None;
+import com.datasiqn.resultapi.Result;
+
+import java.util.List;
+import java.util.function.Function;
 
 public final class ArcadiaArgumentType {
     private ArcadiaArgumentType() { }
@@ -34,4 +40,6 @@ public final class ArcadiaArgumentType {
     public static final ArgumentType<MenuType> GUI = new ArgumentType.EnumArgumentType<>(MenuType.class, "menu");
 
     public static final ArgumentType<DungeonInstance> DUNGEON = new DungeonArgumentType();
+
+    public static final ArgumentType<Function<CommandSource, Result<None, List<String>>>> COMMAND = new CommandArgumentType();
 }

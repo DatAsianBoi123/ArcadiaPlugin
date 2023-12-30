@@ -25,14 +25,14 @@ import java.text.NumberFormat;
 import java.util.*;
 
 public class ArcadiaItem implements ConfigurationSerializable {
-    private final @NotNull MaterialData<?> itemData;
+    private final @NotNull MaterialData<?> data;
     private final @NotNull ArcadiaItemMeta itemMeta;
 
     private @Nullable ArcadiaMaterial material;
     private int amount = 1;
 
     public ArcadiaItem(@NotNull ArcadiaItem original) {
-        this.itemData = original.itemData;
+        this.data = original.data;
         this.material = original.material;
         this.amount = original.amount;
 
@@ -61,7 +61,7 @@ public class ArcadiaItem implements ConfigurationSerializable {
     public ArcadiaItem(@NotNull ArcadiaMaterial material, int amount) {
         this(material.getData(), material.createItemMeta(UUID.randomUUID()));
         this.material = material;
-        if (itemData.isStackable()) this.amount = amount;
+        if (data.isStackable()) this.amount = amount;
     }
 
     public ArcadiaItem(@NotNull ItemStack itemStack) {
@@ -75,14 +75,14 @@ public class ArcadiaItem implements ConfigurationSerializable {
             } catch (IllegalArgumentException ignored) {
                 data = new VanillaMaterialData(itemStack.getType());
             }
-            this.itemData = data;
+            this.data = data;
             this.material = arcadiaMaterial;
             this.itemMeta = arcadiaMaterial == null ? new ArcadiaItemMeta(UUID.randomUUID()) : arcadiaMaterial.createItemMeta(UUID.randomUUID());
             return;
         }
         this.material = arcadiaMaterial;
-        this.itemData = arcadiaMaterial.getData();
-        if (!itemData.isStackable()) this.amount = 1;
+        this.data = arcadiaMaterial.getData();
+        if (!data.isStackable()) this.amount = 1;
         ItemMeta meta = itemStack.getItemMeta();
         if (meta == null) {
             this.itemMeta = arcadiaMaterial.createItemMeta(UUID.randomUUID());
@@ -95,16 +95,16 @@ public class ArcadiaItem implements ConfigurationSerializable {
         meta1.getEnchants().forEach(type -> itemMeta.addEnchant(type, meta1.getEnchantLevel(type)));
     }
 
-    public ArcadiaItem(@NotNull MaterialData<?> itemData) {
-        this(itemData, new ArcadiaItemMeta(UUID.randomUUID()));
+    public ArcadiaItem(@NotNull MaterialData<?> data) {
+        this(data, new ArcadiaItemMeta(UUID.randomUUID()));
     }
-    public ArcadiaItem(@NotNull MaterialData<?> itemData, @NotNull ArcadiaItemMeta meta) {
-        this.itemData = itemData;
+    public ArcadiaItem(@NotNull MaterialData<?> data, @NotNull ArcadiaItemMeta meta) {
+        this.data = data;
         this.itemMeta = meta;
     }
 
     public ItemStack build() {
-        ItemStack itemStack = itemData.toItemStack(amount, itemMeta.getUuid());
+        ItemStack itemStack = data.toItemStack(amount, itemMeta.getUuid());
         ItemMeta meta = itemStack.getItemMeta();
         if (meta == null) return itemStack;
         PdcUtil.set(meta.getPersistentDataContainer(), ArcadiaTag.ITEM_ID, getId());
@@ -144,7 +144,7 @@ public class ArcadiaItem implements ConfigurationSerializable {
     }
 
     public ItemStack asCraftingResult() {
-        ItemStack craftingResult = itemData.asCraftingResult(amount, itemMeta.getUuid());
+        ItemStack craftingResult = data.asCraftingResult(amount, itemMeta.getUuid());
         ItemMeta meta = craftingResult.getItemMeta();
         if (meta == null) return craftingResult;
         PdcUtil.set(meta.getPersistentDataContainer(), ArcadiaTag.ITEM_ID, getId());
@@ -204,16 +204,12 @@ public class ArcadiaItem implements ConfigurationSerializable {
         return getId().equals(item.getId());
     }
 
-    public boolean isDefaultMaterial() {
-        return itemData instanceof VanillaMaterialData;
-    }
-
     public @NotNull ItemId getId() {
-        return material == null ? ItemId.fromVanillaMaterial(itemData.getMaterial()) : ItemId.fromArcadiaMaterial(material);
+        return material == null ? ItemId.fromVanillaMaterial(data.getMaterial()) : ItemId.fromArcadiaMaterial(material);
     }
 
-    public @NotNull MaterialData<?> getItemData() {
-        return itemData;
+    public @NotNull MaterialData<?> getData() {
+        return data;
     }
 
     public @Nullable ArcadiaMaterial getMaterial() {

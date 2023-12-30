@@ -12,7 +12,7 @@ public class EnchantFire extends Enchantment {
 
     @Override
     public boolean canEnchant(@NotNull ArcadiaItem item) {
-        return item.getItemData().getItemType() == ItemType.SWORD;
+        return item.getData().getType() == ItemType.SWORD;
     }
 
     @Override

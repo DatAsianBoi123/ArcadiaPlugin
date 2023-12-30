@@ -91,7 +91,7 @@ public class PlayerData {
         for (EquipmentSlot slot : EquipmentSlot.values()) {
             ArcadiaItem arcadiaItem = equipment.getItem(slot);
 
-            if (arcadiaItem.getItemData().getItemType().getSlot() == slot) {
+            if (arcadiaItem.getData().getType().getSlot() == slot) {
                 ItemStats itemStats = arcadiaItem.getItemMeta().getItemStats();
                 for (PlayerAttribute attribute : PlayerAttribute.values()) {
                     AttributeInstance itemAttribute = itemStats.getAttribute(attribute.getItemAttribute());
@@ -102,7 +102,7 @@ public class PlayerData {
 
         for (ArcadiaItem item : equipment.getAmulet()) {
             if (item == null) continue;
-            if (item.getItemData().getItemType() != ItemType.POWER_STONE) continue;
+            if (item.getData().getType() != ItemType.POWER_STONE) continue;
             for (PlayerAttribute attribute : PlayerAttribute.values()) {
                 AttributeInstance itemAttribute = item.getItemMeta().getItemStats().getAttribute(attribute.getItemAttribute());
                 attributes.put(attribute, getAttribute(attribute) + (itemAttribute == null ? 0 : itemAttribute.getValue()));
@@ -118,7 +118,7 @@ public class PlayerData {
         if (attackSpeedAttribute != null) {
             ScheduleBuilder.create()
                     .executes(runnable -> {
-                        double currentSpeed = equipment.getItemInMainHand().getItemData().getItemType().getAttackSpeed();
+                        double currentSpeed = equipment.getItemInMainHand().getData().getType().getAttackSpeed();
                         double newSpeed = currentSpeed * Math.pow(DEFAULT_ATTACK_SPEED / currentSpeed, getAttackSpeed() / 100);
                         attackSpeedAttribute.setBaseValue(newSpeed);
                     }).run(plugin);

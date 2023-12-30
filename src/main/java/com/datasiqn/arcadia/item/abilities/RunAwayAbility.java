@@ -13,7 +13,7 @@ public class RunAwayAbility extends ItemAbility {
     }
 
     @Override
-    public void execute(@NotNull AbilityExecutor executor) {
+    public void execute(@NotNull AbilityExecuteContext executor) {
         Player player = executor.playerData().getPlayer();
         player.playSound(player, Sound.BLOCK_AMETHYST_BLOCK_PLACE, 1, 1);
         player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 1));

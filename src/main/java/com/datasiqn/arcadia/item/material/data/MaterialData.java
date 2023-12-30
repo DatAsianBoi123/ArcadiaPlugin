@@ -33,39 +33,39 @@ import java.util.Map;
 import java.util.UUID;
 
 public class MaterialData<D extends ExtraItemData> {
-    private final @NotNull ItemType<D> itemType;
-    private final D itemData;
-    private final @NotNull List<ItemModifier> itemModifiers;
+    private final @NotNull ItemType<D> type;
+    private final D data;
+    private final @NotNull List<ItemModifier> modifiers;
 
     private final @Nullable String name;
     private final @NotNull Material material;
     private final @NotNull ItemRarity rarity;
     private final boolean enchantGlint;
     private final boolean stackable;
-    private final Map<AbilityType, ItemAbility> itemAbilities;
-    private final List<ItemComponent> itemComponents;
+    private final Map<AbilityType, ItemAbility> abilities;
+    private final List<ItemComponent> components;
 
     @Contract(pure = true)
     public MaterialData(@NotNull ItemBuilder<D, ?, ?> builder) {
-        itemType = builder.itemType();
-        itemData = builder.itemData();
-        itemModifiers = builder.modifiers();
+        type = builder.itemType();
+        data = builder.itemData();
+        modifiers = builder.modifiers();
 
         name = builder.name();
         material = builder.material();
         rarity = builder.rarity();
         enchantGlint = builder.enchantGlint();
         stackable = builder.stackable();
-        itemAbilities = builder.abilities();
-        itemComponents = builder.components();
+        abilities = builder.abilities();
+        components = builder.components();
     }
 
-    public @NotNull ItemType<D> getItemType() {
-        return itemType;
+    public @NotNull ItemType<D> getType() {
+        return type;
     }
 
     public D getData() {
-        return itemData;
+        return data;
     }
 
     public @Nullable String getName() {
@@ -90,14 +90,14 @@ public class MaterialData<D extends ExtraItemData> {
 
     @NotNull
     @UnmodifiableView
-    public Map<AbilityType, ItemAbility> getItemAbilities() {
-        return itemAbilities;
+    public Map<AbilityType, ItemAbility> getAbilities() {
+        return abilities;
     }
 
     @NotNull
     @UnmodifiableView
-    public List<ItemComponent> getItemComponents() {
-        return itemComponents;
+    public List<ItemComponent> getComponents() {
+        return components;
     }
 
     public @NotNull ItemStack toItemStack() {
@@ -111,8 +111,8 @@ public class MaterialData<D extends ExtraItemData> {
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_POTION_EFFECTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_DYE);
         meta.setUnbreakable(true);
         List<String> lore = new ArrayList<>();
-        if (!itemAbilities.isEmpty()) {
-            for (Map.Entry<AbilityType, ItemAbility> entry : itemAbilities.entrySet()) {
+        if (!abilities.isEmpty()) {
+            for (Map.Entry<AbilityType, ItemAbility> entry : abilities.entrySet()) {
                 AbilityType type = entry.getKey();
                 ItemAbility ability = entry.getValue();
                 lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "Item Ability: " + ChatColor.WHITE + ability.getName() + " " + type);
@@ -122,11 +122,11 @@ public class MaterialData<D extends ExtraItemData> {
                 lore.add("");
             }
         }
-        if (itemData != null) {
-            itemData.getLore().addTo(lore);
+        if (data != null) {
+            data.getLore().addTo(lore);
             lore.add("");
         }
-        lore.add(rarity + " " + itemType);
+        lore.add(rarity + " " + type);
         meta.setLore(lore);
         String finalName = name == null ? WordUtils.capitalizeFully(material.toString().replaceAll("_", " ")) : name;
         meta.setDisplayName(ChatColor.RESET + "" + rarity.getColor() + finalName);
@@ -135,7 +135,7 @@ public class MaterialData<D extends ExtraItemData> {
         if (enchantGlint) addEnchantGlint(meta);
         if (!stackable) PdcUtil.set(pdc, ArcadiaTag.ITEM_UUID, uuid);
 
-        itemModifiers.forEach(modifier -> modifier.modify(uuid, meta));
+        modifiers.forEach(modifier -> modifier.modify(uuid, meta));
 
         if (!CraftItemStack.asNMSCopy(itemStack).getItem().getDefaultAttributeModifiers(EquipmentSlot.MAINHAND).isEmpty()) {
             // removes the default attack speed of weapons
