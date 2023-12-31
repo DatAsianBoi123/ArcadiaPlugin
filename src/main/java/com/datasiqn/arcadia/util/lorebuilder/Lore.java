@@ -14,6 +14,10 @@ public interface Lore {
     @Unmodifiable
     List<String> asStringList();
 
+    default boolean isEmpty() {
+        return asStringList().isEmpty();
+    }
+
     default void addTo(@NotNull List<String> list) {
         list.addAll(asStringList());
     }
