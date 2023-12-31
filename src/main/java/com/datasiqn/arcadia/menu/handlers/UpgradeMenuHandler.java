@@ -29,7 +29,7 @@ public class UpgradeMenuHandler extends MenuHandler {
     }
 
     @Override
-    public void populate(HumanEntity humanEntity) {
+    public void populate(HumanEntity humanEntity, Inventory inventory) {
         ItemStack empty = ItemUtil.createEmpty(Material.GRAY_STAINED_GLASS_PANE);
         for (int i = 0; i < 9; i++) {
             if (i == 4) setItem(i, new StaticMenuItem(new Upgrade(upgradeType).toItemStack()));

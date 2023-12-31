@@ -72,7 +72,7 @@ public class LevelMenuHandler extends MenuHandler {
     }
 
     @Override
-    public void populate(HumanEntity humanEntity) {
+    public void populate(HumanEntity humanEntity, Inventory inv) {
         ItemStack icon = ItemUtil.createEmpty(Material.GRAY_STAINED_GLASS_PANE);
         for (int i = 0; i < 54; i++) {
             if (i == 49) {

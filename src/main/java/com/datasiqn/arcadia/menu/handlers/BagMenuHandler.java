@@ -45,7 +45,7 @@ public class BagMenuHandler extends MenuHandler {
     }
 
     @Override
-    public void populate(@NotNull HumanEntity humanEntity) {
+    public void populate(@NotNull HumanEntity humanEntity, Inventory inventory) {
         DungeonPlayer dungeonPlayer = plugin.getDungeonManager().getDungeonPlayer(humanEntity);
         if (dungeonPlayer == null) return;
 

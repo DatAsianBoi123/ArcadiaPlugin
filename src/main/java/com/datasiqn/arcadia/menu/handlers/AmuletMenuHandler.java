@@ -86,7 +86,7 @@ public class AmuletMenuHandler extends MenuHandler {
     }
 
     @Override
-    public void populate(@NotNull HumanEntity humanEntity) {
+    public void populate(@NotNull HumanEntity humanEntity, Inventory inventory) {
         PlayerData playerData = plugin.getPlayerManager().getPlayerData(humanEntity.getUniqueId());
         if (playerData == null) {
             new ArcadiaSender<>(humanEntity).sendError("Failed to get player data");

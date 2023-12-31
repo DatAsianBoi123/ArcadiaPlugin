@@ -174,7 +174,7 @@ public class AnvilMenuHandler extends MenuHandler {
     }
 
     @Override
-    public void populate(HumanEntity humanEntity) {
+    public void populate(HumanEntity humanEntity, Inventory inventory) {
         ItemStack emptyItem = ItemUtil.createEmpty(Material.GRAY_STAINED_GLASS_PANE);
         for (int i = 0; i < 54; i++) {
             if (i == 28 || i == 34 || i == 31) continue;
