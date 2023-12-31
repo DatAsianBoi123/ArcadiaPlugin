@@ -7,23 +7,31 @@ import com.datasiqn.arcadia.player.ArcadiaSender;
 import com.datasiqn.arcadia.player.PlayerData;
 import com.datasiqn.arcadia.util.ItemUtil;
 import com.datasiqn.menuapi.inventory.MenuHandler;
+import com.datasiqn.menuapi.inventory.item.MenuItem;
 import com.datasiqn.menuapi.inventory.item.StaticMenuItem;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
 public class AmuletMenuHandler extends MenuHandler {
+    public static final int[] AMULET_SLOTS = {
+            10, 11, 12,
+            19, 20, 21,
+            28, 29, 30,
+    };
+
     private final Arcadia plugin;
 
     public AmuletMenuHandler(Arcadia plugin) {
@@ -94,14 +102,26 @@ public class AmuletMenuHandler extends MenuHandler {
         }
         @Nullable ArcadiaItem[] amulet = playerData.getEquipment().getAmulet();
 
-        ItemStack empty = ItemUtil.createEmpty(Material.GRAY_STAINED_GLASS_PANE);
-        for (int i = 0; i < 9; i++) {
-            setItem(i, amulet[i] == null ? new StaticMenuItem(empty) : new StaticMenuItem(amulet[i].build()));
+        ItemStack background = ItemUtil.createEmpty(Material.GRAY_STAINED_GLASS_PANE);
+        ItemStack separator = ItemUtil.createEmpty(Material.BLACK_STAINED_GLASS_PANE);
+        for (int i = 0; i < inventory.getSize(); i++) {
+            MenuItem menuItem = new StaticMenuItem(background);
+            if ((i - 5) % 9 == 0) menuItem = new StaticMenuItem(separator);
+            setItem(i, menuItem);
+        }
+        ItemStack lockedSlot = new ItemStack(Material.RED_STAINED_GLASS_PANE);
+        ItemMeta meta = lockedSlot.getItemMeta();
+        if (meta != null) {
+            meta.setDisplayName(ChatColor.RED + "Unlocked at Level _");
+            lockedSlot.setItemMeta(meta);
+        }
+        for (int slot : AMULET_SLOTS) {
+            setItem(slot, new StaticMenuItem(lockedSlot));
         }
     }
 
     @Override
     public @NotNull Inventory createInventory() {
-        return Bukkit.createInventory(null, InventoryType.DISPENSER, "Amulet");
+        return Bukkit.createInventory(null, 54, "Amulet");
     }
 }
