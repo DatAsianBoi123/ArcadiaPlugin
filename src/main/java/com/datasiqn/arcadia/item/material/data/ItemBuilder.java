@@ -7,6 +7,7 @@ import com.datasiqn.arcadia.item.components.ItemComponent;
 import com.datasiqn.arcadia.item.modifiers.ItemModifier;
 import com.datasiqn.arcadia.item.type.ItemType;
 import com.datasiqn.arcadia.item.type.data.ExtraItemData;
+import com.datasiqn.arcadia.util.lorebuilder.Lore;
 import org.bukkit.Material;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -23,6 +24,7 @@ public abstract class ItemBuilder<D extends ExtraItemData, V, T extends ItemBuil
     private final List<ItemComponent> components = new ArrayList<>();
 
     private String name;
+    private Lore lore = Lore.EMPTY;
     private Material material = Material.STONE;
     private ItemRarity rarity = ItemRarity.COMMON;
     private boolean enchantGlint;
@@ -49,6 +51,15 @@ public abstract class ItemBuilder<D extends ExtraItemData, V, T extends ItemBuil
 
     public String name() {
         return name;
+    }
+
+    public T lore(@NotNull Lore lore) {
+        this.lore = lore;
+        return getThis();
+    }
+
+    public Lore lore() {
+        return lore;
     }
 
     public T material(@NotNull Material material) {

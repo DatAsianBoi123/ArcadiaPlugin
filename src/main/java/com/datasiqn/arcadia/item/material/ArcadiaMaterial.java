@@ -8,7 +8,6 @@ import com.datasiqn.arcadia.item.components.ObsidianKunaiComponent;
 import com.datasiqn.arcadia.item.material.data.MaterialData;
 import com.datasiqn.arcadia.item.meta.ArcadiaItemMeta;
 import com.datasiqn.arcadia.item.modifiers.LeatherArmorItemModifier;
-import com.datasiqn.arcadia.item.modifiers.LoreItemModifier;
 import com.datasiqn.arcadia.item.modifiers.PotionModifier;
 import com.datasiqn.arcadia.item.modifiers.SkullItemModifier;
 import com.datasiqn.arcadia.item.stat.AttributeRange;
@@ -41,21 +40,21 @@ public enum ArcadiaMaterial {
             .build()),
     ANCIENT_CORE(MaterialData.builder(ItemType.NONE)
             .name("Ancient Core")
+            .lore(Lore.of("An ancient core taken from the", "heart of a mysterious beast."))
             .material(Material.PLAYER_HEAD)
             .rarity(ItemRarity.LEGENDARY)
             .enchantGlint(true)
             .stackable(false)
             .addModifier(new SkullItemModifier("843968ce4bcc31c3b35e2bcd4a5ac2e98a746b3355e5f8063c323d2ba57ab6e2"))
-            .addModifier(new LoreItemModifier(Lore.of("An ancient core taken from the", "heart of a mysterious beast.")))
             .build()),
     ANCIENT_CORE_AWAKENED(MaterialData.builder(ItemType.NONE)
             .name("Awakened Core")
+            .lore(Lore.of("A core brought back to its former glory."))
             .material(Material.PLAYER_HEAD)
             .rarity(ItemRarity.LEGENDARY)
             .enchantGlint(true)
             .stackable(false)
             .addModifier(new SkullItemModifier("a4ad229d80308059fa7aed86543779cf933f91b6a437431293d0bb31a0955b71"))
-            .addModifier(new LoreItemModifier(Lore.of("A core brought back to its former glory.")))
             .build()),
     GUARDIAN_KEY(MaterialData.builder(ItemType.NONE)
             .name("Guardian's Key")
@@ -66,12 +65,7 @@ public enum ArcadiaMaterial {
             .build()),
     SPACE_REWRITER(MaterialData.builder(ItemType.NONE)
             .name("Space Time Rewriter")
-            .material(Material.PLAYER_HEAD)
-            .rarity(ItemRarity.MYTHIC)
-            .enchantGlint(true)
-            .stackable(false)
-            .addModifier(new SkullItemModifier("ff379212f42060ae0563c70739a7ec42ad48e70f74210b290d2307a47845ec2c"))
-            .addModifier(new LoreItemModifier(new LoreBuilder()
+            .lore(new LoreBuilder()
                     .append("Combine with an item in an anvil")
                     .append(new ComponentBuilder()
                             .text("to increase its ")
@@ -80,7 +74,12 @@ public enum ArcadiaMaterial {
                             .percent(0.1)
                             .text(".")
                             .build())
-                    .build()))
+                    .build())
+            .material(Material.PLAYER_HEAD)
+            .rarity(ItemRarity.MYTHIC)
+            .enchantGlint(true)
+            .stackable(false)
+            .addModifier(new SkullItemModifier("ff379212f42060ae0563c70739a7ec42ad48e70f74210b290d2307a47845ec2c"))
             .build()),
     ESSENCE_OF_BOB(MaterialData.builder(ItemType.NONE)
             .name("Bob's Essence")
@@ -222,11 +221,7 @@ public enum ArcadiaMaterial {
     }),
     STRANGE_JOURNAL(MaterialData.builder(ItemType.NONE)
             .name("Strange Journal")
-            .material(Material.BOOK)
-            .rarity(ItemRarity.SPECIAL)
-            .enchantGlint(true)
-            .stackable(false)
-            .addModifier(new LoreItemModifier(new LoreBuilder()
+            .lore(new LoreBuilder()
                     .append("A strange journal with a large 3 on a")
                     .append("6 fingered hand imprint.")
                     .emptyLine()
@@ -237,15 +232,15 @@ public enum ArcadiaMaterial {
                     .append("think it's a myth. But if you're curious, don't wait.", ChatColor.YELLOW, ChatColor.ITALIC)
                     .append("Take a trip. Find it. It's out there somewhere in the woods.", ChatColor.YELLOW, ChatColor.ITALIC)
                     .append("Waiting.\"", ChatColor.YELLOW, ChatColor.ITALIC)
-                    .build()))
-            .build()),
-    CALAMITY_BOX(MaterialData.builder(ItemType.NONE)
-            .name("Calamity Box")
-            .material(Material.CHEST)
+                    .build())
+            .material(Material.BOOK)
             .rarity(ItemRarity.SPECIAL)
             .enchantGlint(true)
             .stackable(false)
-            .addModifier(new LoreItemModifier(new LoreBuilder()
+            .build()),
+    CALAMITY_BOX(MaterialData.builder(ItemType.NONE)
+            .name("Calamity Box")
+            .lore(new LoreBuilder()
                     .append("A strange box with an engraving of a frog")
                     .append("and 3 empty gem slots.")
                     .emptyLine()
@@ -254,30 +249,30 @@ public enum ArcadiaMaterial {
                     .append("on to something forever. Sometimes, you have to let it go;", ChatColor.GREEN, ChatColor.ITALIC)
                     .append("but, of the things you let go, you'd be surprised what", ChatColor.GREEN, ChatColor.ITALIC)
                     .append("makes its way back to you.\"", ChatColor.GREEN, ChatColor.ITALIC)
-                    .build()))
-            .build()),
-    TITAN_BLOOD(MaterialData.builder(ItemType.NONE)
-            .name("Titan's Blood")
-            .material(Material.POTION)
+                    .build())
+            .material(Material.CHEST)
             .rarity(ItemRarity.SPECIAL)
             .enchantGlint(true)
             .stackable(false)
-            .addModifier(new PotionModifier(Color.BLUE))
-            .addModifier(new LoreItemModifier(new LoreBuilder()
+            .build()),
+    TITAN_BLOOD(MaterialData.builder(ItemType.NONE)
+            .name("Titan's Blood")
+            .lore(new LoreBuilder()
                     .append("A vial filled with a strange blue liquid.")
                     .emptyLine()
                     .append("\"Look, kid, everyone wants to believe they are 'chosen'.", ChatColor.GOLD, ChatColor.ITALIC)
                     .append("But if we all waited around for a prophecy to make us special,", ChatColor.GOLD, ChatColor.ITALIC)
                     .append("we'd die waiting. And that's why you need to choose yourself.\"", ChatColor.GOLD, ChatColor.ITALIC)
-                    .build()))
-            .build()),
-    PURE_NAIL(MaterialData.builder(ItemType.NAIL)
-            .name("Pure Nail")
-            .material(Material.IRON_SWORD)
+                    .build())
+            .material(Material.POTION)
             .rarity(ItemRarity.SPECIAL)
             .enchantGlint(true)
             .stackable(false)
-            .addModifier(new LoreItemModifier(new LoreBuilder()
+            .addModifier(new PotionModifier(Color.BLUE))
+            .build()),
+    PURE_NAIL(MaterialData.builder(ItemType.NAIL)
+            .name("Pure Nail")
+            .lore(new LoreBuilder()
                     .append("You can see a faint pail light emanating from this weapon.")
                     .append("Upon closer inspection, you conclude that this is way too")
                     .append("big to be considered a nail.")
@@ -286,7 +281,11 @@ public enum ArcadiaMaterial {
                     .append("NO WILL TO BREAK.", ChatColor.DARK_GRAY, ChatColor.ITALIC)
                     .append("NO VOICE TO CRY SUFFERING.", ChatColor.DARK_GRAY, ChatColor.ITALIC)
                     .append("BORN OF GOD AND VOID.", ChatColor.DARK_GRAY, ChatColor.ITALIC)
-                    .build()))
+                    .build())
+            .material(Material.IRON_SWORD)
+            .rarity(ItemRarity.SPECIAL)
+            .enchantGlint(true)
+            .stackable(false)
             .build(), meta -> {
         ItemStats itemStats = meta.getItemStats();
         itemStats.setAttribute(ItemAttribute.DAMAGE, new AttributeRange(1000, 1500));
@@ -294,17 +293,17 @@ public enum ArcadiaMaterial {
     }),
     ANCIENT_TRANSLATOR(MaterialData.builder(ItemType.NONE)
             .name("Ancient Translator")
-            .material(Material.IRON_AXE)
-            .rarity(ItemRarity.SPECIAL)
-            .stackable(false)
-            .addModifier(new LoreItemModifier(new LoreBuilder()
+            .lore(new LoreBuilder()
                     .append("An ancient translator from a previous universe.")
                     .append("It is unclear what language it translates from.")
                     .emptyLine()
                     .append("\"It’s tempting to linger in this moment, while every", ChatColor.WHITE, ChatColor.ITALIC)
                     .append("possibility still exists. But unless they are collapsed", ChatColor.WHITE, ChatColor.ITALIC)
                     .append("by an observer, they will never be more than possibilities.\"", ChatColor.WHITE, ChatColor.ITALIC)
-                    .build()))
+                    .build())
+            .material(Material.IRON_AXE)
+            .rarity(ItemRarity.SPECIAL)
+            .stackable(false)
             .build()),
 
     FRUITY_APPLE(MaterialData.builder(ItemType.CONSUMABLE,
@@ -315,7 +314,7 @@ public enum ArcadiaMaterial {
                             .build())
                     .build(),
                     10,
-                    data -> data.heal(10)))
+                    player -> player.heal(10)))
             .name("Fruity Apple")
             .material(Material.APPLE)
             .build()),

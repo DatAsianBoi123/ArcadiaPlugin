@@ -2,7 +2,6 @@ package com.datasiqn.arcadia.upgrade;
 
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.item.ItemRarity;
-import com.datasiqn.arcadia.item.modifiers.LoreItemModifier;
 import com.datasiqn.arcadia.item.modifiers.PotionModifier;
 import com.datasiqn.arcadia.rand.WeightedRandom;
 import com.datasiqn.arcadia.upgrade.listeners.*;
@@ -22,31 +21,31 @@ public enum UpgradeType {
     //<editor-fold desc="Common Upgrades">
     BLOOD_CHALICE(UpgradeData.builder()
             .name("Blood Chalice")
+            .lore(Lore.of("Killing enemies heal you"))
             .material(Material.POTION)
             .rarity(ItemRarity.COMMON)
-            .addModifier(new LoreItemModifier(Lore.of("Killing enemies heal you")))
             .addModifier(new PotionModifier(Color.RED))
             .build(), new BloodChaliceListener()),
     SNEAKERS(UpgradeData.builder()
             .name("Sneakers")
+            .lore(Lore.of("Increases movement speed"))
             .material(Material.LEATHER_BOOTS)
             .rarity(ItemRarity.COMMON)
-            .addModifier(new LoreItemModifier(Lore.of("Increases movement speed")))
             .build(), new SneakerListener()),
     //</editor-fold>
 
     //<editor-fold desc="Rare Upgrades">
     MAGIC_QUIVER(UpgradeData.builder()
             .name("Magic Quiver")
+            .lore(Lore.of("Bows shoot extra arrows"))
             .material(Material.LEATHER_HORSE_ARMOR)
             .rarity(ItemRarity.RARE)
-            .addModifier(new LoreItemModifier(Lore.of("Bows shoot extra arrows")))
             .build(), new MagicQuiverListener()),
     LIGHTNING_BOTTLE(UpgradeData.builder()
             .name("Lightning in a Bottle")
+            .lore(Lore.of("Chance on hit to strike lightning"))
             .material(Material.POTION)
             .rarity(ItemRarity.RARE)
-            .addModifier(new LoreItemModifier(Lore.of("Chance on hit to strike lightning")))
             .addModifier(new PotionModifier(Color.BLUE))
             .build(), new LightningBottleListener()),
     //</editor-fold>
@@ -54,30 +53,30 @@ public enum UpgradeType {
     //<editor-fold desc="Legendary Upgrades">
     UPGRADE_COMPRESSOR(UpgradeData.builder()
             .name("Upgrade Compressor")
+            .lore(Lore.of("Deal more damage the more upgrades you have"))
             .material(Material.PISTON)
             .rarity(ItemRarity.LEGENDARY)
-            .addModifier(new LoreItemModifier(Lore.of("Deal more damage the more upgrades you have")))
             .build(), new UpgradeCompressorListener()),
     LOTTERY_TICKET(UpgradeData.builder()
             .name("Lottery Ticket")
+            .lore(Lore.of("You have a higher chance to proc items"))
             .material(Material.PAPER)
             .rarity(ItemRarity.LEGENDARY)
-            .addModifier(new LoreItemModifier(Lore.of("You have a higher chance to proc items")))
             .build(), new LotteryTicketListener()),
     //</editor-fold>
 
     //<editor-fold desc="Mythic Upgrades">
     RABBITS_FOOT(UpgradeData.builder()
             .name("Rabbit's Foot")
+            .lore(Lore.of("Your upgrades will be higher quality"))
             .material(Material.RABBIT_FOOT)
             .rarity(ItemRarity.MYTHIC)
-            .addModifier(new LoreItemModifier(Lore.of("Your upgrades will be higher quality")))
             .build(), new RabbitFootListener()),
     UPGRADE_SYNTHESIZER(UpgradeData.builder()
             .name("Item Synthesizer")
+            .lore(Lore.of("Enemies have a chance to drop items on death"))
             .material(Material.CRAFTING_TABLE)
             .rarity(ItemRarity.MYTHIC)
-            .addModifier(new LoreItemModifier(Lore.of("Enemies have a chance to drop items on death")))
             .build(), new UpgradeSynthesizerListener()),
     ;
     //</editor-fold>

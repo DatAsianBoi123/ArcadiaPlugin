@@ -9,6 +9,7 @@ import com.datasiqn.arcadia.item.modifiers.ItemModifier;
 import com.datasiqn.arcadia.item.type.ItemType;
 import com.datasiqn.arcadia.item.type.data.ExtraItemData;
 import com.datasiqn.arcadia.util.PdcUtil;
+import com.datasiqn.arcadia.util.lorebuilder.Lore;
 import net.minecraft.world.entity.EquipmentSlot;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
@@ -38,6 +39,7 @@ public class MaterialData<D extends ExtraItemData> {
     private final @NotNull List<ItemModifier> modifiers;
 
     private final @Nullable String name;
+    private final @NotNull Lore lore;
     private final @NotNull Material material;
     private final @NotNull ItemRarity rarity;
     private final boolean enchantGlint;
@@ -52,6 +54,7 @@ public class MaterialData<D extends ExtraItemData> {
         modifiers = builder.modifiers();
 
         name = builder.name();
+        lore = builder.lore();
         material = builder.material();
         rarity = builder.rarity();
         enchantGlint = builder.enchantGlint();
@@ -70,6 +73,10 @@ public class MaterialData<D extends ExtraItemData> {
 
     public @Nullable String getName() {
         return name;
+    }
+
+    public @NotNull Lore getLore() {
+        return lore;
     }
 
     public @NotNull Material getMaterial() {
@@ -111,6 +118,10 @@ public class MaterialData<D extends ExtraItemData> {
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_POTION_EFFECTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_DYE);
         meta.setUnbreakable(true);
         List<String> lore = new ArrayList<>();
+        if (!this.lore.isEmpty()) {
+            this.lore.addTo(lore);
+            lore.add("");
+        }
         if (!abilities.isEmpty()) {
             for (Map.Entry<AbilityType, ItemAbility> entry : abilities.entrySet()) {
                 AbilityType type = entry.getKey();
