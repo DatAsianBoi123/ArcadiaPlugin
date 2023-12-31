@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public interface Lore {
+    Lore EMPTY = new EmptyLore();
+
     @Unmodifiable
     List<String> asStringList();
 
