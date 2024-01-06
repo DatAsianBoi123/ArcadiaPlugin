@@ -2,16 +2,17 @@ package com.datasiqn.arcadia.player;
 
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.DamageHelper;
+import com.datasiqn.arcadia.amulet.Amulet;
+import com.datasiqn.arcadia.amulet.PowerStone;
 import com.datasiqn.arcadia.dungeon.DungeonPlayer;
 import com.datasiqn.arcadia.item.ArcadiaItem;
 import com.datasiqn.arcadia.item.stat.AttributeInstance;
 import com.datasiqn.arcadia.item.stat.ItemAttribute;
 import com.datasiqn.arcadia.item.stat.ItemStats;
 import com.datasiqn.arcadia.item.stat.StatIcon;
-import com.datasiqn.arcadia.item.type.ItemType;
 import com.datasiqn.arcadia.upgrade.actions.UpdateAttributesAction;
+import com.datasiqn.resultapi.Result;
 import com.datasiqn.schedulebuilder.ScheduleBuilder;
-import com.google.common.reflect.TypeToken;
 import com.google.gson.*;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
@@ -31,7 +32,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.text.DecimalFormat;
-import java.util.Map;
 import java.util.UUID;
 
 public class PlayerData {
@@ -42,7 +42,7 @@ public class PlayerData {
 
     private final Arcadia plugin;
     private final File dataFile;
-    private final PlayerEquipment equipment = new PlayerEquipment();
+    private final PlayerEquipment equipment = new PlayerEquipment(this);
     private final ArcadiaSender<Player> sender;
     private final Player player;
     private final Object2DoubleMap<PlayerAttribute> attributes = new Object2DoubleOpenHashMap<>();
@@ -95,17 +95,16 @@ public class PlayerData {
                 ItemStats itemStats = arcadiaItem.getItemMeta().getItemStats();
                 for (PlayerAttribute attribute : PlayerAttribute.values()) {
                     AttributeInstance itemAttribute = itemStats.getAttribute(attribute.getItemAttribute());
-                    attributes.put(attribute, getAttribute(attribute) + (itemAttribute == null ? 0 : itemAttribute.getValue()));
+                    attributes.mergeDouble(attribute, itemAttribute == null ? 0 : itemAttribute.getValue(), Double::sum);
                 }
             }
         }
 
-        for (ArcadiaItem item : equipment.getAmulet()) {
-            if (item == null) continue;
-            if (item.getData().getType() != ItemType.POWER_STONE) continue;
+        for (PowerStone powerStone : equipment.getAmulet()) {
+            if (powerStone == null) continue;
             for (PlayerAttribute attribute : PlayerAttribute.values()) {
-                AttributeInstance itemAttribute = item.getItemMeta().getItemStats().getAttribute(attribute.getItemAttribute());
-                attributes.put(attribute, getAttribute(attribute) + (itemAttribute == null ? 0 : itemAttribute.getValue()));
+                double attributeValue = powerStone.getData().getAttribute(attribute);
+                attributes.mergeDouble(attribute, attributeValue, Double::sum);
             }
         }
 
@@ -262,8 +261,9 @@ public class PlayerData {
             for (JsonElement element : amuletSection) {
                 JsonObject amuletItem = element.getAsJsonObject();
                 int index = amuletItem.get("slot").getAsInt();
-                ArcadiaItem item = ArcadiaItem.deserialize(gson.fromJson(amuletItem.get("item").getAsJsonObject(), new TypeToken<Map<String, Object>>() {}.getType()));
-                equipment.getAmulet()[index] = item;
+                Result.resolve(() -> PowerStone.valueOf(amuletItem.get("powerStone").getAsString()))
+                        .ifOk(powerStone -> equipment.getAmulet().set(index, powerStone))
+                        .ifError(none -> equipment.getAmulet().delete(index));
             }
         }
         plugin.getLogger().info("Loaded player data for " + player.getName() + " (" + player.getUniqueId() + ")");
@@ -272,13 +272,15 @@ public class PlayerData {
     public void saveData() {
         JsonObject jsonObject = new JsonObject();
         jsonObject.add("xp", new JsonPrimitive(xp.getAmount()));
-        ArcadiaItem[] amulet = equipment.getAmulet();
+        Amulet amulet = equipment.getAmulet();
         JsonArray amuletArray = new JsonArray();
-        for (int i = 0; i < amulet.length; i++) {
-            if (amulet[i] == null) continue;
+        for (int i = 0; i < amulet.getTotalSlots(); i++) {
+            PowerStone powerStone = amulet.get(i);
+            if (powerStone == null) continue;
+            if (xp.getLevel() < powerStone.getData().getLevelRequirement()) continue;
             JsonObject amuletItem = new JsonObject();
             amuletItem.add("slot", new JsonPrimitive(i));
-            amuletItem.add("item", gson.toJsonTree(amulet[i].serialize()));
+            amuletItem.add("powerStone", new JsonPrimitive(powerStone.name()));
             amuletArray.add(amuletItem);
         }
         jsonObject.add("amulet", amuletArray);

@@ -22,6 +22,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class LevelMenuHandler extends MenuHandler {
     private static final ItemStack BACK_ARROW;
     static {
@@ -180,6 +183,14 @@ public class LevelMenuHandler extends MenuHandler {
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         }
         meta.setDisplayName(ChatColor.GRAY + "Level " + level + " " + color + "" + ChatColor.BOLD + Math.round(progress * 100) + "%");
+        List<String> rewards = plugin.getLevelRewardManager().getRewards(level);
+        if (!rewards.isEmpty()) {
+            List<String> lore = new ArrayList<>();
+            lore.add("");
+            lore.add(ChatColor.GREEN + "Rewards:");
+            lore.addAll(rewards);
+            meta.setLore(lore);
+        }
         itemStack.setItemMeta(meta);
 
         return itemStack;

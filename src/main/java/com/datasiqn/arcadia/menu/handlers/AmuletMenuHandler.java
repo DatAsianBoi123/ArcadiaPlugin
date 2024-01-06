@@ -1,15 +1,16 @@
 package com.datasiqn.arcadia.menu.handlers;
 
 import com.datasiqn.arcadia.Arcadia;
-import com.datasiqn.arcadia.item.ArcadiaItem;
-import com.datasiqn.arcadia.item.type.ItemType;
+import com.datasiqn.arcadia.amulet.Amulet;
+import com.datasiqn.arcadia.amulet.PowerStone;
 import com.datasiqn.arcadia.player.ArcadiaSender;
+import com.datasiqn.arcadia.player.Experience;
 import com.datasiqn.arcadia.player.PlayerData;
 import com.datasiqn.arcadia.util.ItemUtil;
 import com.datasiqn.menuapi.inventory.MenuHandler;
+import com.datasiqn.menuapi.inventory.item.MenuButton;
 import com.datasiqn.menuapi.inventory.item.MenuItem;
 import com.datasiqn.menuapi.inventory.item.StaticMenuItem;
-import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -21,9 +22,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Map;
 
 public class AmuletMenuHandler extends MenuHandler {
     public static final int[] AMULET_SLOTS = {
@@ -31,6 +29,10 @@ public class AmuletMenuHandler extends MenuHandler {
             19, 20, 21,
             28, 29, 30,
     };
+
+    private static final ItemStack AMULET_SLOT_ITEM = createAmuletSlotItem();
+
+    private static final PowerStone[] POWER_STONES = PowerStone.values();
 
     private final Arcadia plugin;
 
@@ -53,39 +55,6 @@ public class AmuletMenuHandler extends MenuHandler {
         super.onClick(event);
 
         event.setCancelled(true);
-
-        Inventory clickedInventory = event.getClickedInventory();
-        if (clickedInventory == null) return;
-        ItemStack itemStack = event.getCurrentItem();
-        if (itemStack == null) return;
-        ArcadiaItem arcadiaItem = new ArcadiaItem(itemStack);
-        arcadiaItem.setAmount(1);
-        if (arcadiaItem.getData().getType() == ItemType.POWER_STONE) {
-            PlayerData playerData = plugin.getPlayerManager().getPlayerData(event.getWhoClicked().getUniqueId());
-            if (playerData == null) {
-                new ArcadiaSender<>(event.getWhoClicked()).sendError("Failed to get player data");
-                return;
-            }
-            ArcadiaItem[] amulet = playerData.getEquipment().getAmulet();
-            if (event.getClickedInventory().equals(event.getView().getTopInventory())) {
-                Map<Integer, ItemStack> overflow = event.getWhoClicked().getInventory().addItem(arcadiaItem.build());
-                if (!overflow.isEmpty()) return;
-                event.setCurrentItem(ItemUtil.createEmpty(Material.GRAY_STAINED_GLASS_PANE));
-                amulet[event.getSlot()] = null;
-            } else {
-                int firstEmptyIndex = ArrayUtils.indexOf(amulet, null);
-                if (firstEmptyIndex == ArrayUtils.INDEX_NOT_FOUND) return;
-                if (itemStack.getAmount() == 1) {
-                    event.setCurrentItem(null);
-                } else {
-                    itemStack.setAmount(itemStack.getAmount() - 1);
-                    event.setCurrentItem(itemStack);
-                }
-                event.getInventory().setItem(firstEmptyIndex, arcadiaItem.build());
-                amulet[firstEmptyIndex] = arcadiaItem;
-            }
-            new Thread(playerData::saveData).start();
-        }
     }
 
     @Override
@@ -100,28 +69,82 @@ public class AmuletMenuHandler extends MenuHandler {
             new ArcadiaSender<>(humanEntity).sendError("Failed to get player data");
             return;
         }
-        @Nullable ArcadiaItem[] amulet = playerData.getEquipment().getAmulet();
+        Amulet amulet = playerData.getEquipment().getAmulet();
 
         ItemStack background = ItemUtil.createEmpty(Material.GRAY_STAINED_GLASS_PANE);
         ItemStack separator = ItemUtil.createEmpty(Material.BLACK_STAINED_GLASS_PANE);
         for (int i = 0; i < inventory.getSize(); i++) {
             MenuItem menuItem = new StaticMenuItem(background);
-            if ((i - 5) % 9 == 0) menuItem = new StaticMenuItem(separator);
+            if (i % 9 == 5) menuItem = new StaticMenuItem(separator);
+            else if (i % 9 > 5) {
+                int powerStoneIndex = i % 9 - 6 + i / 9 * 3;
+                if (powerStoneIndex < POWER_STONES.length) menuItem = createClickablePowerStone(playerData, POWER_STONES[powerStoneIndex], amulet, inventory);
+            }
             setItem(i, menuItem);
         }
-        ItemStack lockedSlot = new ItemStack(Material.RED_STAINED_GLASS_PANE);
-        ItemMeta meta = lockedSlot.getItemMeta();
-        if (meta != null) {
-            meta.setDisplayName(ChatColor.RED + "Unlocked at Level _");
-            lockedSlot.setItemMeta(meta);
-        }
-        for (int slot : AMULET_SLOTS) {
-            setItem(slot, new StaticMenuItem(lockedSlot));
+
+        for (int i = 0; i < AMULET_SLOTS.length; i++) {
+            setItem(AMULET_SLOTS[i], createAmuletSlot(amulet, i, inventory));
         }
     }
 
     @Override
     public @NotNull Inventory createInventory() {
         return Bukkit.createInventory(null, 54, "Amulet");
+    }
+
+    private MenuItem createAmuletSlot(@NotNull Amulet amulet, int amuletIndex, Inventory inventory) {
+        PowerStone powerStone = amulet.get(amuletIndex);
+        ItemStack icon;
+        if (amuletIndex >= amulet.getTotalSlots()) icon = createLockedSlotItem(amulet.getLevelForSlots(amuletIndex + 1));
+        else if (powerStone == null) icon = AMULET_SLOT_ITEM;
+        else icon = powerStone.getItem().build();
+        return new MenuButton(icon)
+                .onClick(event -> {
+                    if (amulet.get(amuletIndex) == null) return;
+                    amulet.delete(amuletIndex);
+                    inventory.setItem(event.getSlot(), AMULET_SLOT_ITEM);
+                });
+    }
+
+    private MenuItem createClickablePowerStone(@NotNull PlayerData player, @NotNull PowerStone powerStone, Amulet amulet, Inventory inventory) {
+        ItemStack item;
+        int levelRequirement = powerStone.getData().getLevelRequirement();
+        Experience playerXp = player.getXp();
+        if (playerXp.getLevel() >= levelRequirement) {
+            item = powerStone.getItem().build();
+        } else {
+            item = new ItemStack(Material.RED_STAINED_GLASS_PANE);
+            ItemMeta meta = item.getItemMeta();
+            if (meta != null) {
+                meta.setDisplayName(ChatColor.RED + "Requires Level " + levelRequirement);
+                item.setItemMeta(meta);
+            }
+        }
+        return new MenuButton(item)
+                .onClick(event -> {
+                    if (playerXp.getLevel() < levelRequirement) return;
+                    int addedIndex = amulet.add(powerStone);
+                    if (addedIndex == -1) return;
+                    inventory.setItem(AMULET_SLOTS[addedIndex], item);
+                });
+    }
+
+    private static @NotNull ItemStack createAmuletSlotItem() {
+        ItemStack itemStack = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
+        ItemMeta meta = itemStack.getItemMeta();
+        if (meta == null) return itemStack;
+        meta.setDisplayName(ChatColor.GREEN + "Amulet Slot");
+        itemStack.setItemMeta(meta);
+        return itemStack;
+    }
+
+    private static @NotNull ItemStack createLockedSlotItem(int level) {
+        ItemStack itemStack = new ItemStack(Material.RED_STAINED_GLASS_PANE);
+        ItemMeta meta = itemStack.getItemMeta();
+        if (meta == null) return itemStack;
+        meta.setDisplayName(ChatColor.RED + "Requires Level " + level);
+        itemStack.setItemMeta(meta);
+        return itemStack;
     }
 }

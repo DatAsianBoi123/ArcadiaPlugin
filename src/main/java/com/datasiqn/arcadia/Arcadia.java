@@ -1,5 +1,7 @@
 package com.datasiqn.arcadia;
 
+import com.datasiqn.arcadia.amulet.Amulet;
+import com.datasiqn.arcadia.amulet.PowerStone;
 import com.datasiqn.arcadia.commands.*;
 import com.datasiqn.arcadia.item.ArcadiaItem;
 import com.datasiqn.arcadia.listeners.*;
@@ -42,6 +44,7 @@ public final class Arcadia extends JavaPlugin {
     private final UpgradeEventManager upgradeEventManager = new UpgradeEventManager(this);
     private final ScoreboardManager scoreboardManager = new ScoreboardManager(this);
     private final AbilityCooldownManager cooldownManager = new AbilityCooldownManager();
+    private final LevelRewardManager levelRewardManager = new LevelRewardManager();
     private final MenuApi menuApi = MenuApi.getInstance();
 
     private final long lastModified = getFile().lastModified();
@@ -53,6 +56,9 @@ public final class Arcadia extends JavaPlugin {
         if (new File(getDataFolder().getPath() + File.separatorChar + "player-data").mkdir()) {
             getLogger().info("Created player data folder");
         }
+
+        PowerStone.addRewards(levelRewardManager);
+        Amulet.addRewards(levelRewardManager);
     }
 
     @Override
@@ -125,6 +131,10 @@ public final class Arcadia extends JavaPlugin {
 
     public AbilityCooldownManager getCooldownManager() {
         return cooldownManager;
+    }
+
+    public LevelRewardManager getLevelRewardManager() {
+        return levelRewardManager;
     }
 
     private void registerAllCommands() {

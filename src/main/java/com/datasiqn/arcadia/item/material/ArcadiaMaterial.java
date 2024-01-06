@@ -318,12 +318,6 @@ public enum ArcadiaMaterial {
             .name("Fruity Apple")
             .material(Material.APPLE)
             .build()),
-
-    STRENGTH_STONE(MaterialData.builder(ItemType.POWER_STONE)
-            .name("Strength Stone")
-            .material(Material.REDSTONE)
-            .stackable(false)
-            .build(), meta -> meta.getItemStats().setAttribute(ItemAttribute.STRENGTH, 1)),
     ;
 
     private final MaterialData<?> data;
