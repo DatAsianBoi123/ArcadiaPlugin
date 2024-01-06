@@ -11,19 +11,12 @@ import com.datasiqn.arcadia.util.ItemUtil;
 import com.datasiqn.arcadia.util.PdcUtil;
 import com.datasiqn.commandcore.CommandCore;
 import com.datasiqn.commandcore.InitOptions;
-import com.datasiqn.commandcore.argument.type.ArgumentType;
-import com.datasiqn.commandcore.command.builder.ArgumentBuilder;
 import com.datasiqn.commandcore.command.builder.CommandBuilder;
-import com.datasiqn.commandcore.command.builder.LiteralBuilder;
 import com.datasiqn.commandcore.managers.CommandManager;
 import com.datasiqn.menuapi.MenuApi;
 import com.datasiqn.schedulebuilder.ScheduleBuilder;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import org.bukkit.*;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
-import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
@@ -152,26 +145,6 @@ public final class Arcadia extends JavaPlugin {
         commandManager.registerCommand(new CommandLobby(this).getCommand());
         commandManager.registerCommand(new CommandSpawn().getCommand());
         commandManager.registerCommand(new CommandPlayerData(this).getCommand());
-        commandManager.registerCommand(new CommandBuilder("walkspeed")
-                .then(LiteralBuilder.literal("get")
-                        .requiresPlayer()
-                        .executes((context, source, arguments) -> source.sendMessage(source.getPlayer().getWalkSpeed() + "")))
-                .then(LiteralBuilder.literal("set")
-                        .then(ArgumentBuilder.argument(ArgumentType.rangedNumber(float.class, -1f), "new amount")
-                                .requiresPlayer()
-                                .executes((context, source, arguments) -> {
-                                    ServerPlayer serverPlayer = ((CraftPlayer) source.getPlayer()).getHandle();
-                                    serverPlayer.getAbilities().walkingSpeed = arguments.get(1, ArgumentType.number(float.class)) / 2;
-                                    serverPlayer.onUpdateAbilities();
-                                    // idk why i can't just use the serverPlayer variable here, but it breaks if i do
-                                    AttributeInstance moveSpeedAttribute = ((CraftPlayer) source.getPlayer()).getHandle().getAttribute(Attributes.MOVEMENT_SPEED);
-                                    if (moveSpeedAttribute != null) {
-                                        moveSpeedAttribute.setBaseValue(serverPlayer.getAbilities().walkingSpeed);
-                                    }
-                                })))
-                .then(LiteralBuilder.literal("reset")
-                        .requiresPlayer()
-                        .executes(((context, source, arguments) -> source.getPlayer().setWalkSpeed(0.2f)))));
         commandManager.registerCommand(new CommandBuilder("bag")
                 .requiresPlayer()
                 .executes((context, source, arguments) -> {
