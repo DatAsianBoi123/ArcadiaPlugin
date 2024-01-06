@@ -2,6 +2,7 @@ package com.datasiqn.arcadia.util.lorebuilder.component;
 
 import com.datasiqn.arcadia.item.stat.ItemAttribute;
 import org.bukkit.ChatColor;
+import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -45,7 +46,22 @@ public class ComponentBuilder {
         return this;
     }
 
-    public LoreComponent[] build() {
-        return components.toArray(LoreComponent[]::new);
+    public LoreComponent build() {
+        return new BuilderComponent(components);
+    }
+
+    private static class BuilderComponent implements LoreComponent {
+        private final String str;
+
+        public BuilderComponent(@NotNull List<LoreComponent> components) {
+            StringBuilder builder = new StringBuilder();
+            for (LoreComponent component : components) builder.append(component.toString());
+            this.str = builder.toString();
+        }
+
+        @Override
+        public @NotNull String toString() {
+            return str;
+        }
     }
 }
