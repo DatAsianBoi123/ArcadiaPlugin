@@ -6,6 +6,7 @@ import com.datasiqn.arcadia.entities.EntityType;
 import com.datasiqn.arcadia.item.material.ArcadiaMaterial;
 import com.datasiqn.arcadia.loottable.LootTable;
 import com.datasiqn.arcadia.menu.MenuType;
+import com.datasiqn.arcadia.npc.CreatedNpc;
 import com.datasiqn.arcadia.player.PlayerAttribute;
 import com.datasiqn.arcadia.player.PlayerData;
 import com.datasiqn.arcadia.recipe.ArcadiaRecipe;
@@ -40,6 +41,8 @@ public final class ArcadiaArgumentType {
     public static final ArgumentType<MenuType> GUI = new ArgumentType.EnumArgumentType<>(MenuType.class, "menu");
 
     public static final ArgumentType<DungeonInstance> DUNGEON = new DungeonArgumentType();
+
+    public static final ArgumentType<CreatedNpc> NPC = new NpcArgumentType();
 
     public static final ArgumentType<Function<CommandSource, Result<None, List<String>>>> COMMAND = new CommandArgumentType();
 }

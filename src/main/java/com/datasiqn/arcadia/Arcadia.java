@@ -38,6 +38,7 @@ public final class Arcadia extends JavaPlugin {
     private final ScoreboardManager scoreboardManager = new ScoreboardManager(this);
     private final AbilityCooldownManager cooldownManager = new AbilityCooldownManager();
     private final LevelRewardManager levelRewardManager = new LevelRewardManager();
+    private final NpcManager npcManager = new NpcManager(this);
     private final MenuApi menuApi = MenuApi.getInstance();
 
     private final long lastModified = getFile().lastModified();
@@ -130,6 +131,10 @@ public final class Arcadia extends JavaPlugin {
         return levelRewardManager;
     }
 
+    public NpcManager getNpcManager() {
+        return npcManager;
+    }
+
     private void registerAllCommands() {
         CommandManager commandManager = CommandCore.getInstance().getCommandManager();
         commandManager.registerCommand(new CommandItem().getCommand());
@@ -145,6 +150,7 @@ public final class Arcadia extends JavaPlugin {
         commandManager.registerCommand(new CommandLobby(this).getCommand());
         commandManager.registerCommand(new CommandSpawn().getCommand());
         commandManager.registerCommand(new CommandPlayerData(this).getCommand());
+        commandManager.registerCommand(new CommandNpc(this).getCommand());
         commandManager.registerCommand(new CommandBuilder("bag")
                 .requiresPlayer()
                 .executes((context, source, arguments) -> {

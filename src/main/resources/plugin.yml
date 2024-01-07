@@ -43,6 +43,9 @@ permissions:
   arcadia.data:
     description: Allows the player to manage player data (/arcadia playerdata)
     default: op
+  arcadia.npc:
+    description: Allows the player to manage npcs (/arcadia npc)
+    default: op
   arcadia.command:
     description: Allows the player to use the default arcadia command (/arcadia)
     default: true
@@ -71,3 +74,4 @@ permissions:
       arcadia.enchant: true
       arcadia.dungeons: true
       arcadia.data: true
+      arcadia.npc: true

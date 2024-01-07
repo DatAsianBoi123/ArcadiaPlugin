@@ -78,6 +78,8 @@ public class PlayerListener implements Listener {
         if (player.getWorld().getName().startsWith(DungeonManager.DUNGEON_WORLD_PREFIX)) {
             player.teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
         }
+
+        plugin.getNpcManager().updateForPlayer(player);
     }
 
     @EventHandler
