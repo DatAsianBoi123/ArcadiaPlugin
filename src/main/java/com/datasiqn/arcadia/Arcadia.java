@@ -38,7 +38,7 @@ public final class Arcadia extends JavaPlugin {
     private final ScoreboardManager scoreboardManager = new ScoreboardManager(this);
     private final AbilityCooldownManager cooldownManager = new AbilityCooldownManager();
     private final LevelRewardManager levelRewardManager = new LevelRewardManager();
-    private final NpcManager npcManager = new NpcManager(this);
+    private final NpcManager npcManager = new NpcManager(this, new File(getDataFolder(), "npc-data.json"));
     private final MenuApi menuApi = MenuApi.getInstance();
 
     private final long lastModified = getFile().lastModified();
@@ -57,6 +57,12 @@ public final class Arcadia extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        npcManager.load()
+                .whenComplete((v, err) -> {
+                    if (err == null) getLogger().info("Loaded NPC data");
+                    else getLogger().severe("Could not load NPC data: " + err.getMessage());
+                });
+
         if (Bukkit.getWorld(DungeonManager.DEFAULT_DUNGEON_NAME) == null) {
             WorldCreator.name(DungeonManager.DEFAULT_DUNGEON_NAME).type(WorldType.FLAT).generateStructures(false).createWorld();
             getLogger().info("Created default dungeon");

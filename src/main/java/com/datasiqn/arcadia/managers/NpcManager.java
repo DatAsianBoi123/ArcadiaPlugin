@@ -3,6 +3,7 @@ package com.datasiqn.arcadia.managers;
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.npc.ArcadiaNpc;
 import com.datasiqn.arcadia.npc.CreatedNpc;
+import com.google.gson.*;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.network.protocol.game.*;
@@ -15,17 +16,25 @@ import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class NpcManager {
+    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
     private final Arcadia plugin;
+    private final File saveFile;
     private final Long2ObjectMap<CreatedNpc> createdNPCs = new Long2ObjectOpenHashMap<>();
 
     private long currentId = 0;
 
-    public NpcManager(Arcadia plugin) {
+    public NpcManager(Arcadia plugin, File saveFile) {
         this.plugin = plugin;
+        this.saveFile = saveFile;
     }
 
     public CompletableFuture<CreatedNpc> create(@NotNull ArcadiaNpc npc) {
@@ -92,6 +101,47 @@ public class NpcManager {
 
     public Set<Long> ids() {
         return Collections.unmodifiableSet(createdNPCs.keySet());
+    }
+
+    public CompletableFuture<Void> save() {
+        JsonObject rootObject = new JsonObject();
+        rootObject.addProperty("currentId", currentId);
+
+        JsonArray npcArray = new JsonArray();
+        for (CreatedNpc npc : createdNPCs.values()) {
+            npcArray.add(npc.toJson());
+        }
+        rootObject.add("npcs", npcArray);
+
+        return CompletableFuture.runAsync(() -> {
+            try {
+                if (!saveFile.exists() && saveFile.createNewFile()) plugin.getLogger().info("Created NPC data file");
+                FileWriter writer = new FileWriter(saveFile);
+                gson.toJson(rootObject, writer);
+                writer.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    public CompletableFuture<Void> load() {
+        if (!saveFile.exists()) return CompletableFuture.completedFuture(null);
+
+        return CompletableFuture.runAsync(() -> {
+            try {
+                FileReader reader = new FileReader(saveFile);
+                JsonObject npcData = gson.fromJson(reader, JsonObject.class);
+                reader.close();
+                currentId = npcData.get("currentId").getAsLong();
+                for (JsonElement npcElement : npcData.get("npcs").getAsJsonArray()) {
+                    CreatedNpc createdNpc = CreatedNpc.fromJson(plugin, npcElement.getAsJsonObject()).join();
+                    createdNPCs.put(createdNpc.getId(), createdNpc);
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     private static void showPlayer(Player player, @NotNull Collection<CreatedNpc> npcs) {
