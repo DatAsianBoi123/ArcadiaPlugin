@@ -6,7 +6,6 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -39,7 +38,7 @@ public final class ArcadiaNpc {
         this.uuid = uuid;
     }
 
-    public @NotNull CompletableFuture<ServerPlayer> createFakePlayer(Arcadia plugin) {
+    public @NotNull CompletableFuture<NmsNpc> createFakePlayer(Arcadia plugin) {
         return CompletableFuture
                 .supplyAsync(() -> {
                     GameProfile gameProfile = new GameProfile(uuid, name);
@@ -81,7 +80,7 @@ public final class ArcadiaNpc {
                 .thenApply(gameProfile -> {
                     DedicatedServer server = ((CraftServer) Bukkit.getServer()).getServer();
                     ServerLevel serverWorld = ((CraftWorld) world).getHandle();
-                    ServerPlayer serverPlayer = new ServerPlayer(server, serverWorld, gameProfile);
+                    NmsNpc serverPlayer = new NmsNpc(server, serverWorld, gameProfile);
                     serverPlayer.noPhysics = true;
                     serverPlayer.setPos(location.getX(), location.getY(), location.getZ());
                     serverPlayer.setXRot(location.getYaw());

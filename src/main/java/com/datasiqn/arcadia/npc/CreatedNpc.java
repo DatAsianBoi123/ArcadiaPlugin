@@ -10,11 +10,11 @@ import java.util.concurrent.CompletableFuture;
 public final class CreatedNpc {
     private final long id;
     private final ArcadiaNpc npc;
-    private final ServerPlayer serverPlayer;
+    private final NmsNpc serverPlayer;
 
     private boolean shown = false;
 
-    public CreatedNpc(long id, ArcadiaNpc npc, ServerPlayer serverPlayer) {
+    public CreatedNpc(long id, ArcadiaNpc npc, NmsNpc serverPlayer) {
         this.id = id;
         this.npc = npc;
         this.serverPlayer = serverPlayer;
@@ -50,6 +50,21 @@ public final class CreatedNpc {
         jsonObject.addProperty("shown", shown);
         jsonObject.add("npc", npc.toJson());
         return jsonObject;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CreatedNpc that = (CreatedNpc) o;
+
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (id ^ (id >>> 32));
     }
 
     public static @NotNull CompletableFuture<CreatedNpc> fromJson(Arcadia plugin, @NotNull JsonObject jsonObject) {

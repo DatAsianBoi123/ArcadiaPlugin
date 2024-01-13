@@ -74,6 +74,13 @@ public class CommandNpc {
                                     npc.hide();
                                     npcManager.updateVisibility(npc.getId());
                                 })))
+                .then(LiteralBuilder.literal("select")
+                        .then(ArgumentBuilder.argument(ArcadiaArgumentType.NPC, "npc")
+                                .requiresPlayer()
+                                .executes((context, source, arguments) -> npcManager.selectNpc(source.getPlayer(), arguments.get(1, ArcadiaArgumentType.NPC).getId()))))
+                .then(LiteralBuilder.literal("deselect")
+                        .requiresPlayer()
+                        .executes((context, source, arguments) -> npcManager.deselectNpc(source.getPlayer())))
                 .then(LiteralBuilder.literal("destroy")
                             .executes((context, source, arguments) -> npcManager.destroyAll())
                         .then(ArgumentBuilder.argument(ArcadiaArgumentType.NPC, "npc id")

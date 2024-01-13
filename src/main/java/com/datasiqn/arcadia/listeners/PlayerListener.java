@@ -98,6 +98,7 @@ public class PlayerListener implements Listener {
         if (scoreboardManager != null) player.setScoreboard(scoreboardManager.getMainScoreboard());
 
         new Thread(playerManager.getPlayerData(player)::saveData).start();
+        plugin.getNpcManager().deselectNpc(player);
         playerManager.removePlayer(player);
     }
 

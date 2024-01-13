@@ -29,6 +29,7 @@ public class NpcManager {
     private final Arcadia plugin;
     private final File saveFile;
     private final Long2ObjectMap<CreatedNpc> createdNPCs = new Long2ObjectOpenHashMap<>();
+    private final Map<UUID, CreatedNpc> selectedNpcs = new HashMap<>();
 
     private long currentId = 0;
 
@@ -48,15 +49,10 @@ public class NpcManager {
     }
 
     public void updateForPlayer(Player player) {
-        List<CreatedNpc> visibleNPCs = new ArrayList<>();
-        List<CreatedNpc> invisibleNPCs = new ArrayList<>();
         for (CreatedNpc createdNpc : createdNPCs.values()) {
-            if (createdNpc.isShown()) visibleNPCs.add(createdNpc);
-            else invisibleNPCs.add(createdNpc);
+            if (createdNpc.isShown()) showPlayer(player, Collections.singleton(createdNpc));
+            else hidePlayer(player, Collections.singleton(createdNpc));
         }
-
-        showPlayer(player, visibleNPCs);
-        hidePlayer(player, invisibleNPCs);
     }
 
     public void updateVisibility(long id) {
@@ -95,8 +91,27 @@ public class NpcManager {
         }
     }
 
+    public void selectNpc(Player player, long id) {
+        CreatedNpc npc = createdNPCs.get(id);
+        if (npc == null) return;
+        CreatedNpc previouslySelected = selectedNpcs.put(player.getUniqueId(), npc);
+        if (!npc.isShown()) return;
+        displayGlow(player, npc);
+        if (previouslySelected != null) removeGlow(player, previouslySelected);
+    }
+
+    public void deselectNpc(@NotNull Player player) {
+        CreatedNpc npc = selectedNpcs.remove(player.getUniqueId());
+        if (npc == null) return;
+        removeGlow(player, npc);
+    }
+
     public CreatedNpc getNpc(long id) {
         return createdNPCs.get(id);
+    }
+
+    public CreatedNpc getSelectedNpc(@NotNull Player player) {
+        return selectedNpcs.get(player.getUniqueId());
     }
 
     public Set<Long> ids() {
@@ -144,19 +159,22 @@ public class NpcManager {
         });
     }
 
-    private static void showPlayer(Player player, @NotNull Collection<CreatedNpc> npcs) {
+    private void showPlayer(Player player, @NotNull Collection<CreatedNpc> npcs) {
         ServerPlayerConnection connection = ((CraftPlayer) player).getHandle().connection;
         EnumSet<ClientboundPlayerInfoUpdatePacket.Action> actions = EnumSet.of(ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER);
         connection.send(new ClientboundPlayerInfoUpdatePacket(actions, npcs.stream().map(CreatedNpc::getPlayer).toList()));
         for (CreatedNpc npc : npcs) {
-            sendPlayerPackets(connection, npc.getPlayer());
+            boolean glow = false;
+            CreatedNpc selectedNpc = selectedNpcs.get(player.getUniqueId());
+            if (selectedNpc != null) glow = selectedNpc.equals(npc);
+            sendPlayerPackets(connection, npc.getPlayer(), glow);
         }
     }
 
-    private static void show(CreatedNpc npc) {
+    private void show(CreatedNpc npc) {
         show(Collections.singleton(npc));
     }
-    private static void show(Collection<CreatedNpc> npcs) {
+    private void show(Collection<CreatedNpc> npcs) {
         for (Player player : Bukkit.getOnlinePlayers()) {
             showPlayer(player, npcs);
         }
@@ -175,13 +193,27 @@ public class NpcManager {
         }
     }
 
-    private static void sendPlayerPackets(@NotNull ServerPlayerConnection connection, ServerPlayer serverPlayer) {
+    private static void displayGlow(Player player, @NotNull CreatedNpc npc) {
+        sendDataPacket(((CraftPlayer) player).getHandle().connection, npc.getPlayer(), true);
+    }
+
+    private static void removeGlow(Player player, @NotNull CreatedNpc npc) {
+        sendDataPacket(((CraftPlayer) player).getHandle().connection, npc.getPlayer(), false);
+    }
+
+    private static void sendPlayerPackets(@NotNull ServerPlayerConnection connection, ServerPlayer serverPlayer, boolean glow) {
         connection.send(new ClientboundAddPlayerPacket(serverPlayer));
-        byte skinMask = 0x01 | 0x02 | 0x04 | 0x08 | 0x10 | 0x20 | 0x40;
-        List<SynchedEntityData.DataValue<?>> dataValues = List.of(new SynchedEntityData.DataValue<>(17, EntityDataSerializers.BYTE, skinMask));
-        connection.send(new ClientboundSetEntityDataPacket(serverPlayer.getId(), dataValues));
+        sendDataPacket(connection, serverPlayer, glow);
         connection.send(new ClientboundRotateHeadPacket(serverPlayer, toAngle(serverPlayer.getXRot())));
         connection.send(new ClientboundMoveEntityPacket.Rot(serverPlayer.getId(), toAngle(serverPlayer.getXRot()), toAngle(serverPlayer.getYRot()), true));
+    }
+
+    private static void sendDataPacket(@NotNull ServerPlayerConnection connection, @NotNull ServerPlayer serverPlayer, boolean glow) {
+        byte skinMask = 0x01 | 0x02 | 0x04 | 0x08 | 0x10 | 0x20 | 0x40;
+        List<SynchedEntityData.DataValue<?>> dataValues = new ArrayList<>();
+        dataValues.add(new SynchedEntityData.DataValue<>(17, EntityDataSerializers.BYTE, skinMask));
+        dataValues.add(new SynchedEntityData.DataValue<>(0, EntityDataSerializers.BYTE, glow ? (byte) 0x40 : 0));
+        connection.send(new ClientboundSetEntityDataPacket(serverPlayer.getId(), dataValues));
     }
 
     private static byte toAngle(double delta) {
