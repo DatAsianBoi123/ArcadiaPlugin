@@ -28,6 +28,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -107,6 +108,15 @@ public final class Arcadia extends JavaPlugin {
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "rl confirm");
                     }
                 }).run(this);
+    }
+
+    @Override
+    public void onDisable() {
+        try {
+            npcManager.save().get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
     }
 
     public void registerListener(Listener listener) {
