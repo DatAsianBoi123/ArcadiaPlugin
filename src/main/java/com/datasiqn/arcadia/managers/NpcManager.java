@@ -3,6 +3,7 @@ package com.datasiqn.arcadia.managers;
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.npc.ArcadiaNpc;
 import com.datasiqn.arcadia.npc.CreatedNpc;
+import com.datasiqn.arcadia.npc.NmsNpc;
 import com.google.gson.*;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
@@ -109,6 +110,12 @@ public class NpcManager {
     public CreatedNpc getNpc(long id) {
         return createdNPCs.get(id);
     }
+    public CreatedNpc getNpc(NmsNpc serverPlayer) {
+        for (CreatedNpc npc : createdNPCs.values()) {
+            if (npc.getPlayer().equals(serverPlayer)) return npc;
+        }
+        return null;
+    }
 
     public CreatedNpc getSelectedNpc(@NotNull Player player) {
         return selectedNpcs.get(player.getUniqueId());
@@ -162,7 +169,7 @@ public class NpcManager {
     private void showPlayer(Player player, @NotNull Collection<CreatedNpc> npcs) {
         ServerPlayerConnection connection = ((CraftPlayer) player).getHandle().connection;
         EnumSet<ClientboundPlayerInfoUpdatePacket.Action> actions = EnumSet.of(ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER);
-        connection.send(new ClientboundPlayerInfoUpdatePacket(actions, npcs.stream().map(CreatedNpc::getPlayer).toList()));
+        connection.send(new ClientboundPlayerInfoUpdatePacket(actions, npcs.stream().map(npc1 -> (ServerPlayer) npc1.getPlayer()).toList()));
         for (CreatedNpc npc : npcs) {
             boolean glow = false;
             CreatedNpc selectedNpc = selectedNpcs.get(player.getUniqueId());

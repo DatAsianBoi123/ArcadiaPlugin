@@ -5,12 +5,15 @@ import com.datasiqn.arcadia.commands.argument.ArcadiaArgumentType;
 import com.datasiqn.arcadia.managers.NpcManager;
 import com.datasiqn.arcadia.npc.ArcadiaNpc;
 import com.datasiqn.arcadia.npc.CreatedNpc;
+import com.datasiqn.arcadia.npc.NmsNpc;
 import com.datasiqn.arcadia.npc.SkinData;
 import com.datasiqn.commandcore.argument.Arguments;
 import com.datasiqn.commandcore.argument.type.ArgumentType;
 import com.datasiqn.commandcore.command.builder.ArgumentBuilder;
 import com.datasiqn.commandcore.command.builder.CommandBuilder;
 import com.datasiqn.commandcore.command.builder.LiteralBuilder;
+import net.minecraft.world.phys.Vec3;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -75,9 +78,23 @@ public class CommandNpc {
                                     npcManager.updateVisibility(npc.getId());
                                 })))
                 .then(LiteralBuilder.literal("select")
+                        .requiresPlayer()
+                        .executes((context, source, arguments) -> {
+                            Player player = source.getPlayer();
+                            for (Long npcId : npcManager.ids()) {
+                                NmsNpc npc = npcManager.getNpc(npcId).getPlayer();
+                                Vec3 npcPosition = npc.position();
+                                Location npcLocation = new Location(player.getWorld(), npcPosition.x, npcPosition.y, npcPosition.z);
+                                if (player.getLocation().distanceSquared(npcLocation) >= 16) continue;
+                                Vec3 npcEyePosition = npc.getEyePosition();
+                                Location npcEyeLocation = new Location(player.getWorld(), npcEyePosition.x, npcEyePosition.y - 1, npcEyePosition.z);
+                                if (!lookingAt(player.getEyeLocation(), npcEyeLocation)) continue;
+                                handleSelect(player, npcManager.getNpc(npc));
+                            }
+                        })
                         .then(ArgumentBuilder.argument(ArcadiaArgumentType.NPC, "npc")
                                 .requiresPlayer()
-                                .executes((context, source, arguments) -> npcManager.selectNpc(source.getPlayer(), arguments.get(1, ArcadiaArgumentType.NPC).getId()))))
+                                .executes((context, source, arguments) -> handleSelect(source.getPlayer(), arguments.get(1, ArcadiaArgumentType.NPC)))))
                 .then(LiteralBuilder.literal("deselect")
                         .requiresPlayer()
                         .executes((context, source, arguments) -> npcManager.deselectNpc(source.getPlayer())))
@@ -85,6 +102,15 @@ public class CommandNpc {
                             .executes((context, source, arguments) -> npcManager.destroyAll())
                         .then(ArgumentBuilder.argument(ArcadiaArgumentType.NPC, "npc id")
                                 .executes((context, source, arguments) -> npcManager.destroy(arguments.get(1, ArcadiaArgumentType.NPC).getId()))));
+    }
+
+    private boolean lookingAt(@NotNull Location eye, @NotNull Location otherLocation) {
+        return otherLocation.toVector().subtract(eye.toVector()).normalize().dot(eye.getDirection()) > 0.9;
+    }
+
+    private void handleSelect(Player player, @NotNull CreatedNpc npc) {
+        plugin.getNpcManager().selectNpc(player, npc.getId());
+        plugin.getPlayerManager().getPlayerData(player).getSender().sendMessage("Selected NPC '" + npc.getNpc().getName() + "' (id " + npc.getId() + ")");
     }
 
     private void handleCreate(Player player, @NotNull Arguments arguments) {

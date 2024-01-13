@@ -2,7 +2,6 @@ package com.datasiqn.arcadia.npc;
 
 import com.datasiqn.arcadia.Arcadia;
 import com.google.gson.JsonObject;
-import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
@@ -36,7 +35,7 @@ public final class CreatedNpc {
         return npc;
     }
 
-    public ServerPlayer getPlayer() {
+    public NmsNpc getPlayer() {
         return serverPlayer;
     }
 
