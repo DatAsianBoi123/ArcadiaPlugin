@@ -47,14 +47,13 @@ public class CommandNpc {
                                         .executes((context, source, arguments) -> handleCreate(source.getPlayer(), arguments)))
                                 .executes((context, source, arguments) -> handleCreate(source.getPlayer(), arguments))))
                 .then(LiteralBuilder.literal("show")
-                        .then(LiteralBuilder.literal("all")
-                                .executes((context, source, arguments) -> {
-                                    for (long id : npcManager.ids()) {
-                                        CreatedNpc npc = npcManager.getNpc(id);
-                                        npc.show();
-                                    }
-                                    npcManager.updateVisibilities();
-                                }))
+                        .executes((context, source, arguments) -> {
+                            for (long id : npcManager.ids()) {
+                                CreatedNpc npc = npcManager.getNpc(id);
+                                npc.show();
+                            }
+                            npcManager.updateVisibilities();
+                        })
                         .then(ArgumentBuilder.argument(ArcadiaArgumentType.NPC, "npc id")
                                 .executes((context, source, arguments) -> {
                                     CreatedNpc npc = arguments.get(1, ArcadiaArgumentType.NPC);
@@ -62,14 +61,13 @@ public class CommandNpc {
                                     npcManager.updateVisibility(npc.getId());
                                 })))
                 .then(LiteralBuilder.literal("hide")
-                        .then(LiteralBuilder.literal("all")
-                                .executes((context, source, arguments) -> {
-                                    for (long id : npcManager.ids()) {
-                                        CreatedNpc npc = npcManager.getNpc(id);
-                                        npc.hide();
-                                    }
-                                    npcManager.updateVisibilities();
-                                }))
+                        .executes((context, source, arguments) -> {
+                            for (long id : npcManager.ids()) {
+                                CreatedNpc npc = npcManager.getNpc(id);
+                                npc.hide();
+                            }
+                            npcManager.updateVisibilities();
+                        })
                         .then(ArgumentBuilder.argument(ArcadiaArgumentType.NPC, "npc id")
                                 .executes((context, source, arguments) -> {
                                     CreatedNpc npc = arguments.get(1, ArcadiaArgumentType.NPC);
@@ -77,8 +75,7 @@ public class CommandNpc {
                                     npcManager.updateVisibility(npc.getId());
                                 })))
                 .then(LiteralBuilder.literal("destroy")
-                        .then(LiteralBuilder.literal("all")
-                                .executes((context, source, arguments) -> npcManager.destroyAll()))
+                            .executes((context, source, arguments) -> npcManager.destroyAll())
                         .then(ArgumentBuilder.argument(ArcadiaArgumentType.NPC, "npc id")
                                 .executes((context, source, arguments) -> npcManager.destroy(arguments.get(1, ArcadiaArgumentType.NPC).getId()))));
     }
