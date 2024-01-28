@@ -117,6 +117,13 @@ public final class ArcadiaNpc {
         locationObject.addProperty("pitch", location.getPitch());
         jsonObject.add("location", locationObject);
 
+        JsonElement skinElement = createSkinJson();
+        jsonObject.add("skin", skinElement);
+
+        return jsonObject;
+    }
+
+    private @NotNull JsonElement createSkinJson() {
         JsonElement skinElement = JsonNull.INSTANCE;
         SkinData.SkinType skinType = skinData.getType();
         if (skinType == SkinData.SkinType.CACHED) {
@@ -128,9 +135,7 @@ public final class ArcadiaNpc {
         } else if (skinType == SkinData.SkinType.UUID) {
             skinElement = new JsonPrimitive(skinData.getUuid().toString());
         }
-        jsonObject.add("skin", skinElement);
-
-        return jsonObject;
+        return skinElement;
     }
 
     public static @NotNull ArcadiaNpc fromJson(@NotNull JsonObject jsonObject) {
