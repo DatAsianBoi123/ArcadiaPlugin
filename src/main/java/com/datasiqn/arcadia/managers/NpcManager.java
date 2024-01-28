@@ -82,6 +82,7 @@ public class NpcManager {
 
     public void destroy(long id) {
         CreatedNpc createdNpc = createdNPCs.remove(id);
+        selectedNpcs.entrySet().removeIf(selectedNpcsEntry -> selectedNpcsEntry.getValue().getId() == createdNpc.getId());
         if (createdNpc == null || !createdNpc.isShown()) return;
         hide(createdNpc);
     }
