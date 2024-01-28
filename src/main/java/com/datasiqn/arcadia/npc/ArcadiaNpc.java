@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -61,8 +62,11 @@ public final class ArcadiaNpc {
                             } else {
                                 plugin.getLogger().severe("Error connecting to skin servers: " + connection.getResponseMessage());
                             }
+                        } catch (MalformedURLException e) {
+                            plugin.getLogger().severe("Malformed URL! This shouldn't ever happen");
+                            return gameProfile;
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            plugin.getLogger().severe("Could not connect to mojang API server: " + e.getMessage());
                             return gameProfile;
                         }
                     }

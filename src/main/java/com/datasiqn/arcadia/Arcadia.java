@@ -114,8 +114,10 @@ public final class Arcadia extends JavaPlugin {
     public void onDisable() {
         try {
             npcManager.save().get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+        } catch (InterruptedException e) {
+            getLogger().severe("Could not save npc data: future was interrupted");
+        } catch (ExecutionException e) {
+            getLogger().severe("Could not save npc data: " + e.getMessage());
         }
     }
 
