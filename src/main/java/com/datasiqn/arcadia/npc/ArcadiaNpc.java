@@ -85,7 +85,6 @@ public final class ArcadiaNpc {
                     DedicatedServer server = ((CraftServer) Bukkit.getServer()).getServer();
                     ServerLevel serverWorld = ((CraftWorld) world).getHandle();
                     NmsNpc serverPlayer = new NmsNpc(server, serverWorld, gameProfile);
-                    serverPlayer.noPhysics = true;
                     serverPlayer.setPos(location.getX(), location.getY(), location.getZ());
                     serverPlayer.setXRot(location.getYaw());
                     serverPlayer.setYRot(location.getPitch());
