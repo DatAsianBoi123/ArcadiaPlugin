@@ -7,6 +7,7 @@ import com.datasiqn.arcadia.npc.ArcadiaNpc;
 import com.datasiqn.arcadia.npc.CreatedNpc;
 import com.datasiqn.arcadia.npc.NmsNpc;
 import com.datasiqn.arcadia.npc.SkinData;
+import com.datasiqn.arcadia.player.ArcadiaSender;
 import com.datasiqn.commandcore.argument.Arguments;
 import com.datasiqn.commandcore.argument.type.ArgumentType;
 import com.datasiqn.commandcore.command.builder.ArgumentBuilder;
@@ -101,7 +102,22 @@ public class CommandNpc {
                 .then(LiteralBuilder.literal("destroy")
                             .executes((context, source, arguments) -> npcManager.destroyAll())
                         .then(ArgumentBuilder.argument(ArcadiaArgumentType.NPC, "npc id")
-                                .executes((context, source, arguments) -> npcManager.destroy(arguments.get(1, ArcadiaArgumentType.NPC).getId()))));
+                                .executes((context, source, arguments) -> npcManager.destroy(arguments.get(1, ArcadiaArgumentType.NPC).getId()))))
+                .then(LiteralBuilder.literal("edit")
+                        .then(LiteralBuilder.literal("command")
+                                .then(ArgumentBuilder.argument(ArgumentType.NAME, "command")
+                                        .requiresPlayer()
+                                        .executes((context, source, arguments) -> {
+                                            Player player = source.getPlayer();
+                                            CreatedNpc selectedNpc = npcManager.getSelectedNpc(player);
+                                            ArcadiaSender<Player> sender = plugin.getPlayerManager().getPlayerData(player).getSender();
+                                            if (selectedNpc == null) {
+                                                sender.sendError("You don't have an NPC selected");
+                                                return;
+                                            }
+                                            selectedNpc.getPlayer().setInteractCommand(arguments.get(2, ArgumentType.NAME));
+                                            sender.sendMessage("Changed interact command to " + selectedNpc.getPlayer().getInteractCommand());
+                                        }))));
     }
 
     private boolean lookingAt(@NotNull Location eye, @NotNull Location otherLocation) {
