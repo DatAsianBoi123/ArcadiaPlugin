@@ -17,13 +17,19 @@ public class NmsNpc extends ServerPlayer {
         super(minecraftserver, world, gameprofile);
     }
 
+    public String getInteractCommand() {
+        return interactCommand;
+    }
+
     public void setInteractCommand(String interactCommand) {
         this.interactCommand = interactCommand;
     }
 
     @Override
     public InteractionResult interact(@NotNull Player player, InteractionHand hand) {
-        if (interactCommand == null || interactCommand.isEmpty()) return InteractionResult.PASS;
+        if (hand == InteractionHand.OFF_HAND || interactCommand == null || interactCommand.isEmpty()) {
+            return InteractionResult.PASS;
+        }
         Bukkit.dispatchCommand(player.getBukkitEntity(), interactCommand);
         return InteractionResult.PASS;
     }

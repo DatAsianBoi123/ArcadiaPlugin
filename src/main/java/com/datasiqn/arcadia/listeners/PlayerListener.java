@@ -10,16 +10,19 @@ import com.datasiqn.arcadia.item.stat.ItemAttribute;
 import com.datasiqn.arcadia.item.type.ItemType;
 import com.datasiqn.arcadia.managers.DungeonManager;
 import com.datasiqn.arcadia.managers.PlayerManager;
+import com.datasiqn.arcadia.player.ArcadiaPacketListener;
 import com.datasiqn.arcadia.player.PlayerData;
 import com.datasiqn.arcadia.player.PlayerEquipment;
 import com.datasiqn.arcadia.upgrade.actions.ShootBowAction;
 import com.datasiqn.arcadia.util.PdcUtil;
 import com.datasiqn.schedulebuilder.ScheduleBuilder;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -80,6 +83,9 @@ public class PlayerListener implements Listener {
         }
 
         plugin.getNpcManager().updateForPlayer(player);
+
+        ServerGamePacketListenerImpl oldConnection = ((CraftPlayer) player).getHandle().connection;
+        ((CraftPlayer) player).getHandle().connection = new ArcadiaPacketListener(oldConnection, plugin);
     }
 
     @EventHandler
