@@ -19,15 +19,13 @@ public class MagicQuiverListener implements UpgradeListener {
         Player player = action.getPlayer().getPlayer();
 
         ScheduleBuilder.create()
-                .executes(runnable -> {
-                    player.getWorld().spawn(spawnLocation, Arrow.class, newArrow -> {
-                        newArrow.setVelocity(velocity);
-                        newArrow.setCritical(arrow.isCritical());
-                        newArrow.setShooter(arrow.getShooter());
-                        CompoundTag arrowTags = ((CraftPersistentDataContainer) arrow.getPersistentDataContainer()).toTagCompound();
-                        ((CraftPersistentDataContainer) newArrow.getPersistentDataContainer()).putAll(arrowTags);
-                    });
-                })
+                .executes(runnable -> player.getWorld().spawn(spawnLocation, Arrow.class, newArrow -> {
+                    newArrow.setVelocity(velocity);
+                    newArrow.setCritical(arrow.isCritical());
+                    newArrow.setShooter(arrow.getShooter());
+                    CompoundTag arrowTags = ((CraftPersistentDataContainer) arrow.getPersistentDataContainer()).toTagCompound();
+                    ((CraftPersistentDataContainer) newArrow.getPersistentDataContainer()).putAll(arrowTags);
+                }))
                 .wait(1d).ticks()
                 .repeat(stackSize).every(1d).ticks()
                 .run(action.getPlugin());

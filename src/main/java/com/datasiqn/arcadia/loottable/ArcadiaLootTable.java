@@ -31,20 +31,7 @@ public interface ArcadiaLootTable {
             ArcadiaItem itemToSplit = items.stream().findAny().get();
 
             float splitAmount = (itemToSplit.getAmount() / (float) totalAmount) * (size - emptySlots);
-            int times = Math.round(splitAmount);
-            Set<ArcadiaItem> itemSet = new HashSet<>(times);
-            int amount = Math.floorDiv(itemToSplit.getAmount(), times);
-            int extraAmounts = itemToSplit.getAmount() % times;
-            for (int i = 0; i < times; i++) {
-                ArcadiaItem item = new ArcadiaItem(itemToSplit);
-                if (extraAmounts > 0) {
-                    item.setAmount(amount + 1);
-                    extraAmounts -= 1;
-                } else {
-                    item.setAmount(amount);
-                }
-                if (item.getAmount() > 0) itemSet.add(item);
-            }
+            Set<ArcadiaItem> itemSet = getSplitItems(splitAmount, itemToSplit);
             itemsSplit.addAll(itemSet);
 
             items.remove(itemToSplit);
@@ -62,5 +49,24 @@ public interface ArcadiaLootTable {
             }
             inventory.setItem(availableSlots[random.nextInt(availableSlots.length)], item.build());
         });
+    }
+
+    @NotNull
+    private static Set<ArcadiaItem> getSplitItems(float splitAmount, @NotNull ArcadiaItem itemToSplit) {
+        int times = Math.round(splitAmount);
+        Set<ArcadiaItem> itemSet = new HashSet<>(times);
+        int amount = Math.floorDiv(itemToSplit.getAmount(), times);
+        int extraAmounts = itemToSplit.getAmount() % times;
+        for (int i = 0; i < times; i++) {
+            ArcadiaItem item = new ArcadiaItem(itemToSplit);
+            if (extraAmounts > 0) {
+                item.setAmount(amount + 1);
+                extraAmounts -= 1;
+            } else {
+                item.setAmount(amount);
+            }
+            if (item.getAmount() > 0) itemSet.add(item);
+        }
+        return itemSet;
     }
 }

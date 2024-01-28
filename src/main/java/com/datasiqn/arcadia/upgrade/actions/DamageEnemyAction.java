@@ -12,10 +12,6 @@ public class DamageEnemyAction extends EntityAction {
         this.damage = damage;
     }
 
-    public ArcadiaEntity getEntity() {
-        return entity;
-    }
-
     public double getDamage() {
         return damage;
     }

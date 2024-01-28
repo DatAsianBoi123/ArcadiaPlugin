@@ -3,6 +3,7 @@ package com.datasiqn.arcadia.amulet;
 import com.datasiqn.arcadia.managers.LevelRewardManager;
 import com.datasiqn.arcadia.player.PlayerData;
 import com.datasiqn.arcadia.util.lorebuilder.component.ComponentBuilder;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -34,6 +35,7 @@ public class Amulet implements Iterable<PowerStone> {
         return -1;
     }
 
+    @CanIgnoreReturnValue
     public boolean set(int index, PowerStone powerStone) {
         if (index >= getTotalSlots()) return false;
         if (contains(powerStone)) return false;

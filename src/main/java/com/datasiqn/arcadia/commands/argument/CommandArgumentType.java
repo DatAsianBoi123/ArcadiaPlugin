@@ -59,6 +59,7 @@ public class CommandArgumentType implements ArgumentType<Function<CommandSource,
 
     @Override
     public @NotNull Class<Function<CommandSource, Result<None, List<String>>>> getArgumentClass() {
+        //noinspection unchecked
         return (Class<Function<CommandSource, Result<None, List<String>>>>) new TypeToken<Function<CommandSource, Result<None, List<String>>>>() {}.getRawType();
     }
 }

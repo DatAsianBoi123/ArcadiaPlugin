@@ -55,6 +55,7 @@ public class ArcadiaPacketListener extends ServerGamePacketListenerImpl {
         try {
             Field field = instance.getClass().getDeclaredField(fieldName);
             field.setAccessible(true);
+            //noinspection unchecked
             return (T) field.get(instance);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);

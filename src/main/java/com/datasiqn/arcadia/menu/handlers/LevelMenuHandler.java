@@ -182,7 +182,7 @@ public class LevelMenuHandler extends MenuHandler {
             meta.addEnchant(Enchantment.DURABILITY, 0, true);
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         }
-        meta.setDisplayName(ChatColor.GRAY + "Level " + level + " " + color + "" + ChatColor.BOLD + Math.round(progress * 100) + "%");
+        meta.setDisplayName(ChatColor.GRAY + "Level " + level + " " + color + ChatColor.BOLD + Math.round(progress * 100) + "%");
         List<String> rewards = plugin.getLevelRewardManager().getRewards(level);
         if (!rewards.isEmpty()) {
             List<String> lore = new ArrayList<>();

@@ -7,6 +7,7 @@ import com.datasiqn.arcadia.upgrade.listeners.ActionHandler;
 import com.datasiqn.arcadia.upgrade.listeners.UpgradeListener;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
@@ -68,6 +69,7 @@ public class UpgradeEventManager {
             return castedHandlers;
         }
 
+        @CanIgnoreReturnValue
         public <T extends Action> boolean add(@NotNull Class<T> action, Handler<T> handler) {
             boolean putResult = handlers.put(action.getSimpleName(), handler);
             handlers.get(action.getSimpleName()).sort(Comparator.comparingInt(handler1 -> handler1.priority));

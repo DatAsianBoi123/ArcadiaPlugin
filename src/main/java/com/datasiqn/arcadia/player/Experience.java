@@ -10,11 +10,6 @@ public class Experience {
         this.level = 0;
         this.progress = 0;
     }
-    public Experience(long amount) {
-        this.amount = amount;
-        calculateLevel();
-        calculateProgress();
-    }
 
     public long getAmount() {
         return amount;

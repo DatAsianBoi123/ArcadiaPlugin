@@ -187,7 +187,7 @@ public class ArcadiaItem implements ConfigurationSerializable {
             statsLore.add(" ");
             lore.addAll(0, statsLore);
             if (itemMeta.getItemStats().hasRandomizedAttributes()) {
-                lore.add(0, ChatColor.DARK_GRAY + "Item Quality: " + ChatColor.DARK_PURPLE + "" + ChatColor.MAGIC + "__" + ChatColor.DARK_PURPLE + "%");
+                lore.add(0, ChatColor.DARK_GRAY + "Item Quality: " + ChatColor.DARK_PURPLE + ChatColor.MAGIC + "__" + ChatColor.DARK_PURPLE + "%");
             } else {
                 lore.add(0, ChatColor.DARK_GRAY + "Item Quality: " + ChatColor.GRAY + "100% (never has randomized stats)");
             }
@@ -237,6 +237,7 @@ public class ArcadiaItem implements ConfigurationSerializable {
         return objectMap;
     }
 
+    @SuppressWarnings("unused")
     public static @NotNull ArcadiaItem deserialize(@NotNull Map<String, Object> data) {
         String id = data.get("id") instanceof String string ? string.toUpperCase() : "STONE";
         ArcadiaItem item;

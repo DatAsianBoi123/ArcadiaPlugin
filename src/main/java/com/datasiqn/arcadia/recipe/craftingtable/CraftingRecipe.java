@@ -11,10 +11,11 @@ public interface CraftingRecipe {
     default boolean canCraft(@Nullable ItemStack @NotNull [] itemMatrix) {
         ItemStack[] recipe = getRecipe();
         for (int i = 0; i < recipe.length; i++) {
-            if (itemMatrix[i] == null && recipe[i] == null) continue;
-            if (itemMatrix[i] == null || recipe[i] == null) return false;
-            if (!new ArcadiaItem(itemMatrix[i]).isSimilar(new ArcadiaItem(recipe[i]))) return false;
-            if (itemMatrix[i].getAmount() < recipe[i].getAmount()) return false;
+            ItemStack currentItem = itemMatrix[i];
+            if (currentItem == null && recipe[i] == null) continue;
+            if (currentItem == null || recipe[i] == null) return false;
+            if (!new ArcadiaItem(currentItem).isSimilar(new ArcadiaItem(recipe[i]))) return false;
+            if (currentItem.getAmount() < recipe[i].getAmount()) return false;
         }
         return true;
     }

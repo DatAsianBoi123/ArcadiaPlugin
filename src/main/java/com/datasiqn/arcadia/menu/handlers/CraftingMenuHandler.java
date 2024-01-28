@@ -105,8 +105,10 @@ public class CraftingMenuHandler extends MenuHandler {
             case MOVE_TO_OTHER_INVENTORY -> {
                 amount = 64;
                 for (int i = 0; i < craftingMatrix.length; i++) {
-                    if (craftingMatrix[i] == null || currentRecipe.getRecipe()[i] == null) continue;
-                    int amountCanCraft = craftingMatrix[i].getAmount() / currentRecipe.getRecipe()[i].getAmount();
+                    ItemStack currentItem = craftingMatrix[i];
+                    ItemStack currentRecipeItem = currentRecipe.getRecipe()[i];
+                    if (currentItem == null || currentRecipeItem == null) continue;
+                    int amountCanCraft = currentItem.getAmount() / currentRecipeItem.getAmount();
                     if (amountCanCraft < amount) amount = amountCanCraft;
                 }
                 amount = Math.min(amount, itemCanBeAdded(resultItemStack, whoClicked.getInventory()));
@@ -147,8 +149,9 @@ public class CraftingMenuHandler extends MenuHandler {
         if (currentRecipe == null) return false;
         for (int i = 0; i < CRAFTING_SLOTS.length; i++) {
             ItemStack item = inventory.getItem(CRAFTING_SLOTS[i]);
-            if (item == null || currentRecipe.getRecipe()[i] == null) continue;
-            int newAmount = item.getAmount() - currentRecipe.getRecipe()[i].getAmount() * multiplier;
+            ItemStack currentRecipeItem = currentRecipe.getRecipe()[i];
+            if (item == null || currentRecipeItem == null) continue;
+            int newAmount = item.getAmount() - currentRecipeItem.getAmount() * multiplier;
             if (newAmount < 0) return false;
             item.setAmount(newAmount);
         }

@@ -31,7 +31,7 @@ public class WeightedRandom<T> {
             }
         }
 
-        while (small.size() > 0 && large.size() > 0) {
+        while (!small.isEmpty() && !large.isEmpty()) {
             alias[small.getInt(0)] = large.getInt(0);
             probabilities[large.getInt(0)] += probabilities[small.getInt(0)] - 1;
             small.removeInt(0);
@@ -39,11 +39,11 @@ public class WeightedRandom<T> {
             else if (probabilities[large.getInt(0)] < 1) small.add(large.removeInt(0));
         }
 
-        while (small.size() > 0) {
+        while (!small.isEmpty()) {
             probabilities[small.removeInt(0)] = 1;
         }
 
-        while (large.size() > 0) {
+        while (!large.isEmpty()) {
             probabilities[large.removeInt(0)] = 1;
         }
     }

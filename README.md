@@ -4,7 +4,7 @@ An up-coming rogue-lite Minecraft plugin/server, over 1 year in the making.
 ## Goals
 - Procedurally generated dungeons for infinite replayability
 - Difficult, yet fair gameplay
-- A large variety of upgrades, allowing for many unique playstyles
+- A large variety of upgrades, allowing for many unique play-styles
 - An in-depth levelling system that rewards players for playing well
 - Complex boss and enemy AI
 - Improved combat feel with many custom weapons and armor sets
