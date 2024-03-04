@@ -136,6 +136,13 @@ public class CommandNpc {
         else skinData = SkinData.none();
         ArcadiaNpc npc = new ArcadiaNpc(player.getWorld(), player.getLocation(), name, skinData);
         plugin.getNpcManager().create(npc)
-                .thenAccept(createdNpc -> plugin.getPlayerManager().getPlayerData(player).getSender().sendMessage("Successfully created an NPC with the id of " + createdNpc.getId()));
+                .whenComplete((createdNpc, err) -> {
+                    ArcadiaSender<Player> sender = plugin.getPlayerManager().getPlayerData(player).getSender();
+                    if (err == null) {
+                        sender.sendMessage("Successfully created an NPC with the id of " + createdNpc.getId());
+                    } else {
+                        sender.sendError("Error creating npc: " + err.getMessage());
+                    }
+                });
     }
 }
