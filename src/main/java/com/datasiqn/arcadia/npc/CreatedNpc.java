@@ -73,7 +73,8 @@ public final class CreatedNpc {
                 .thenApply(serverPlayer -> {
                     CreatedNpc createdNpc = new CreatedNpc(jsonObject.get("id").getAsLong(), npc, serverPlayer);
                     createdNpc.shown = jsonObject.get("shown").getAsBoolean();
-                    serverPlayer.setInteractCommand(jsonObject.get("command").getAsString());
+                    JsonElement commandElement = jsonObject.get("command");
+                    if (commandElement != null) serverPlayer.setInteractCommand(commandElement.getAsString());
                     return createdNpc;
                 });
     }
