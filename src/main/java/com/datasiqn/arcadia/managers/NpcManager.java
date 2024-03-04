@@ -5,13 +5,18 @@ import com.datasiqn.arcadia.npc.ArcadiaNpc;
 import com.datasiqn.arcadia.npc.CreatedNpc;
 import com.datasiqn.arcadia.npc.NmsNpc;
 import com.google.gson.*;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerPlayerConnection;
+import net.minecraft.world.entity.Display;
+import net.minecraft.world.entity.decoration.ArmorStand;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -170,12 +175,20 @@ public class NpcManager {
     private void showPlayer(Player player, @NotNull Collection<CreatedNpc> npcs) {
         ServerPlayerConnection connection = ((CraftPlayer) player).getHandle().connection;
         EnumSet<ClientboundPlayerInfoUpdatePacket.Action> actions = EnumSet.of(ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER);
-        connection.send(new ClientboundPlayerInfoUpdatePacket(actions, npcs.stream().map(npc1 -> (ServerPlayer) npc1.getPlayer()).toList()));
+        List<ServerPlayer> players = new ArrayList<>();
+        for (CreatedNpc npc : npcs) {
+            if (npc.isShown()) players.add(npc.getPlayer());
+        }
+        connection.send(new ClientboundPlayerInfoUpdatePacket(actions, players));
         for (CreatedNpc npc : npcs) {
             boolean glow = false;
             CreatedNpc selectedNpc = selectedNpcs.get(player.getUniqueId());
             if (selectedNpc != null) glow = selectedNpc.equals(npc);
-            sendPlayerPackets(connection, npc.getPlayer(), glow);
+
+            NmsNpc npcPlayer = npc.getPlayer();
+            sendPlayerPackets(connection, npcPlayer, glow);
+            sendNamePackets(connection, npc.getNameDisplay(), npc.getNpc().getName());
+            sendPassengerPackets(connection, npcPlayer);
         }
     }
 
@@ -188,14 +201,19 @@ public class NpcManager {
         }
     }
 
-    private static void hidePlayer(Player player, @NotNull Collection<CreatedNpc> npcs) {
-        ((CraftPlayer) player).getHandle().connection.send(new ClientboundRemoveEntitiesPacket(npcs.stream().mapToInt(npc -> npc.getPlayer().getId()).toArray()));
+    private void hidePlayer(Player player, @NotNull Collection<CreatedNpc> npcs) {
+        IntList entityIds = new IntArrayList();
+        for (CreatedNpc npc : npcs) {
+            entityIds.add(npc.getPlayer().getId());
+            entityIds.add(npc.getNameDisplay().getId());
+        }
+        ((CraftPlayer) player).getHandle().connection.send(new ClientboundRemoveEntitiesPacket(entityIds));
     }
 
-    private static void hide(CreatedNpc npc) {
+    private void hide(CreatedNpc npc) {
         hide(Collections.singleton(npc));
     }
-    private static void hide(Collection<CreatedNpc> npcs) {
+    private void hide(Collection<CreatedNpc> npcs) {
         for (Player player : Bukkit.getOnlinePlayers()) {
             hidePlayer(player, npcs);
         }
@@ -222,6 +240,26 @@ public class NpcManager {
         dataValues.add(new SynchedEntityData.DataValue<>(17, EntityDataSerializers.BYTE, skinMask));
         dataValues.add(new SynchedEntityData.DataValue<>(0, EntityDataSerializers.BYTE, glow ? (byte) 0x40 : 0));
         connection.send(new ClientboundSetEntityDataPacket(serverPlayer.getId(), dataValues));
+    }
+
+    private static void sendNamePackets(@NotNull ServerPlayerConnection connection, @NotNull Display.TextDisplay textDisplay, String name) {
+        connection.send(new ClientboundAddEntityPacket(textDisplay));
+
+        List<SynchedEntityData.DataValue<?>> dataValues = new ArrayList<>();
+        dataValues.add(new SynchedEntityData.DataValue<>(22, EntityDataSerializers.COMPONENT, Component.literal(name)));
+        dataValues.add(new SynchedEntityData.DataValue<>(14, EntityDataSerializers.BYTE, (byte) 3));
+        connection.send(new ClientboundSetEntityDataPacket(textDisplay.getId(), dataValues));
+    }
+
+    private static void sendPassengerPackets(@NotNull ServerPlayerConnection connection, @NotNull ServerPlayer serverPlayer) {
+        ArmorStand passenger = new ArmorStand(serverPlayer.getLevel(), 0, 0, 0);
+        passenger.startRiding(serverPlayer, true);
+
+        connection.send(new ClientboundAddEntityPacket(passenger));
+        List<SynchedEntityData.DataValue<?>> dataValues = new ArrayList<>();
+        dataValues.add(new SynchedEntityData.DataValue<>(15, EntityDataSerializers.BYTE, (byte) 0x10));
+        connection.send(new ClientboundSetEntityDataPacket(passenger.getId(), dataValues));
+        connection.send(new ClientboundSetPassengersPacket(serverPlayer));
     }
 
     private static byte toAngle(double delta) {

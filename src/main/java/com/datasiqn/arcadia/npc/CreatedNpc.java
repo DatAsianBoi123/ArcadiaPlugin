@@ -1,7 +1,10 @@
 package com.datasiqn.arcadia.npc;
 
 import com.datasiqn.arcadia.Arcadia;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.minecraft.world.entity.Display.TextDisplay;
+import net.minecraft.world.entity.EntityType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
@@ -10,13 +13,16 @@ public final class CreatedNpc {
     private final long id;
     private final ArcadiaNpc npc;
     private final NmsNpc serverPlayer;
+    private final TextDisplay nameDisplay;
 
     private boolean shown = false;
 
-    public CreatedNpc(long id, ArcadiaNpc npc, NmsNpc serverPlayer) {
+    public CreatedNpc(long id, @NotNull ArcadiaNpc npc, @NotNull NmsNpc serverPlayer) {
         this.id = id;
         this.npc = npc;
         this.serverPlayer = serverPlayer;
+        this.nameDisplay = new TextDisplay(EntityType.TEXT_DISPLAY, serverPlayer.level);
+        nameDisplay.setPos(serverPlayer.position().add(0, 2, 0));
     }
 
     public void show() {
@@ -37,6 +43,10 @@ public final class CreatedNpc {
 
     public NmsNpc getPlayer() {
         return serverPlayer;
+    }
+
+    public TextDisplay getNameDisplay() {
+        return nameDisplay;
     }
 
     public boolean isShown() {

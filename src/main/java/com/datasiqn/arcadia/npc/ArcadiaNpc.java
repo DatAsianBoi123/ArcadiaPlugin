@@ -42,7 +42,7 @@ public final class ArcadiaNpc {
     public @NotNull CompletableFuture<NmsNpc> createFakePlayer(Arcadia plugin) {
         return CompletableFuture
                 .supplyAsync(() -> {
-                    GameProfile gameProfile = new GameProfile(uuid, name);
+                    GameProfile gameProfile = new GameProfile(uuid, " ");
                     if (skinData.getType() == SkinData.SkinType.UUID) {
                         try {
                             HttpsURLConnection connection = (HttpsURLConnection) new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + skinData.getUuid() + "?unsigned=false").openConnection();
@@ -96,8 +96,8 @@ public final class ArcadiaNpc {
         return world;
     }
 
-    public Location getLocation() {
-        return location;
+    public @NotNull Location getLocation() {
+        return location.clone();
     }
 
     public String getName() {
