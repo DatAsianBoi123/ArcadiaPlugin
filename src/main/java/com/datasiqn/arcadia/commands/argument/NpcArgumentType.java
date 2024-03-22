@@ -19,7 +19,7 @@ public class NpcArgumentType implements ArgumentType<CreatedNpc> {
 
     @Override
     public @NotNull Result<CreatedNpc, String> parse(@NotNull ArgumentReader reader) {
-        return ArgumentType.rangedNumber(long.class, 0L).parse(reader)
+        return ArgumentType.boundedNumber(long.class, 0L).parse(reader)
                 .andThen(id -> {
                     Arcadia plugin = JavaPlugin.getPlugin(Arcadia.class);
                     return Result.ofNullable(plugin.getNpcManager().getNpc(id), "No NPC exists with the id " + id);

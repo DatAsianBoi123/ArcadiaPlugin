@@ -38,7 +38,7 @@ public class CommandDungeons {
                 })
                 .then(LiteralBuilder.literal("create")
                         .executes((context, source, arguments) -> {
-                            ArcadiaSender<?> sender = source.getPlayerChecked().matchResult(player -> plugin.getPlayerManager().getPlayerData(player).getSender(), err -> new ArcadiaSender<>(source.sender()));
+                            ArcadiaSender<?> sender = source.getPlayerChecked().matchResult(player -> plugin.getPlayerManager().getPlayerData(player).getSender(), err -> new ArcadiaSender<>(source.getSender()));
                             DungeonInstance instance = plugin.getDungeonManager().createDungeon();
                             if (instance == null) {
                                 sender.sendError("An unexpected error occurred. Please try again later");
@@ -50,7 +50,7 @@ public class CommandDungeons {
                         .then(ArgumentBuilder.argument(ArcadiaArgumentType.DUNGEON, "world name")
                                 .executes((context, source, arguments) -> {
                                     DungeonInstance instance = arguments.get(1, ArcadiaArgumentType.DUNGEON);
-                                    ArcadiaSender<?> sender = source.getPlayerChecked().matchResult(player -> plugin.getPlayerManager().getPlayerData(player).getSender(), err -> new ArcadiaSender<>(source.sender()));
+                                    ArcadiaSender<?> sender = source.getPlayerChecked().matchResult(player -> plugin.getPlayerManager().getPlayerData(player).getSender(), err -> new ArcadiaSender<>(source.getSender()));
                                     if (!plugin.getDungeonManager().deleteDungeon(instance)) {
                                         sender.sendError("An error occurred when deleting the world. Please try again later");
                                         return;
@@ -63,15 +63,15 @@ public class CommandDungeons {
                                 .executes((context, source, arguments) -> plugin.getDungeonManager().addPlayerTo(plugin.getPlayerManager().getPlayerData(source.getPlayer()), arguments.get(1, ArcadiaArgumentType.DUNGEON)))))
                 .then(LiteralBuilder.literal("pickup")
                         .then(ArgumentBuilder.argument(ArcadiaArgumentType.UPGRADE, "upgrade")
-                                .then(ArgumentBuilder.argument(ArgumentType.rangedNumber(int.class, 1), "amount")
+                                .then(ArgumentBuilder.argument(ArgumentType.boundedNumber(int.class, 1), "amount")
                                         .requiresPlayer()
-                                        .executes((context, source, arguments) -> pickupItem(context, arguments.get(1, ArcadiaArgumentType.UPGRADE), arguments.get(2, ArgumentType.rangedNumber(int.class, 1)))))
+                                        .executes((context, source, arguments) -> pickupItem(context, arguments.get(1, ArcadiaArgumentType.UPGRADE), arguments.get(2, ArgumentType.boundedNumber(int.class, 1)))))
                                 .requiresPlayer()
                                 .executes((context, source, arguments) -> pickupItem(context, arguments.get(1, ArcadiaArgumentType.UPGRADE), 1)))
-                        .then(ArgumentBuilder.argument(ArgumentType.rangedNumber(int.class, 1), "amount")
+                        .then(ArgumentBuilder.argument(ArgumentType.boundedNumber(int.class, 1), "amount")
                                 .requiresPlayer()
                                 .executes((context, source, arguments) -> {
-                                    int amount = arguments.get(1, ArgumentType.rangedNumber(int.class, 1));
+                                    int amount = arguments.get(1, ArgumentType.boundedNumber(int.class, 1));
                                     for (int i = 0; i < amount; i++) {
                                         if (!pickupItem(context, UpgradeType.getRandomWeighted(), 1)) break;
                                     }
