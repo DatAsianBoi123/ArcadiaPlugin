@@ -15,7 +15,7 @@ public class ComponentBuilder {
     public ComponentBuilder text(String text) {
         return append(TextLoreComponent.text(text));
     }
-    public ComponentBuilder text(String text, ChatColor color) {
+    public ComponentBuilder text(String text, ChatColor... color) {
         return append(TextLoreComponent.text(text, color));
     }
 
