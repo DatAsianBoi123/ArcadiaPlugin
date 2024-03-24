@@ -59,6 +59,7 @@ public class DamageListener implements Listener {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @EventHandler(ignoreCancelled = true)
     public void onEntityDamageByEntity(@NotNull EntityDamageByEntityEvent event) {
         if (event.getCause() == DamageCause.ENTITY_SWEEP_ATTACK) return;
@@ -100,6 +101,11 @@ public class DamageListener implements Listener {
 
             event.setDamage(damage);
             entity.handleDamageEvent(event, dungeonPlayer);
+            for (EntityDamageEvent.DamageModifier modifier : EntityDamageEvent.DamageModifier.values()) {
+                if (!event.isApplicable(modifier)) continue;
+                if (modifier == EntityDamageEvent.DamageModifier.BASE) continue;
+                event.setDamage(modifier, 0);
+            }
 
             ScheduleBuilder.create().executes(runnable -> {
                 Entity eventEntity = event.getEntity();
