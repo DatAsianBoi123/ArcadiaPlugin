@@ -305,6 +305,27 @@ public enum ArcadiaMaterial {
             .rarity(ItemRarity.SPECIAL)
             .stackable(false)
             .build()),
+    BROKEN_LIGHTBULB(MaterialData.builder(ItemType.NONE)
+            .name("Broken Lightbulb")
+            .lore(new LoreBuilder()
+                    .append("The remnants of a once working lightbulb.")
+                    .append("There is a small label that reads, 'SUN'.")
+                    .emptyLine()
+                    .append("[...This world would only exist as a memory]", ChatColor.LIGHT_PURPLE, ChatColor.ITALIC)
+                    .append(new ComponentBuilder()
+                            .text("[For ", ChatColor.LIGHT_PURPLE, ChatColor.ITALIC)
+                            .text("----", ChatColor.GRAY, ChatColor.MAGIC)
+                            .text(", a dream.]", ChatColor.LIGHT_PURPLE, ChatColor.ITALIC)
+                            .build())
+                    .append("[Like thousands of other dreams.]", ChatColor.LIGHT_PURPLE, ChatColor.ITALIC)
+                    .append("[For you, a story.]", ChatColor.LIGHT_PURPLE, ChatColor.ITALIC)
+                    .append("[Like thousands of other stories.]", ChatColor.LIGHT_PURPLE, ChatColor.ITALIC)
+                    .build())
+            .material(Material.PLAYER_HEAD)
+            .rarity(ItemRarity.SPECIAL)
+            .stackable(false)
+            .addModifier(new SkullItemModifier("5381a2d5af55779c4dd39f403f982ac8a9ead269ca4e80501e1dcb8631c5a290"))
+            .build()),
 
     FRUITY_APPLE(MaterialData.builder(ItemType.CONSUMABLE,
             new ConsumableData(new LoreBuilder()
