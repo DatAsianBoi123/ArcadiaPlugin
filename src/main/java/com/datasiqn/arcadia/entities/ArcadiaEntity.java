@@ -86,7 +86,10 @@ public abstract class ArcadiaEntity extends PathfinderMob {
 
     public void damage(double amount, DamageSource source, @Nullable DungeonPlayer player) {
         if (health <= 0) return;
-        handleDamage(amount, () -> this.hurt(source, Float.MAX_VALUE), player);
+        handleDamage(amount, () -> {
+            setHealth(0);
+            die(source);
+        }, player);
     }
 
     public void summon(@NotNull Location location) {
