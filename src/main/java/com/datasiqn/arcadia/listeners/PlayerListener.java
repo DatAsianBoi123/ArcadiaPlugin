@@ -106,6 +106,7 @@ public class PlayerListener implements Listener {
         new Thread(playerManager.getPlayerData(player)::saveData).start();
         plugin.getNpcManager().deselectNpc(player);
         playerManager.removePlayer(player);
+        plugin.getDungeonManager().leaveDungeon(player);
     }
 
     @EventHandler
