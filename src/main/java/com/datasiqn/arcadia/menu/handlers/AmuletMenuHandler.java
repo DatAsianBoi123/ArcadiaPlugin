@@ -86,6 +86,20 @@ public class AmuletMenuHandler extends MenuHandler {
         for (int i = 0; i < AMULET_SLOTS.length; i++) {
             setItem(AMULET_SLOTS[i], createAmuletSlot(amulet, i, inventory));
         }
+
+        ItemStack clearAllItem = new ItemStack(Material.BARRIER);
+        ItemMeta meta = clearAllItem.getItemMeta();
+        if (meta != null) {
+            meta.setDisplayName(ChatColor.RED + "Clear All");
+            clearAllItem.setItemMeta(meta);
+        }
+        setItem(38, new MenuButton(clearAllItem)
+                .onClick(event -> {
+                    amulet.clear();
+                    for (int i = 0; i < AMULET_SLOTS.length; i++) {
+                        inventory.setItem(AMULET_SLOTS[i], createAmuletSlot(amulet, i, inventory).getIcon());
+                    }
+                }));
     }
 
     @Override
