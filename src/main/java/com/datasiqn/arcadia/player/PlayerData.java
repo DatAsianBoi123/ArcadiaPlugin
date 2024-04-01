@@ -319,10 +319,6 @@ public class PlayerData {
         }
     }
 
-    public double getStrength() {
-        return getAttribute(PlayerAttribute.STRENGTH);
-    }
-
     public double getAttackSpeed() {
         return getAttribute(PlayerAttribute.ATTACK_SPEED);
     }

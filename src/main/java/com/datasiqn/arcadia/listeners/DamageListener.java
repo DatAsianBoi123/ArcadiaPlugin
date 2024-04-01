@@ -17,6 +17,7 @@ import com.datasiqn.arcadia.item.meta.ArcadiaItemMeta;
 import com.datasiqn.arcadia.item.stat.AttributeInstance;
 import com.datasiqn.arcadia.item.stat.ItemAttribute;
 import com.datasiqn.arcadia.player.ArcadiaSender;
+import com.datasiqn.arcadia.player.PlayerAttribute;
 import com.datasiqn.arcadia.player.PlayerData;
 import com.datasiqn.arcadia.util.PdcUtil;
 import com.datasiqn.schedulebuilder.ScheduleBuilder;
@@ -150,8 +151,6 @@ public class DamageListener implements Listener {
 
         double finalDamage;
 
-        double strength = playerData.getStrength();
-
         double additiveBonus = 1;
         double multiplicativeBonus = 1;
         for (EnchantType enchantType : itemMeta.getEnchants()) {
@@ -171,6 +170,8 @@ public class DamageListener implements Listener {
                 enchantModifier.modifyEntity(entity, level);
             }
         }
+
+        double strength = playerData.getAttribute(PlayerAttribute.STRENGTH);
 
         double damageValue = damageAttribute == null ? 1 : damageAttribute.getValue();
         finalDamage = (damageValue + DamageHelper.getStrengthBonus(strength, damageValue)) * (additiveBonus * multiplicativeBonus);

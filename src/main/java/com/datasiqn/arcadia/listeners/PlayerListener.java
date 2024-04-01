@@ -11,6 +11,7 @@ import com.datasiqn.arcadia.item.type.ItemType;
 import com.datasiqn.arcadia.managers.DungeonManager;
 import com.datasiqn.arcadia.managers.PlayerManager;
 import com.datasiqn.arcadia.player.ArcadiaPacketListener;
+import com.datasiqn.arcadia.player.PlayerAttribute;
 import com.datasiqn.arcadia.player.PlayerData;
 import com.datasiqn.arcadia.player.PlayerEquipment;
 import com.datasiqn.arcadia.upgrade.actions.ShootBowAction;
@@ -211,7 +212,7 @@ public class PlayerListener implements Listener {
         PersistentDataContainer pdc = arrow.getPersistentDataContainer();
         com.datasiqn.arcadia.item.stat.AttributeInstance damageAttribute = bowItem.getItemMeta().getItemStats().getAttribute(ItemAttribute.DAMAGE);
         double damageValue = damageAttribute == null ? 1 : damageAttribute.getValue();
-        double damage = damageValue + DamageHelper.getStrengthBonus(playerData.getStrength(), damageValue) * event.getForce();
+        double damage = damageValue + DamageHelper.getStrengthBonus(playerData.getAttribute(PlayerAttribute.STRENGTH), damageValue) * event.getForce();
         PdcUtil.set(pdc, ArcadiaTag.ARROW_DAMAGE, damage);
 
         DungeonPlayer dungeonPlayer = plugin.getDungeonManager().getDungeonPlayer(playerData);
