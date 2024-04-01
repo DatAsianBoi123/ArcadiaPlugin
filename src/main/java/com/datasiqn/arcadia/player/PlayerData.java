@@ -20,18 +20,27 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.text.DecimalFormat;
+import java.util.List;
 import java.util.UUID;
 
 public class PlayerData {
@@ -47,10 +56,12 @@ public class PlayerData {
     private final Player player;
     private final Object2DoubleMap<PlayerAttribute> attributes = new Object2DoubleOpenHashMap<>();
     private final Experience xp = new Experience();
+    private final BossBar cooldownBossBar = Bukkit.createBossBar("Weapon Cooldown", BarColor.RED, BarStyle.SEGMENTED_10);
 
     private double health;
     private double hunger;
     private boolean debugMode;
+    private int cooldown = 0;
 
     private BukkitTask regenHealthRunnable;
     private BukkitTask getHungryRunnable;
@@ -74,6 +85,27 @@ public class PlayerData {
             return;
         }
         this.dataFile = dataFile;
+
+        cooldownBossBar.setVisible(false);
+        cooldownBossBar.addPlayer(player);
+
+        ScheduleBuilder.create()
+                .repeat(-1).every(1).ticks()
+                .executes(runnable -> {
+                    if (cooldown == 1) player.removePotionEffect(PotionEffectType.SLOW_DIGGING);
+                    if (cooldown <= 0) {
+                        if (cooldown == 0) {
+                            player.playSound(player, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1, 1);
+                            cooldown = -1;
+                        }
+                        cooldownBossBar.setProgress(1);
+                        cooldownBossBar.setVisible(false);
+                        return;
+                    }
+
+                    cooldown--;
+                    cooldownBossBar.setProgress(Mth.clamp(cooldown / getItemCooldown(), 0, 1));
+                }).run(plugin);
     }
 
     public void updateLevel() {
@@ -111,16 +143,6 @@ public class PlayerData {
         DungeonPlayer dungeonPlayer = plugin.getDungeonManager().getDungeonPlayer(this);
         if (dungeonPlayer != null) {
             plugin.getUpgradeEventManager().emit(new UpdateAttributesAction(dungeonPlayer, attributes, plugin));
-        }
-
-        var attackSpeedAttribute = player.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
-        if (attackSpeedAttribute != null) {
-            ScheduleBuilder.create()
-                    .executes(runnable -> {
-                        double currentSpeed = equipment.getItemInMainHand().getData().getType().getAttackSpeed();
-                        double newSpeed = currentSpeed * Math.pow(DEFAULT_ATTACK_SPEED / currentSpeed, getAttackSpeed() / 100);
-                        attackSpeedAttribute.setBaseValue(newSpeed);
-                    }).run(plugin);
         }
 
         if (regenHealth) health = getAttribute(PlayerAttribute.MAX_HEALTH);
@@ -319,8 +341,31 @@ public class PlayerData {
         }
     }
 
-    public double getAttackSpeed() {
-        return getAttribute(PlayerAttribute.ATTACK_SPEED);
+    public boolean tryAttack() {
+        if (cooldown <= 0) {
+            resetAttackCooldown();
+            return true;
+        }
+        return false;
+    }
+
+    public void resetAttackCooldown() {
+        cooldown = (int) Math.round(getItemCooldown());
+        if (cooldown == 0) {
+            cooldown = -1;
+            return;
+        }
+        cooldownBossBar.setVisible(true);
+        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, PotionEffect.INFINITE_DURATION, 255, false, false, false));
+    }
+
+    public int getCooldown() {
+        return cooldown;
+    }
+
+    public double getItemCooldown() {
+        double attackCooldown = equipment.getItemInMainHand().getData().getType().getAttackCooldown();
+        return -attackCooldown * Math.min(getAttribute(PlayerAttribute.ATTACK_SPEED), 100) / 100 + attackCooldown;
     }
 
     public double getAttribute(PlayerAttribute attribute) {

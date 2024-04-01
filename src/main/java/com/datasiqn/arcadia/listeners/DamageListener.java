@@ -22,10 +22,8 @@ import com.datasiqn.arcadia.player.PlayerAttribute;
 import com.datasiqn.arcadia.player.PlayerData;
 import com.datasiqn.arcadia.util.PdcUtil;
 import com.datasiqn.schedulebuilder.ScheduleBuilder;
-import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.v1_19_R3.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -34,6 +32,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
@@ -78,24 +77,7 @@ public class DamageListener implements Listener {
                 player = shooter;
             } else {
                 player = damager;
-                ServerPlayer nmsPlayer = ((CraftPlayer) damager).getHandle();
-                if (nmsPlayer.getAttackStrengthScale(0.5f) < 1) {
-//                    try {
-//                        Field attackStrengthTicker = net.minecraft.world.entity.LivingEntity.class.getDeclaredField("aO" /* attackStrengthTicker */);
-//                        attackStrengthTicker.setAccessible(true);
-//                        int strength = attackStrengthTicker.getInt(nmsPlayer);
-//                        ScheduleBuilder.create()
-//                                .executes(runnable -> {
-//                                    try {
-//                                        attackStrengthTicker.setInt(nmsPlayer, strength);
-//                                    } catch (IllegalAccessException e) {
-//                                        e.printStackTrace();
-//                                    }
-//                                }).run(plugin);
-//                    } catch (NoSuchFieldException | IllegalAccessException e) {
-//                        e.printStackTrace();
-//                    }
-
+                if (!playerManager.getPlayerData(damager).tryAttack()) {
                     event.setCancelled(true);
                     return;
                 }

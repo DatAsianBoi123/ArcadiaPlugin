@@ -44,6 +44,7 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -101,6 +102,8 @@ public class PlayerListener implements Listener {
         AttributeInstance healthAttribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
         if (healthAttribute != null) healthAttribute.setBaseValue(20);
 
+        player.removePotionEffect(PotionEffectType.SLOW_DIGGING);
+
         ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
         if (scoreboardManager != null) player.setScoreboard(scoreboardManager.getMainScoreboard());
 
@@ -108,6 +111,12 @@ public class PlayerListener implements Listener {
         plugin.getNpcManager().deselectNpc(player);
         playerManager.removePlayer(player);
         plugin.getDungeonManager().leaveDungeon(player);
+    }
+
+    @EventHandler
+    public void onPlayerHit(@NotNull PlayerInteractEvent event) {
+        if (event.getHand() != EquipmentSlot.HAND) return;
+        playerManager.getPlayerData(event.getPlayer()).tryAttack();
     }
 
     @EventHandler
@@ -143,6 +152,7 @@ public class PlayerListener implements Listener {
     public void switchMainHand(@NotNull PlayerData playerData, ItemStack newItem) {
         playerData.getEquipment().setItemInMainHand(new ArcadiaItem(newItem));
         playerData.updateValues();
+        playerData.resetAttackCooldown();
     }
 
     @EventHandler
