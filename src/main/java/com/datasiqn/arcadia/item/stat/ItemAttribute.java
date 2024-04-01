@@ -2,6 +2,7 @@ package com.datasiqn.arcadia.item.stat;
 
 import net.md_5.bungee.api.ChatColor;
 
+// TODO: delete
 public enum ItemAttribute {
     HEALTH("Health", ChatColor.RED, StatIcon.HEALTH),
     DEFENSE("Defense", ChatColor.GREEN, StatIcon.DEFENSE),
@@ -14,9 +15,9 @@ public enum ItemAttribute {
 
     private final String displayName;
     private final ChatColor color;
-    private final StatIcon icon;
+    private final String icon;
 
-    ItemAttribute(String displayName, ChatColor color, StatIcon icon) {
+    ItemAttribute(String displayName, ChatColor color, String icon) {
         this.displayName = displayName;
         this.color = color;
         this.icon = icon;
@@ -31,7 +32,7 @@ public enum ItemAttribute {
         return color;
     }
 
-    public StatIcon getIcon() {
+    public String getIcon() {
         return icon;
     }
 }
