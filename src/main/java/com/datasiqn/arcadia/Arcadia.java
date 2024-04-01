@@ -3,6 +3,7 @@ package com.datasiqn.arcadia;
 import com.datasiqn.arcadia.amulet.Amulet;
 import com.datasiqn.arcadia.amulet.PowerStone;
 import com.datasiqn.arcadia.commands.*;
+import com.datasiqn.arcadia.commands.argument.ArcadiaArgumentType;
 import com.datasiqn.arcadia.item.ArcadiaItem;
 import com.datasiqn.arcadia.listeners.*;
 import com.datasiqn.arcadia.managers.*;
@@ -12,6 +13,7 @@ import com.datasiqn.arcadia.util.PdcUtil;
 import com.datasiqn.commandcore.CommandCore;
 import com.datasiqn.commandcore.InitOptions;
 import com.datasiqn.commandcore.command.builder.CommandBuilder;
+import com.datasiqn.commandcore.managers.ArgumentTypeManager;
 import com.datasiqn.commandcore.managers.CommandManager;
 import com.datasiqn.menuapi.MenuApi;
 import com.datasiqn.schedulebuilder.ScheduleBuilder;
@@ -73,6 +75,7 @@ public final class Arcadia extends JavaPlugin {
                 .warnOn(InitOptions.Warning.MISSING_PERMISSION, InitOptions.Warning.MISSING_DESCRIPTION)
                 .build());
 
+        registerArgumentTypes();
         registerAllCommands();
         registerAllListeners();
 
@@ -153,20 +156,35 @@ public final class Arcadia extends JavaPlugin {
         return npcManager;
     }
 
+    private void registerArgumentTypes() {
+        ArgumentTypeManager manager = CommandCore.getInstance().getArgumentTypeManager();
+        manager.register(ArcadiaArgumentType.PLAYER);
+        manager.register(ArcadiaArgumentType.PLAYER_ATTRIBUTE);
+        manager.register(ArcadiaArgumentType.ITEM);
+        manager.register(ArcadiaArgumentType.ENCHANT);
+        manager.register(ArcadiaArgumentType.LOOT_TABLE);
+        manager.register(ArcadiaArgumentType.RECIPE);
+        manager.register(ArcadiaArgumentType.UPGRADE);
+        manager.register(ArcadiaArgumentType.ENTITY);
+        manager.register(ArcadiaArgumentType.GUI);
+        manager.register(ArcadiaArgumentType.DUNGEON);
+        manager.register(ArcadiaArgumentType.NPC);
+    }
+
     private void registerAllCommands() {
         CommandManager commandManager = CommandCore.getInstance().getCommandManager();
-        commandManager.registerCommand(new CommandItem().getCommand());
-        commandManager.registerCommand(new CommandGUI(this).getCommand());
-        commandManager.registerCommand(new CommandSummon(this).getCommand());
-        commandManager.registerCommand(new CommandHeal(this).getCommand());
-        commandManager.registerCommand(new CommandDebug(this).getCommand());
-        commandManager.registerCommand(new CommandViewRecipe().getCommand());
-        commandManager.registerCommand(new CommandViewUpgrade().getCommand());
-        commandManager.registerCommand(new CommandLoot().getCommand());
+        commandManager.registerCommand(new CommandItem());
+        commandManager.registerCommand(new CommandGUI(this));
+        commandManager.registerCommand(new CommandSummon(this));
+        commandManager.registerCommand(new CommandHeal(this));
+        commandManager.registerCommand(new CommandDebug(this));
+        commandManager.registerCommand(new CommandViewRecipe());
+        commandManager.registerCommand(new CommandViewUpgrade());
+        commandManager.registerCommand(new CommandLoot());
         commandManager.registerCommand(new CommandEnchant(this).getCommand());
         commandManager.registerCommand(new CommandDungeons(this).getCommand());
-        commandManager.registerCommand(new CommandLobby(this).getCommand());
-        commandManager.registerCommand(new CommandSpawn().getCommand());
+        commandManager.registerCommand(new CommandLobby(this));
+        commandManager.registerCommand(new CommandSpawn());
         commandManager.registerCommand(new CommandPlayerData(this).getCommand());
         commandManager.registerCommand(new CommandNpc(this).getCommand());
         commandManager.registerCommand(new CommandBuilder("bag")

@@ -2,23 +2,24 @@ package com.datasiqn.arcadia.commands;
 
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.ArcadiaPermission;
-import com.datasiqn.arcadia.commands.argument.ArcadiaArgumentType;
-import com.datasiqn.commandcore.command.builder.ArgumentBuilder;
-import com.datasiqn.commandcore.command.builder.CommandBuilder;
+import com.datasiqn.arcadia.entities.EntityType;
+import com.datasiqn.commandcore.command.annotation.AnnotationCommand;
+import com.datasiqn.commandcore.command.annotation.Argument;
+import com.datasiqn.commandcore.command.annotation.CommandDescription;
+import com.datasiqn.commandcore.command.annotation.Executor;
+import com.datasiqn.commandcore.locatable.LocatableCommandSender;
 
-public class CommandSummon {
+@CommandDescription(name = "summon", description = "Summons a custom Arcadia Entity", permission = ArcadiaPermission.PERMISSION_USE_SUMMON)
+public class CommandSummon implements AnnotationCommand {
     private final Arcadia plugin;
 
     public CommandSummon(Arcadia plugin) {
         this.plugin = plugin;
     }
 
-    public CommandBuilder getCommand() {
-        return new CommandBuilder("summon")
-                .permission(ArcadiaPermission.PERMISSION_USE_SUMMON)
-                .description("Summons a custom Arcadia Entity")
-                .then(ArgumentBuilder.argument(ArcadiaArgumentType.ENTITY, "entity")
-                        .requiresLocatable()
-                        .executes((context, source, arguments) -> arguments.get(0, ArcadiaArgumentType.ENTITY).getSummoner().summonEntity(source.getLocatable().getLocation(), plugin)));
+    @Executor
+    public void summon(LocatableCommandSender locatable,
+                       @Argument(name = "entity") EntityType entityType) {
+        entityType.getSummoner().summonEntity(locatable.getLocation(), plugin);
     }
 }

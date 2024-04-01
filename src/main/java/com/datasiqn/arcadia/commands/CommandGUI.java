@@ -2,23 +2,24 @@ package com.datasiqn.arcadia.commands;
 
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.ArcadiaPermission;
-import com.datasiqn.arcadia.commands.argument.ArcadiaArgumentType;
-import com.datasiqn.commandcore.command.builder.ArgumentBuilder;
-import com.datasiqn.commandcore.command.builder.CommandBuilder;
+import com.datasiqn.arcadia.menu.MenuType;
+import com.datasiqn.commandcore.command.annotation.AnnotationCommand;
+import com.datasiqn.commandcore.command.annotation.Argument;
+import com.datasiqn.commandcore.command.annotation.CommandDescription;
+import com.datasiqn.commandcore.command.annotation.Executor;
+import org.bukkit.entity.Player;
 
-public class CommandGUI {
+@CommandDescription(name = "opengui", description = "Opens a custom Arcadia gui", permission = ArcadiaPermission.PERMISSION_USE_GUI)
+public class CommandGUI implements AnnotationCommand {
     private final Arcadia plugin;
 
     public CommandGUI(Arcadia plugin) {
         this.plugin = plugin;
     }
 
-    public CommandBuilder getCommand() {
-        return new CommandBuilder("opengui")
-                .permission(ArcadiaPermission.PERMISSION_USE_GUI)
-                .description("Opens a custom Arcadia GUI")
-                .then(ArgumentBuilder.argument(ArcadiaArgumentType.GUI, "gui")
-                        .requiresPlayer()
-                        .executes((context, source, arguments) -> arguments.get(0, ArcadiaArgumentType.GUI).openInventory(source.getPlayer(), plugin)));
+    @Executor
+    public void openGui(Player player,
+                        @Argument(name = "gui") MenuType menuType) {
+        menuType.openInventory(player, plugin);
     }
 }
