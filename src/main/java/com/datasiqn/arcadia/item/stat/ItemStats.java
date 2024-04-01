@@ -24,7 +24,7 @@ public class ItemStats {
                 double value = getAttribute(attribute, itemQuality);
                 if (value == 0) continue;
                 String sign = value < 0 ? ChatColor.RED + "-" : "+";
-                lore.add(ChatColor.GRAY + "" + attribute.getItemAttribute() + ": " + sign + attribute.getItemAttribute().getColor() + DECIMAL_FORMAT.format(Math.abs(value)) + attribute.getItemAttribute().getIcon());
+                lore.add(ChatColor.GRAY + "" + attribute + ": " + sign + attribute.getColor() + DECIMAL_FORMAT.format(Math.abs(value)) + attribute.getIcon());
             }
         }
         if (space && hasAttributes()) lore.add("");

@@ -9,7 +9,6 @@ import com.datasiqn.arcadia.item.material.data.MaterialData;
 import com.datasiqn.arcadia.item.modifiers.LeatherArmorItemModifier;
 import com.datasiqn.arcadia.item.modifiers.PotionModifier;
 import com.datasiqn.arcadia.item.modifiers.SkullItemModifier;
-import com.datasiqn.arcadia.item.stat.ItemAttribute;
 import com.datasiqn.arcadia.item.type.ItemType;
 import com.datasiqn.arcadia.item.type.data.ConsumableData;
 import com.datasiqn.arcadia.player.PlayerAttribute;
@@ -304,7 +303,7 @@ public enum ArcadiaMaterial {
             new ConsumableData(new LoreBuilder()
                     .append(new ComponentBuilder()
                             .text("Eating this heals you by ")
-                            .stat(10, ItemAttribute.HEALTH)
+                            .stat(PlayerAttribute.MAX_HEALTH, 10)
                             .build())
                     .build(),
                     10,

@@ -6,7 +6,6 @@ import com.datasiqn.arcadia.amulet.Amulet;
 import com.datasiqn.arcadia.amulet.PowerStone;
 import com.datasiqn.arcadia.dungeon.DungeonPlayer;
 import com.datasiqn.arcadia.item.ArcadiaItem;
-import com.datasiqn.arcadia.item.stat.ItemAttribute;
 import com.datasiqn.arcadia.item.stat.ItemStats;
 import com.datasiqn.arcadia.item.stat.StatIcon;
 import com.datasiqn.arcadia.upgrade.actions.UpdateAttributesAction;
@@ -248,16 +247,16 @@ public class PlayerData {
 
     public void updateActionbar() {
         DecimalFormat format = new DecimalFormat("#");
-        String displayHealth = formatDouble(health, format) + "/" + formatDouble(getAttribute(PlayerAttribute.MAX_HEALTH), format) + ItemAttribute.HEALTH.getIcon();
-        String displayDefense = formatDouble(getAttribute(PlayerAttribute.DEFENSE), format) + ItemAttribute.DEFENSE.getIcon();
-        String displayStrength = formatDouble(getAttribute(PlayerAttribute.STRENGTH), format) + ItemAttribute.STRENGTH.getIcon();
-        String displayHunger = formatDouble(hunger, format) + "/" + formatDouble(getAttribute(PlayerAttribute.MAX_HUNGER), format) + ItemAttribute.HUNGER.getIcon();
+        String displayHealth = formatDouble(health, format) + "/" + formatDouble(getAttribute(PlayerAttribute.MAX_HEALTH), format) + PlayerAttribute.MAX_HEALTH.getIcon();
+        String displayDefense = formatDouble(getAttribute(PlayerAttribute.DEFENSE), format) + PlayerAttribute.DEFENSE.getIcon();
+        String displayStrength = formatDouble(getAttribute(PlayerAttribute.STRENGTH), format) + PlayerAttribute.STRENGTH.getIcon();
+        String displayHunger = formatDouble(hunger, format) + "/" + formatDouble(getAttribute(PlayerAttribute.MAX_HUNGER), format) + PlayerAttribute.MAX_HUNGER.getIcon();
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
                 new ComponentBuilder()
-                        .append(displayHealth + " ").color(ItemAttribute.HEALTH.getColor())
-                        .append(displayDefense + " ").color(ItemAttribute.DEFENSE.getColor())
-                        .append(displayStrength + " ").color(ItemAttribute.STRENGTH.getColor())
-                        .append(displayHunger).color(ItemAttribute.HUNGER.getColor())
+                        .append(displayHealth + " ").color(PlayerAttribute.MAX_HEALTH.getColor())
+                        .append(displayDefense + " ").color(PlayerAttribute.DEFENSE.getColor())
+                        .append(displayStrength + " ").color(PlayerAttribute.STRENGTH.getColor())
+                        .append(displayHunger).color(PlayerAttribute.MAX_HUNGER.getColor())
                         .create());
     }
 

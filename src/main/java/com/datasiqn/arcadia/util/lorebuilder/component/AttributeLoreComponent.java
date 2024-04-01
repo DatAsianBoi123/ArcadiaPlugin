@@ -1,13 +1,13 @@
 package com.datasiqn.arcadia.util.lorebuilder.component;
 
-import com.datasiqn.arcadia.item.stat.ItemAttribute;
+import com.datasiqn.arcadia.player.PlayerAttribute;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 public class AttributeLoreComponent implements LoreComponent {
-    private final ItemAttribute attribute;
+    private final PlayerAttribute attribute;
 
-    private AttributeLoreComponent(ItemAttribute attribute) {
+    private AttributeLoreComponent(PlayerAttribute attribute) {
         this.attribute = attribute;
     }
 
@@ -17,7 +17,7 @@ public class AttributeLoreComponent implements LoreComponent {
     }
 
     @Contract("_ -> new")
-    public static @NotNull AttributeLoreComponent attribute(ItemAttribute attribute) {
+    public static @NotNull AttributeLoreComponent attribute(PlayerAttribute attribute) {
         return new AttributeLoreComponent(attribute);
     }
 }

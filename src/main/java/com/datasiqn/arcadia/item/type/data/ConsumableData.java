@@ -1,6 +1,6 @@
 package com.datasiqn.arcadia.item.type.data;
 
-import com.datasiqn.arcadia.item.stat.ItemAttribute;
+import com.datasiqn.arcadia.player.PlayerAttribute;
 import com.datasiqn.arcadia.player.PlayerData;
 import com.datasiqn.arcadia.util.lorebuilder.Lore;
 import com.datasiqn.arcadia.util.lorebuilder.LoreBuilder;
@@ -21,7 +21,7 @@ public record ConsumableData(Lore description, double hungerCost, Consumer<Playe
                 .append(description)
                 .append(new ComponentBuilder()
                         .text("Hunger: ", ChatColor.DARK_GRAY)
-                        .stat(hungerCost, ItemAttribute.HUNGER)
+                        .stat(PlayerAttribute.MAX_HUNGER, hungerCost)
                         .build())
                 .build();
     }
