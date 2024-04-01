@@ -137,8 +137,11 @@ public class PlayerListener implements Listener {
         PlayerData playerData = playerManager.getPlayerData(player);
         ItemStack item = player.getInventory().getItem(event.getNewSlot());
         if (item == null) item = new ItemStack(Material.AIR);
-        PlayerEquipment equipment = playerData.getEquipment();
-        equipment.setItemInMainHand(new ArcadiaItem(item));
+        switchMainHand(playerData, item);
+    }
+
+    public void switchMainHand(@NotNull PlayerData playerData, ItemStack newItem) {
+        playerData.getEquipment().setItemInMainHand(new ArcadiaItem(newItem));
         playerData.updateValues();
     }
 

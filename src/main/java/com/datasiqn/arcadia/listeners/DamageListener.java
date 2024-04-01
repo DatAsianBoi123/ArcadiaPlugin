@@ -16,6 +16,7 @@ import com.datasiqn.arcadia.item.material.data.MaterialData;
 import com.datasiqn.arcadia.item.meta.ArcadiaItemMeta;
 import com.datasiqn.arcadia.item.stat.AttributeInstance;
 import com.datasiqn.arcadia.item.stat.ItemAttribute;
+import com.datasiqn.arcadia.managers.PlayerManager;
 import com.datasiqn.arcadia.player.ArcadiaSender;
 import com.datasiqn.arcadia.player.PlayerAttribute;
 import com.datasiqn.arcadia.player.PlayerData;
@@ -39,9 +40,12 @@ import java.text.DecimalFormat;
 
 public class DamageListener implements Listener {
     private final Arcadia plugin;
+    private final PlayerManager playerManager;
 
-    public DamageListener(Arcadia plugin) {
+    @Contract(pure = true)
+    public DamageListener(@NotNull Arcadia plugin) {
         this.plugin = plugin;
+        this.playerManager = plugin.getPlayerManager();
     }
 
     @EventHandler
@@ -56,7 +60,7 @@ public class DamageListener implements Listener {
         if (((CraftEntity) event.getEntity()).getHandle() instanceof ArcadiaEntity entity) {
             entity.handleDamageEvent(event, null);
         } else if (event.getEntity() instanceof Player player) {
-            plugin.getPlayerManager().getPlayerData(player).damage(event, cause == DamageCause.FALL);
+            playerManager.getPlayerData(player).damage(event, cause == DamageCause.FALL);
         }
     }
 
@@ -96,7 +100,7 @@ public class DamageListener implements Listener {
                     return;
                 }
             }
-            PlayerData playerData = plugin.getPlayerManager().getPlayerData(player);
+            PlayerData playerData = playerManager.getPlayerData(player);
 
             DungeonPlayer dungeonPlayer = plugin.getDungeonManager().getDungeonPlayer(playerData);
 
@@ -115,7 +119,7 @@ public class DamageListener implements Listener {
             }).run(plugin);
         } else if (event.getEntity() instanceof Player player) {
             event.setDamage(calcPlayerDamage(event));
-            plugin.getPlayerManager().getPlayerData(player).damage(event);
+            playerManager.getPlayerData(player).damage(event);
         }
     }
 
@@ -133,7 +137,7 @@ public class DamageListener implements Listener {
         if (event.getDamager() instanceof Arrow arrow) {
             double arrowDamage = calcArrowDamage(arrow, damage);
             if (arrow.getShooter() instanceof Player player) {
-                PlayerData playerData = plugin.getPlayerManager().getPlayerData(player);
+                PlayerData playerData = playerManager.getPlayerData(player);
                 if (playerData.inDebugMode()) sendDebugInfo(playerData.getSender(), arrowDamage, -1, arrowDamage, arrowDamage, 1, 1);
             }
             return arrowDamage;
@@ -141,7 +145,7 @@ public class DamageListener implements Listener {
 
         if (!(event.getDamager() instanceof Player player)) return damage;
 
-        PlayerData playerData = plugin.getPlayerManager().getPlayerData(player);
+        PlayerData playerData = playerManager.getPlayerData(player);
         ArcadiaItem item = playerData.getEquipment().getItemInMainHand();
 
         MaterialData<?> itemData = item.getData();
