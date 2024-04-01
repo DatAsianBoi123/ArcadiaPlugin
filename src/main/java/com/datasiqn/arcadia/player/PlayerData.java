@@ -303,9 +303,20 @@ public class PlayerData {
     }
 
     public void addXp(long xp) {
+        int previousLevel = this.xp.getLevel();
         this.xp.setAmount(this.xp.getAmount() + xp);
         new Thread(this::saveData).start();
         updateLevel();
+        if (this.xp.getLevel() > previousLevel) {
+            plugin.getScoreboardManager().updateScoreboard(player);
+            player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+            sender.sendMessageRaw(ChatColor.GOLD + "" + ChatColor.BOLD + "Level Up! " + ChatColor.DARK_GRAY + previousLevel + "→" + ChatColor.GREEN + ChatColor.BOLD + this.xp.getLevel());
+            List<String> rewards = plugin.getLevelRewardManager().getRewards(this.xp.getLevel());
+            if (!rewards.isEmpty()) {
+                sender.sendMessageRaw("\n" + ChatColor.GREEN + "Rewards:");
+                for (String reward : rewards) sender.sendMessageRaw(reward);
+            }
+        }
     }
 
     public double getStrength() {

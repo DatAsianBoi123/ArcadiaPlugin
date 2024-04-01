@@ -113,7 +113,6 @@ public class PlayerListener implements Listener {
     public void onPlayerPickupXp(@NotNull PlayerExpChangeEvent event) {
         PlayerData playerData = playerManager.getPlayerData(event.getPlayer());
         playerData.addXp(event.getAmount());
-        plugin.getScoreboardManager().updateScoreboard(playerData.getPlayer());
 
         event.setAmount(0);
     }
