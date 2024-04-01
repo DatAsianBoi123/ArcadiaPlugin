@@ -126,7 +126,7 @@ public class PlayerData {
             if (arcadiaItem.getData().getType().getSlot() == slot) {
                 ItemStats itemStats = arcadiaItem.getItemMeta().getItemStats();
                 for (PlayerAttribute attribute : PlayerAttribute.values()) {
-                    AttributeInstance itemAttribute = itemStats.getAttribute(attribute.getItemAttribute());
+                    AttributeInstance itemAttribute = itemStats.getAttribute(attribute);
                     attributes.mergeDouble(attribute, itemAttribute == null ? 0 : itemAttribute.getValue(), Double::sum);
                 }
             }
@@ -135,7 +135,10 @@ public class PlayerData {
         for (PowerStone powerStone : equipment.getAmulet()) {
             if (powerStone == null) continue;
             for (PlayerAttribute attribute : PlayerAttribute.values()) {
-                double attributeValue = powerStone.getData().getAttribute(attribute);
+                AttributeInstance attributeInstance = powerStone.getItem().getItemMeta().getItemStats().getAttribute(attribute);
+                double attributeValue;
+                if (attributeInstance == null) attributeValue = 0;
+                else attributeValue = attributeInstance.getValue();
                 attributes.mergeDouble(attribute, attributeValue, Double::sum);
             }
         }

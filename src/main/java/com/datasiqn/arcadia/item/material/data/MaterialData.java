@@ -6,8 +6,10 @@ import com.datasiqn.arcadia.item.abilities.AbilityType;
 import com.datasiqn.arcadia.item.abilities.ItemAbility;
 import com.datasiqn.arcadia.item.components.ItemComponent;
 import com.datasiqn.arcadia.item.modifiers.ItemModifier;
+import com.datasiqn.arcadia.item.stat.AttributeRange;
 import com.datasiqn.arcadia.item.type.ItemType;
 import com.datasiqn.arcadia.item.type.data.ExtraItemData;
+import com.datasiqn.arcadia.player.PlayerAttribute;
 import com.datasiqn.arcadia.util.PdcUtil;
 import com.datasiqn.arcadia.util.lorebuilder.Lore;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -42,8 +44,10 @@ public class MaterialData<D extends ExtraItemData> {
     private final @NotNull Lore lore;
     private final @NotNull Material material;
     private final @NotNull ItemRarity rarity;
+    private final AttributeRange damage;
     private final boolean enchantGlint;
     private final boolean stackable;
+    private final Map<PlayerAttribute, AttributeRange> attributes;
     private final Map<AbilityType, ItemAbility> abilities;
     private final List<ItemComponent> components;
 
@@ -57,8 +61,10 @@ public class MaterialData<D extends ExtraItemData> {
         lore = builder.lore();
         material = builder.material();
         rarity = builder.rarity();
+        damage = builder.damage();
         enchantGlint = builder.enchantGlint();
         stackable = builder.stackable();
+        attributes = builder.attributes();
         abilities = builder.abilities();
         components = builder.components();
     }
@@ -73,6 +79,15 @@ public class MaterialData<D extends ExtraItemData> {
 
     public @Nullable String getName() {
         return name;
+    }
+
+    public AttributeRange getDamage() {
+        return damage;
+    }
+
+    @UnmodifiableView
+    public Map<PlayerAttribute, AttributeRange> getAttributes() {
+        return attributes;
     }
 
     public @NotNull Lore getLore() {

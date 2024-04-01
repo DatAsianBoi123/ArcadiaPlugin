@@ -5,8 +5,10 @@ import com.datasiqn.arcadia.item.abilities.AbilityType;
 import com.datasiqn.arcadia.item.abilities.ItemAbility;
 import com.datasiqn.arcadia.item.components.ItemComponent;
 import com.datasiqn.arcadia.item.modifiers.ItemModifier;
+import com.datasiqn.arcadia.item.stat.AttributeRange;
 import com.datasiqn.arcadia.item.type.ItemType;
 import com.datasiqn.arcadia.item.type.data.ExtraItemData;
+import com.datasiqn.arcadia.player.PlayerAttribute;
 import com.datasiqn.arcadia.util.lorebuilder.Lore;
 import org.bukkit.Material;
 import org.jetbrains.annotations.Contract;
@@ -16,9 +18,11 @@ import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.*;
 
+// TODO: redo item builders
 public abstract class ItemBuilder<D extends ExtraItemData, V, T extends ItemBuilder<D, V, T>> {
     private final ItemType<D> type;
     private final D data;
+    private final Map<PlayerAttribute, AttributeRange> attributes = new HashMap<>();
     private final List<ItemModifier> modifiers = new ArrayList<>();
     private final Map<AbilityType, ItemAbility> abilities = new HashMap<>();
     private final List<ItemComponent> components = new ArrayList<>();
@@ -26,6 +30,7 @@ public abstract class ItemBuilder<D extends ExtraItemData, V, T extends ItemBuil
     private String name;
     private Lore lore = Lore.EMPTY;
     private Material material = Material.STONE;
+    private AttributeRange damage = new AttributeRange(0, 0);
     private ItemRarity rarity = ItemRarity.COMMON;
     private boolean enchantGlint;
     private boolean stackable = true;
@@ -80,6 +85,21 @@ public abstract class ItemBuilder<D extends ExtraItemData, V, T extends ItemBuil
         return rarity;
     }
 
+    public T damage(double damage) {
+        return damage(new AttributeRange(damage, damage));
+    }
+    public T damage(double min, double max) {
+        return damage(new AttributeRange(min, max));
+    }
+    public T damage(AttributeRange damage) {
+        this.damage = damage;
+        return getThis();
+    }
+
+    public AttributeRange damage() {
+        return damage;
+    }
+
     public T enchantGlint(boolean enchantGlint) {
         this.enchantGlint = enchantGlint;
         return getThis();
@@ -96,6 +116,21 @@ public abstract class ItemBuilder<D extends ExtraItemData, V, T extends ItemBuil
 
     public boolean stackable() {
         return stackable;
+    }
+
+    public T attribute(PlayerAttribute attribute, double value) {
+        return attribute(attribute, new AttributeRange(value, value));
+    }
+    public T attribute(PlayerAttribute attribute, double min, double max) {
+        return attribute(attribute, new AttributeRange(min, max));
+    }
+    public T attribute(PlayerAttribute attribute, AttributeRange range) {
+        this.attributes.put(attribute, range);
+        return getThis();
+    }
+
+    public @UnmodifiableView Map<PlayerAttribute, AttributeRange> attributes() {
+        return Collections.unmodifiableMap(attributes);
     }
 
     public T addAbility(AbilityType type, @NotNull ItemAbility ability) {

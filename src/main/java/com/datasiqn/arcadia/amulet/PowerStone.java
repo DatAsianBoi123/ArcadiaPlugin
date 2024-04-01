@@ -3,7 +3,6 @@ package com.datasiqn.arcadia.amulet;
 import com.datasiqn.arcadia.item.ArcadiaItem;
 import com.datasiqn.arcadia.item.ItemRarity;
 import com.datasiqn.arcadia.item.meta.ArcadiaItemMeta;
-import com.datasiqn.arcadia.item.stat.ItemStats;
 import com.datasiqn.arcadia.managers.LevelRewardManager;
 import com.datasiqn.arcadia.player.PlayerAttribute;
 import com.datasiqn.arcadia.util.lorebuilder.component.TextLoreComponent;
@@ -16,26 +15,26 @@ import java.util.UUID;
 public enum PowerStone {
     STRENGTH_STONE(PowerStoneData.builder("Strength Stone")
             .material(Material.REDSTONE)
-            .addAttribute(PlayerAttribute.STRENGTH, 1)
+            .attribute(PlayerAttribute.STRENGTH, 1)
             .levelRequirement(5)
             .build()),
     HEALTH_STONE(PowerStoneData.builder("Health Stone")
             .material(Material.GOLDEN_APPLE)
-            .addAttribute(PlayerAttribute.MAX_HEALTH, 10)
+            .attribute(PlayerAttribute.MAX_HEALTH, 10)
             .levelRequirement(5)
             .build()),
 
     SPEED_STONE(PowerStoneData.builder("Speed Stone")
             .material(Material.RABBIT_FOOT)
             .rarity(ItemRarity.RARE)
-            .addAttribute(PlayerAttribute.SPEED, 0.2)
+            .attribute(PlayerAttribute.SPEED, 0.2)
             .levelRequirement(15)
             .build()),
 
     ATTACK_SPEED_STONE(PowerStoneData.builder("Attack Speed Stone")
             .material(Material.IRON_SWORD)
             .rarity(ItemRarity.LEGENDARY)
-            .addAttribute(PlayerAttribute.ATTACK_SPEED, 25)
+            .attribute(PlayerAttribute.ATTACK_SPEED, 25)
             .levelRequirement(30)
             .build()),
     ;
@@ -45,10 +44,7 @@ public enum PowerStone {
 
     PowerStone(@NotNull PowerStoneData data) {
         this.data = data;
-        ArcadiaItemMeta meta = new ArcadiaItemMeta(UUID.nameUUIDFromBytes(data.getName().getBytes()));
-        ItemStats itemStats = meta.getItemStats();
-        data.getAttributes().forEach((attribute, value) -> itemStats.setAttribute(attribute.getItemAttribute(), value));
-        this.item = new ArcadiaItem(data, meta);
+        this.item = new ArcadiaItem(data, new ArcadiaItemMeta(UUID.nameUUIDFromBytes(data.getName().getBytes()), data));
     }
 
     public PowerStoneData getData() {

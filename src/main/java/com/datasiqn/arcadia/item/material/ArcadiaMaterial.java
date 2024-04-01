@@ -10,11 +10,10 @@ import com.datasiqn.arcadia.item.meta.ArcadiaItemMeta;
 import com.datasiqn.arcadia.item.modifiers.LeatherArmorItemModifier;
 import com.datasiqn.arcadia.item.modifiers.PotionModifier;
 import com.datasiqn.arcadia.item.modifiers.SkullItemModifier;
-import com.datasiqn.arcadia.item.stat.AttributeRange;
 import com.datasiqn.arcadia.item.stat.ItemAttribute;
-import com.datasiqn.arcadia.item.stat.ItemStats;
 import com.datasiqn.arcadia.item.type.ItemType;
 import com.datasiqn.arcadia.item.type.data.ConsumableData;
+import com.datasiqn.arcadia.player.PlayerAttribute;
 import com.datasiqn.arcadia.util.PdcUtil;
 import com.datasiqn.arcadia.util.lorebuilder.Lore;
 import com.datasiqn.arcadia.util.lorebuilder.LoreBuilder;
@@ -26,11 +25,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
-import java.util.function.Consumer;
 
 public enum ArcadiaMaterial {
     ENCHANTED_STICK(MaterialData.builder(ItemType.NONE)
@@ -97,105 +96,87 @@ public enum ArcadiaMaterial {
     CROOKED_SWORD(MaterialData.builder(ItemType.SWORD)
             .name("Crooked Sword")
             .material(Material.WOODEN_SWORD)
+            .damage(3, 5)
             .stackable(false)
+            .attribute(PlayerAttribute.DEFENSE, 5)
+            .attribute(PlayerAttribute.STRENGTH, 5, 10)
             .addAbility(AbilityType.RIGHT_CLICK, new RunAwayAbility())
-            .build(), meta -> {
-        ItemStats itemStats = meta.getItemStats();
-        itemStats.setAttribute(ItemAttribute.DAMAGE, new AttributeRange(3, 5));
-        itemStats.setAttribute(ItemAttribute.DEFENSE, 5);
-        itemStats.setAttribute(ItemAttribute.STRENGTH, new AttributeRange(5, 10));
-    }),
+            .build()),
     BERSERK_HELMET(MaterialData.builder(ItemType.HELMET)
             .name("Berserker Helmet")
             .material(Material.PLAYER_HEAD)
             .rarity(ItemRarity.MYTHIC)
             .stackable(false)
+            .attribute(PlayerAttribute.DEFENSE, 75, 150)
+            .attribute(PlayerAttribute.MAX_HEALTH, 400, 800)
+            .attribute(PlayerAttribute.STRENGTH, 250, 400)
             .addModifier(new SkullItemModifier("c74f65f9b9958a6392c8b63324d76e80d2b509c1985a00232aecce409585ae2a"))
-            .build(), meta -> {
-        ItemStats itemStats = meta.getItemStats();
-        itemStats.setAttribute(ItemAttribute.DEFENSE, new AttributeRange(75, 150));
-        itemStats.setAttribute(ItemAttribute.HEALTH, new AttributeRange(400, 800));
-        itemStats.setAttribute(ItemAttribute.STRENGTH, new AttributeRange(250, 400));
-    }),
+            .build()),
     BERSERK_CHESTPLATE(MaterialData.builder(ItemType.CHESTPLATE)
             .name("Berserker Chestplate")
             .material(Material.LEATHER_CHESTPLATE)
             .rarity(ItemRarity.MYTHIC)
             .stackable(false)
+            .attribute(PlayerAttribute.DEFENSE, 100, 200)
+            .attribute(PlayerAttribute.MAX_HEALTH, 500, 1000)
+            .attribute(PlayerAttribute.STRENGTH, 300, 500)
             .addModifier(new LeatherArmorItemModifier(Color.fromRGB(0xdb3814)))
-            .build(), meta -> {
-        ItemStats itemStats = meta.getItemStats();
-        itemStats.setAttribute(ItemAttribute.DEFENSE, new AttributeRange(100d, 200d));
-        itemStats.setAttribute(ItemAttribute.HEALTH, new AttributeRange(500d, 1000d));
-        itemStats.setAttribute(ItemAttribute.STRENGTH, new AttributeRange(300d, 500d));
-    }),
+            .build()),
     BERSERK_LEGGINGS(MaterialData.builder(ItemType.LEGGINGS)
             .name("Berserker Leggings")
             .material(Material.LEATHER_LEGGINGS)
             .rarity(ItemRarity.MYTHIC)
             .stackable(false)
+            .attribute(PlayerAttribute.DEFENSE, 100, 175)
+            .attribute(PlayerAttribute.MAX_HEALTH, 450, 900)
+            .attribute(PlayerAttribute.STRENGTH, 250, 400)
             .addModifier(new LeatherArmorItemModifier(Color.fromRGB(0xdb3814)))
-            .build(), meta -> {
-        ItemStats itemStats = meta.getItemStats();
-        itemStats.setAttribute(ItemAttribute.DEFENSE, new AttributeRange(100, 175));
-        itemStats.setAttribute(ItemAttribute.HEALTH, new AttributeRange(450, 900));
-        itemStats.setAttribute(ItemAttribute.STRENGTH, new AttributeRange(250, 400));
-    }),
+            .build()),
     BERSERK_BOOTS(MaterialData.builder(ItemType.BOOTS)
             .name("Berserker Boots")
             .material(Material.LEATHER_BOOTS)
             .rarity(ItemRarity.MYTHIC)
             .stackable(false)
+            .attribute(PlayerAttribute.DEFENSE, 50, 100)
+            .attribute(PlayerAttribute.MAX_HEALTH, 300, 850)
+            .attribute(PlayerAttribute.STRENGTH, 200, 400)
             .addModifier(new LeatherArmorItemModifier(Color.fromRGB(0xdb3814)))
-            .build(), meta -> {
-        ItemStats itemStats = meta.getItemStats();
-        itemStats.setAttribute(ItemAttribute.DEFENSE, new AttributeRange(50d, 100d));
-        itemStats.setAttribute(ItemAttribute.HEALTH, new AttributeRange(300d, 850d));
-        itemStats.setAttribute(ItemAttribute.STRENGTH, new AttributeRange(200d, 400d));
-    }),
+            .build()),
     ULTIMATUM(MaterialData.builder(ItemType.SWORD)
             .name(ChatColor.RED + "" + ChatColor.BOLD + "<<" + ChatColor.RED + "Ultimatum" + ChatColor.BOLD + ">>")
             .material(Material.NETHERITE_AXE)
             .rarity(ItemRarity.MYTHIC)
+            .damage(1500, 3000)
             .enchantGlint(true)
             .stackable(false)
+            .attribute(PlayerAttribute.STRENGTH, 200)
             .addAbility(AbilityType.RIGHT_CLICK, new LastHopeAbility())
-            .build(), meta -> {
-        ItemStats itemStats = meta.getItemStats();
-        itemStats.setAttribute(ItemAttribute.DAMAGE, new AttributeRange(1500, 3000));
-        itemStats.setAttribute(ItemAttribute.STRENGTH, 200);
-    }),
+            .build()),
     EXCALIBUR(MaterialData.builder(ItemType.SWORD)
             .name("Excalibur")
             .material(Material.GOLDEN_SWORD)
             .rarity(ItemRarity.LEGENDARY)
+            .damage(2000, 3500)
             .enchantGlint(true)
             .stackable(false)
-            .build(), meta -> {
-        ItemStats itemStats = meta.getItemStats();
-        itemStats.setAttribute(ItemAttribute.DAMAGE, new AttributeRange(2000, 3500));
-        itemStats.setAttribute(ItemAttribute.DEFENSE, 200);
-        itemStats.setAttribute(ItemAttribute.ATTACK_SPEED, 100);
-    }),
+            .attribute(PlayerAttribute.DEFENSE, 200)
+            .attribute(PlayerAttribute.ATTACK_SPEED, 100)
+            .build()),
     HAMMER(MaterialData.builder(ItemType.SWORD)
             .name("War Hammer")
             .material(Material.GOLDEN_AXE)
             .rarity(ItemRarity.LEGENDARY)
+            .damage(5000, 7000)
             .enchantGlint(true)
             .stackable(false)
-            .build(), meta -> {
-        ItemStats itemStats = meta.getItemStats();
-        itemStats.setAttribute(ItemAttribute.DAMAGE, new AttributeRange(5000, 7000));
-        itemStats.setAttribute(ItemAttribute.ATTACK_SPEED, -50);
-    }),
+            .attribute(PlayerAttribute.ATTACK_SPEED, -50)
+            .build()),
     BOW(MaterialData.builder(ItemType.BOW)
             .name("Bow")
             .material(Material.BOW)
+            .damage(5)
             .stackable(false)
-            .build(), meta -> {
-        ItemStats itemStats = meta.getItemStats();
-        itemStats.setAttribute(ItemAttribute.DAMAGE, 5);
-    }),
+            .build()),
     AIR_CANNON(MaterialData.builder(ItemType.NONE)
             .name("Air Cannon")
             .material(Material.DIAMOND_HOE)
@@ -208,17 +189,15 @@ public enum ArcadiaMaterial {
             .name("Obsidian Kunai")
             .material(Material.NETHERITE_SWORD)
             .rarity(ItemRarity.RARE)
+            .damage(800, 1200)
             .enchantGlint(true)
             .stackable(false)
+            .attribute(PlayerAttribute.STRENGTH, 60, 75)
+            .attribute(PlayerAttribute.SPEED, 0.1)
+            .attribute(PlayerAttribute.ATTACK_SPEED, 20)
             .addAbility(AbilityType.RIGHT_CLICK, new MarkAbility(JavaPlugin.getPlugin(Arcadia.class)))
             .addComponent(new ObsidianKunaiComponent())
-            .build(), meta -> {
-        ItemStats stats = meta.getItemStats();
-        stats.setAttribute(ItemAttribute.DAMAGE, new AttributeRange(800, 1200));
-        stats.setAttribute(ItemAttribute.STRENGTH, new AttributeRange(60, 75));
-        stats.setAttribute(ItemAttribute.SPEED, 0.1);
-        stats.setAttribute(ItemAttribute.ATTACK_SPEED, 0.2);
-    }),
+            .build()),
     STRANGE_JOURNAL(MaterialData.builder(ItemType.NONE)
             .name("Strange Journal")
             .lore(new LoreBuilder()
@@ -284,13 +263,11 @@ public enum ArcadiaMaterial {
                     .build())
             .material(Material.IRON_SWORD)
             .rarity(ItemRarity.SPECIAL)
+            .damage(1000, 1500)
             .enchantGlint(true)
             .stackable(false)
-            .build(), meta -> {
-        ItemStats itemStats = meta.getItemStats();
-        itemStats.setAttribute(ItemAttribute.DAMAGE, new AttributeRange(1000, 1500));
-        itemStats.setAttribute(ItemAttribute.STRENGTH, new AttributeRange(50, 100));
-    }),
+            .attribute(PlayerAttribute.STRENGTH, 50, 100)
+            .build()),
     ANCIENT_TRANSLATOR(MaterialData.builder(ItemType.NONE)
             .name("Ancient Translator")
             .lore(new LoreBuilder()
@@ -342,14 +319,14 @@ public enum ArcadiaMaterial {
     ;
 
     private final MaterialData<?> data;
-    private final Consumer<ArcadiaItemMeta> metaBuilder;
 
     ArcadiaMaterial(MaterialData<?> data) {
-        this(data, meta -> {});
-    }
-    ArcadiaMaterial(MaterialData<?> data, Consumer<ArcadiaItemMeta> metaBuilder) {
         this.data = data;
-        this.metaBuilder = metaBuilder;
+    }
+
+    @Contract("_ -> new")
+    public @NotNull ArcadiaItemMeta createItemMeta(UUID uuid) {
+        return new ArcadiaItemMeta(uuid, data);
     }
 
     @NotNull
@@ -357,18 +334,13 @@ public enum ArcadiaMaterial {
         return data;
     }
 
-    @NotNull
-    public ArcadiaItemMeta createItemMeta(UUID uuid) {
-        ArcadiaItemMeta meta = new ArcadiaItemMeta(uuid);
-        metaBuilder.accept(meta);
-        return meta;
-    }
-
     public static @Nullable ArcadiaMaterial fromItemStack(@NotNull ItemStack itemStack) {
         ItemMeta meta = itemStack.getItemMeta();
         if (meta == null) return null;
 
-        PersistentDataContainer pdc = meta.getPersistentDataContainer();
+        return fromPdc(meta.getPersistentDataContainer());
+    }
+    public static @Nullable ArcadiaMaterial fromPdc(@NotNull PersistentDataContainer pdc) {
         if (!PdcUtil.has(pdc, ArcadiaTag.ITEM_ID)) return null;
         if (PdcUtil.getOrDefault(pdc, ArcadiaTag.ITEM_MATERIAL, false)) return null;
 

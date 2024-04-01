@@ -6,7 +6,6 @@ import com.datasiqn.arcadia.DamageHelper;
 import com.datasiqn.arcadia.dungeon.DungeonPlayer;
 import com.datasiqn.arcadia.item.ArcadiaItem;
 import com.datasiqn.arcadia.item.ItemRarity;
-import com.datasiqn.arcadia.item.stat.ItemAttribute;
 import com.datasiqn.arcadia.item.type.ItemType;
 import com.datasiqn.arcadia.managers.DungeonManager;
 import com.datasiqn.arcadia.managers.PlayerManager;
@@ -223,7 +222,7 @@ public class PlayerListener implements Listener {
 
         if (!(event.getProjectile() instanceof Arrow arrow)) return;
         PersistentDataContainer pdc = arrow.getPersistentDataContainer();
-        com.datasiqn.arcadia.item.stat.AttributeInstance damageAttribute = bowItem.getItemMeta().getItemStats().getAttribute(ItemAttribute.DAMAGE);
+        var damageAttribute = bowItem.getItemMeta().getDamage();
         double damageValue = damageAttribute == null ? 1 : damageAttribute.getValue();
         double damage = damageValue + DamageHelper.getStrengthBonus(playerData.getAttribute(PlayerAttribute.STRENGTH), damageValue) * event.getForce();
         PdcUtil.set(pdc, ArcadiaTag.ARROW_DAMAGE, damage);

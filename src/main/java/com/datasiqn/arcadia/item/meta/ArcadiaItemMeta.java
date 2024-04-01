@@ -3,6 +3,9 @@ package com.datasiqn.arcadia.item.meta;
 import com.datasiqn.arcadia.ArcadiaTag;
 import com.datasiqn.arcadia.datatypes.EnchantsDataType;
 import com.datasiqn.arcadia.enchants.EnchantType;
+import com.datasiqn.arcadia.item.material.ArcadiaMaterial;
+import com.datasiqn.arcadia.item.material.data.MaterialData;
+import com.datasiqn.arcadia.item.stat.AttributeInstance;
 import com.datasiqn.arcadia.item.stat.ItemStats;
 import com.datasiqn.arcadia.util.PdcUtil;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -10,25 +13,47 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.*;
 
 public class ArcadiaItemMeta {
     private final UUID uuid;
+    private final AttributeInstance damage;
     private final ItemStats itemStats = new ItemStats();
     private final Object2IntMap<EnchantType> enchants = new Object2IntOpenHashMap<>();
 
     private double itemQuality;
 
     public ArcadiaItemMeta(@NotNull UUID uuid) {
+        this(uuid, null);
+    }
+    public ArcadiaItemMeta(@NotNull UUID uuid, @Nullable MaterialData<?> data) {
         this.uuid = uuid;
         this.itemQuality = new Random(uuid.getMostSignificantBits()).nextDouble();
+
+        if (data != null) {
+            this.damage = new AttributeInstance(data.getDamage());
+            data.getAttributes().forEach(itemStats::setAttribute);
+        } else {
+            this.damage = new AttributeInstance(0);
+        }
+        this.damage.setItemQuality(itemQuality);
         this.itemStats.setItemQuality(itemQuality);
     }
     public ArcadiaItemMeta(@NotNull PersistentDataContainer pdc) {
         this.uuid = PdcUtil.getOrDefault(pdc, ArcadiaTag.ITEM_UUID, UUID.randomUUID());
         this.itemQuality = PdcUtil.getOrDefault(pdc, ArcadiaTag.ITEM_QUALITY, 0d);
+        ArcadiaMaterial arcadiaMaterial = ArcadiaMaterial.fromPdc(pdc);
+        if (arcadiaMaterial != null) {
+            MaterialData<?> data = arcadiaMaterial.getData();
+            this.damage = new AttributeInstance(data.getDamage());
+            data.getAttributes().forEach(itemStats::setAttribute);
+        } else {
+            this.damage = new AttributeInstance(0);
+        }
+        this.damage.setItemQuality(itemQuality);
         this.itemStats.setItemQuality(itemQuality);
 
         EnchantsDataType.EnchantData[] enchantData = PdcUtil.getOrDefault(pdc, ArcadiaTag.ITEM_ENCHANTS, new EnchantsDataType.EnchantData[0]);
@@ -41,6 +66,10 @@ public class ArcadiaItemMeta {
         return uuid;
     }
 
+    public AttributeInstance getDamage() {
+        return damage;
+    }
+
     public @NotNull ItemStats getItemStats() {
         return itemStats;
     }
@@ -51,6 +80,7 @@ public class ArcadiaItemMeta {
 
     public void setItemQuality(double newAmount) {
         this.itemQuality = Math.min(1, newAmount);
+        this.damage.setItemQuality(itemQuality);
         this.itemStats.setItemQuality(itemQuality);
     }
 
@@ -82,6 +112,10 @@ public class ArcadiaItemMeta {
 
     public void clearEnchants() {
         enchants.clear();
+    }
+
+    public boolean hasRandomizedStats() {
+        return itemStats.hasRandomizedAttributes() || damage.isRandom();
     }
 
     public void addToPdc(@NotNull PersistentDataContainer pdc) {
