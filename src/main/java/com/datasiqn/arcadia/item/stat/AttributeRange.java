@@ -7,6 +7,10 @@ public record AttributeRange(double min, double max) {
         return min != max;
     }
 
+    public double get(double itemQuality) {
+        return min + (max - min) * itemQuality;
+    }
+
     @Override
     public String toString() {
         DecimalFormat format = new DecimalFormat("#.###");

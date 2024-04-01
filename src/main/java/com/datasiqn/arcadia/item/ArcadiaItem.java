@@ -6,7 +6,6 @@ import com.datasiqn.arcadia.item.material.ArcadiaMaterial;
 import com.datasiqn.arcadia.item.material.data.MaterialData;
 import com.datasiqn.arcadia.item.material.data.VanillaMaterialData;
 import com.datasiqn.arcadia.item.meta.ArcadiaItemMeta;
-import com.datasiqn.arcadia.item.stat.AttributeInstance;
 import com.datasiqn.arcadia.item.stat.AttributeRange;
 import com.datasiqn.arcadia.item.stat.ItemAttribute;
 import com.datasiqn.arcadia.item.stat.ItemStats;
@@ -39,9 +38,10 @@ public class ArcadiaItem implements ConfigurationSerializable {
         this.amount = original.amount;
 
         if (original.material == null) {
-            this.itemMeta = new ArcadiaItemMeta(UUID.randomUUID(), data);
+            this.itemMeta = new ArcadiaItemMeta(UUID.randomUUID());
         } else {
-            ArcadiaItemMeta meta = material.createItemMeta(UUID.randomUUID());
+            UUID uuid = UUID.randomUUID();
+            ArcadiaItemMeta meta = new ArcadiaItemMeta(uuid);
             ArcadiaItemMeta originalMeta = original.itemMeta;
             meta.setItemQuality(originalMeta.getItemQuality());
             originalMeta.getEnchants().forEach(type -> meta.addEnchant(type, originalMeta.getEnchantLevel(type)));
@@ -61,7 +61,7 @@ public class ArcadiaItem implements ConfigurationSerializable {
         this(material, 1);
     }
     public ArcadiaItem(@NotNull ArcadiaMaterial material, int amount) {
-        this(material.getData(), material.createItemMeta(UUID.randomUUID()));
+        this(material.getData(), new ArcadiaItemMeta(UUID.randomUUID()));
         this.material = material;
         if (data.isStackable()) this.amount = amount;
     }
@@ -79,7 +79,12 @@ public class ArcadiaItem implements ConfigurationSerializable {
             }
             this.data = data;
             this.material = arcadiaMaterial;
-            this.itemMeta = arcadiaMaterial == null ? new ArcadiaItemMeta(UUID.randomUUID()) : arcadiaMaterial.createItemMeta(UUID.randomUUID());
+            if (arcadiaMaterial == null) {
+                this.itemMeta = new ArcadiaItemMeta(UUID.randomUUID());
+            } else {
+                UUID uuid = UUID.randomUUID();
+                this.itemMeta = new ArcadiaItemMeta(uuid);
+            }
             return;
         }
         this.material = arcadiaMaterial;
@@ -87,10 +92,11 @@ public class ArcadiaItem implements ConfigurationSerializable {
         if (!data.isStackable()) this.amount = 1;
         ItemMeta meta = itemStack.getItemMeta();
         if (meta == null) {
-            this.itemMeta = arcadiaMaterial.createItemMeta(UUID.randomUUID());
+            UUID uuid = UUID.randomUUID();
+            this.itemMeta = new ArcadiaItemMeta(uuid);
             return;
         }
-        this.itemMeta = new ArcadiaItemMeta(meta.getPersistentDataContainer());
+        this.itemMeta = ArcadiaItemMeta.fromPdc(meta.getPersistentDataContainer());
     }
 
     public ArcadiaItem(@NotNull MaterialData<?> data) {
@@ -122,15 +128,15 @@ public class ArcadiaItem implements ConfigurationSerializable {
             lore.add(0, " ");
             lore.add(0, String.join(", ", enchantLore));
         }
-        ItemStats itemStats = itemMeta.getItemStats();
-        double damage = itemMeta.getDamage().getValue();
+        ItemStats itemStats = data.getStats();
+        double itemQuality = itemMeta.getItemQuality();
+        double damage = data.getDamage().get(itemQuality);
         if (itemStats.hasAttributes() || damage != 0) {
-            lore.addAll(0, itemStats.asLore());
+            lore.addAll(0, itemStats.asLore(itemQuality));
             lore.add(0, "");
             lore.add(0, ItemAttribute.DAMAGE.getColor() + ItemStats.DECIMAL_FORMAT.format(damage) + ItemAttribute.DAMAGE.getIcon() + ChatColor.GRAY + " Damage");
-            if (itemMeta.hasRandomizedStats()) {
+            if (data.getStats().hasRandomizedAttributes() || data.getDamage().hasRange()) {
                 DecimalFormat format = new DecimalFormat("#");
-                double itemQuality = itemMeta.getItemQuality();
                 lore.add(0, ChatColor.DARK_GRAY + "Item Quality: " + (itemQuality >= 1 ? ChatColor.GOLD : ChatColor.DARK_PURPLE) + format.format(itemQuality * 100) + "%");
             } else {
                 lore.add(0, ChatColor.DARK_GRAY + "Item Quality: " + ChatColor.GRAY + "100% (never has randomized stats)");
@@ -145,6 +151,7 @@ public class ArcadiaItem implements ConfigurationSerializable {
         return itemStack;
     }
 
+    // TODO: find a better way to do this
     public ItemStack asCraftingResult() {
         ItemStack craftingResult = data.asCraftingResult(amount, itemMeta.getUuid());
         ItemMeta meta = craftingResult.getItemMeta();
@@ -173,12 +180,12 @@ public class ArcadiaItem implements ConfigurationSerializable {
             PdcUtil.set(pdc, ArcadiaTag.ITEM_ENCHANTS, enchantData.toArray(EnchantsDataType.EnchantData[]::new));
         }
 
-        if (itemMeta.getItemStats().hasAttributes()) {
+        ItemStats stats = data.getStats();
+        if (stats.hasAttributes()) {
             List<String> statsLore = new ArrayList<>();
             for (PlayerAttribute attribute : PlayerAttribute.values()) {
-                AttributeInstance attributeInstance = itemMeta.getItemStats().getAttribute(attribute);
-                if (attributeInstance == null) continue;
-                AttributeRange attributeRange = attributeInstance.getRange();
+                AttributeRange attributeRange = stats.getAttributeRange(attribute);
+                if (attributeRange == null) continue;
                 DecimalFormat format = new DecimalFormat("#.##");
                 if (Objects.equals(attributeRange.min(), attributeRange.max())) {
                     statsLore.add(ChatColor.GRAY + attribute.toString() + ": +" + attribute.getItemAttribute().getColor() + format.format(attributeRange.min()) + attribute.getItemAttribute().getIcon());
@@ -188,7 +195,7 @@ public class ArcadiaItem implements ConfigurationSerializable {
             }
             statsLore.add(" ");
             lore.addAll(0, statsLore);
-            if (itemMeta.getItemStats().hasRandomizedAttributes()) {
+            if (stats.hasRandomizedAttributes()) {
                 lore.add(0, ChatColor.DARK_GRAY + "Item Quality: " + ChatColor.DARK_PURPLE + ChatColor.MAGIC + "__" + ChatColor.DARK_PURPLE + "%");
             } else {
                 lore.add(0, ChatColor.DARK_GRAY + "Item Quality: " + ChatColor.GRAY + "100% (never has randomized stats)");

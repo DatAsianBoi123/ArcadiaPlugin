@@ -14,7 +14,6 @@ import com.datasiqn.arcadia.entities.ArcadiaHostileEntity;
 import com.datasiqn.arcadia.item.ArcadiaItem;
 import com.datasiqn.arcadia.item.material.data.MaterialData;
 import com.datasiqn.arcadia.item.meta.ArcadiaItemMeta;
-import com.datasiqn.arcadia.item.stat.AttributeInstance;
 import com.datasiqn.arcadia.managers.PlayerManager;
 import com.datasiqn.arcadia.player.ArcadiaSender;
 import com.datasiqn.arcadia.player.PlayerAttribute;
@@ -132,7 +131,6 @@ public class DamageListener implements Listener {
         MaterialData<?> itemData = item.getData();
         if (itemData.getType().getSlot() != EquipmentSlot.HAND) return damage;
         ArcadiaItemMeta itemMeta = item.getItemMeta();
-        AttributeInstance damageAttribute = itemMeta.getDamage();
 
         double finalDamage;
 
@@ -158,7 +156,7 @@ public class DamageListener implements Listener {
 
         double strength = playerData.getAttribute(PlayerAttribute.STRENGTH);
 
-        double damageValue = damageAttribute == null ? 1 : damageAttribute.getValue();
+        double damageValue = Math.max(itemData.getDamage().get(itemMeta.getItemQuality()), 1);
         finalDamage = (damageValue + DamageHelper.getStrengthBonus(strength, damageValue)) * (additiveBonus * multiplicativeBonus);
 
         double damageAfterComponents = itemData.getComponents().stream().reduce(finalDamage, (prev, curr) -> curr.modifyAttackDamage(entity, prev, item), Double::sum);

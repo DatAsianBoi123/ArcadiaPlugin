@@ -222,8 +222,7 @@ public class PlayerListener implements Listener {
 
         if (!(event.getProjectile() instanceof Arrow arrow)) return;
         PersistentDataContainer pdc = arrow.getPersistentDataContainer();
-        var damageAttribute = bowItem.getItemMeta().getDamage();
-        double damageValue = damageAttribute == null ? 1 : damageAttribute.getValue();
+        double damageValue = bowItem.getData().getDamage().get(bowItem.getItemMeta().getItemQuality());
         double damage = damageValue + DamageHelper.getStrengthBonus(playerData.getAttribute(PlayerAttribute.STRENGTH), damageValue) * event.getForce();
         PdcUtil.set(pdc, ArcadiaTag.ARROW_DAMAGE, damage);
 

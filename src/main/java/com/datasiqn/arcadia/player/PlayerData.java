@@ -6,7 +6,6 @@ import com.datasiqn.arcadia.amulet.Amulet;
 import com.datasiqn.arcadia.amulet.PowerStone;
 import com.datasiqn.arcadia.dungeon.DungeonPlayer;
 import com.datasiqn.arcadia.item.ArcadiaItem;
-import com.datasiqn.arcadia.item.stat.AttributeInstance;
 import com.datasiqn.arcadia.item.stat.ItemAttribute;
 import com.datasiqn.arcadia.item.stat.ItemStats;
 import com.datasiqn.arcadia.item.stat.StatIcon;
@@ -124,22 +123,18 @@ public class PlayerData {
             ArcadiaItem arcadiaItem = equipment.getItem(slot);
 
             if (arcadiaItem.getData().getType().getSlot() == slot) {
-                ItemStats itemStats = arcadiaItem.getItemMeta().getItemStats();
+                ItemStats stats = arcadiaItem.getData().getStats();
                 for (PlayerAttribute attribute : PlayerAttribute.values()) {
-                    AttributeInstance itemAttribute = itemStats.getAttribute(attribute);
-                    attributes.mergeDouble(attribute, itemAttribute == null ? 0 : itemAttribute.getValue(), Double::sum);
+                    attributes.mergeDouble(attribute, stats.getAttribute(attribute, arcadiaItem.getItemMeta().getItemQuality()), Double::sum);
                 }
             }
         }
 
         for (PowerStone powerStone : equipment.getAmulet()) {
             if (powerStone == null) continue;
+            ItemStats stats = powerStone.getData().getStats();
             for (PlayerAttribute attribute : PlayerAttribute.values()) {
-                AttributeInstance attributeInstance = powerStone.getItem().getItemMeta().getItemStats().getAttribute(attribute);
-                double attributeValue;
-                if (attributeInstance == null) attributeValue = 0;
-                else attributeValue = attributeInstance.getValue();
-                attributes.mergeDouble(attribute, attributeValue, Double::sum);
+                attributes.mergeDouble(attribute, stats.getAttribute(attribute, 1), Double::sum);
             }
         }
 

@@ -6,7 +6,6 @@ import com.datasiqn.arcadia.item.ItemRarity;
 import com.datasiqn.arcadia.item.abilities.*;
 import com.datasiqn.arcadia.item.components.ObsidianKunaiComponent;
 import com.datasiqn.arcadia.item.material.data.MaterialData;
-import com.datasiqn.arcadia.item.meta.ArcadiaItemMeta;
 import com.datasiqn.arcadia.item.modifiers.LeatherArmorItemModifier;
 import com.datasiqn.arcadia.item.modifiers.PotionModifier;
 import com.datasiqn.arcadia.item.modifiers.SkullItemModifier;
@@ -25,11 +24,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.UUID;
 
 public enum ArcadiaMaterial {
     ENCHANTED_STICK(MaterialData.builder(ItemType.NONE)
@@ -322,11 +318,6 @@ public enum ArcadiaMaterial {
 
     ArcadiaMaterial(MaterialData<?> data) {
         this.data = data;
-    }
-
-    @Contract("_ -> new")
-    public @NotNull ArcadiaItemMeta createItemMeta(UUID uuid) {
-        return new ArcadiaItemMeta(uuid, data);
     }
 
     @NotNull

@@ -44,7 +44,7 @@ public enum PowerStone {
 
     PowerStone(@NotNull PowerStoneData data) {
         this.data = data;
-        this.item = new ArcadiaItem(data, new ArcadiaItemMeta(UUID.nameUUIDFromBytes(data.getName().getBytes()), data));
+        this.item = new ArcadiaItem(data, new ArcadiaItemMeta(UUID.nameUUIDFromBytes(data.getName().getBytes())));
     }
 
     public PowerStoneData getData() {

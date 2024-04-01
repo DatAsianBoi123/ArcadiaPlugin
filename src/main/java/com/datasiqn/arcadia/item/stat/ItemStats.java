@@ -2,7 +2,6 @@ package com.datasiqn.arcadia.item.stat;
 
 import com.datasiqn.arcadia.player.PlayerAttribute;
 import org.bukkit.ChatColor;
-import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -10,23 +9,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-// TODO: change how item quality is handled in here
 public class ItemStats {
     public static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#,###.#");
 
-    private final Map<PlayerAttribute, AttributeInstance> itemAttributes = new HashMap<>();
-    private double itemQuality;
+    private final Map<PlayerAttribute, AttributeRange> attributes = new HashMap<>();
 
-    public List<String> asLore() {
-        return asLore(true);
+    public List<String> asLore(double itemQuality) {
+        return asLore(itemQuality, true);
     }
-    public List<String> asLore(boolean space) {
+    public List<String> asLore(double itemQuality, boolean space) {
         List<String> lore = new ArrayList<>();
         if (hasAttributes()) {
             for (PlayerAttribute attribute : PlayerAttribute.values()) {
-                AttributeInstance attributeInstance = getAttribute(attribute);
-                if (attributeInstance == null) continue;
-                double value = attributeInstance.getValue();
+                double value = getAttribute(attribute, itemQuality);
                 if (value == 0) continue;
                 String sign = value < 0 ? ChatColor.RED + "-" : "+";
                 lore.add(ChatColor.GRAY + "" + attribute.getItemAttribute() + ": " + sign + attribute.getItemAttribute().getColor() + DECIMAL_FORMAT.format(Math.abs(value)) + attribute.getItemAttribute().getIcon());
@@ -36,38 +31,30 @@ public class ItemStats {
         return lore;
     }
 
-    @Nullable
-    public AttributeInstance getAttribute(PlayerAttribute attribute) {
-        AttributeInstance instance = itemAttributes.get(attribute);
-        if (instance == null) return null;
-        instance.setItemQuality(itemQuality);
-        return instance;
+    public double getAttribute(PlayerAttribute attribute, double itemQuality) {
+        AttributeRange range = attributes.get(attribute);
+        if (range == null) return 0;
+        return range.get(itemQuality);
     }
 
-    public void setAttribute(PlayerAttribute attribute, double value) {
-        setAttribute(attribute, new AttributeInstance(value));
+    public AttributeRange getAttributeRange(PlayerAttribute attribute) {
+        return attributes.get(attribute);
     }
+
     public void setAttribute(PlayerAttribute attribute, AttributeRange range) {
-        setAttribute(attribute, new AttributeInstance(range));
-    }
-    public void setAttribute(PlayerAttribute attribute, AttributeInstance instance) {
-        itemAttributes.put(attribute, instance);
+        attributes.put(attribute, range);
     }
 
     public boolean hasRandomizedAttributes() {
-        for (Map.Entry<PlayerAttribute, AttributeInstance> entry : itemAttributes.entrySet()) {
-            AttributeInstance instance = entry.getValue();
-            if (instance.isRandom()) return true;
+        for (Map.Entry<PlayerAttribute, AttributeRange> entry : attributes.entrySet()) {
+            AttributeRange instance = entry.getValue();
+            if (instance.hasRange()) return true;
         }
         return false;
     }
 
-    public void setItemQuality(double itemQuality) {
-        this.itemQuality = itemQuality;
-    }
-
     public boolean hasAttributes() {
-        return !itemAttributes.isEmpty();
+        return !attributes.isEmpty();
     }
 }
 

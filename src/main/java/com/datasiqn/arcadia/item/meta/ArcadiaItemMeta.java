@@ -3,75 +3,29 @@ package com.datasiqn.arcadia.item.meta;
 import com.datasiqn.arcadia.ArcadiaTag;
 import com.datasiqn.arcadia.datatypes.EnchantsDataType;
 import com.datasiqn.arcadia.enchants.EnchantType;
-import com.datasiqn.arcadia.item.material.ArcadiaMaterial;
-import com.datasiqn.arcadia.item.material.data.MaterialData;
-import com.datasiqn.arcadia.item.stat.AttributeInstance;
-import com.datasiqn.arcadia.item.stat.ItemStats;
 import com.datasiqn.arcadia.util.PdcUtil;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.*;
 
 public class ArcadiaItemMeta {
     private final UUID uuid;
-    private final AttributeInstance damage;
-    private final ItemStats itemStats = new ItemStats();
     private final Object2IntMap<EnchantType> enchants = new Object2IntOpenHashMap<>();
 
     private double itemQuality;
 
     public ArcadiaItemMeta(@NotNull UUID uuid) {
-        this(uuid, null);
-    }
-    public ArcadiaItemMeta(@NotNull UUID uuid, @Nullable MaterialData<?> data) {
         this.uuid = uuid;
         this.itemQuality = new Random(uuid.getMostSignificantBits()).nextDouble();
-
-        if (data != null) {
-            this.damage = new AttributeInstance(data.getDamage());
-            data.getAttributes().forEach(itemStats::setAttribute);
-        } else {
-            this.damage = new AttributeInstance(0);
-        }
-        this.damage.setItemQuality(itemQuality);
-        this.itemStats.setItemQuality(itemQuality);
-    }
-    public ArcadiaItemMeta(@NotNull PersistentDataContainer pdc) {
-        this.uuid = PdcUtil.getOrDefault(pdc, ArcadiaTag.ITEM_UUID, UUID.randomUUID());
-        this.itemQuality = PdcUtil.getOrDefault(pdc, ArcadiaTag.ITEM_QUALITY, 0d);
-        ArcadiaMaterial arcadiaMaterial = ArcadiaMaterial.fromPdc(pdc);
-        if (arcadiaMaterial != null) {
-            MaterialData<?> data = arcadiaMaterial.getData();
-            this.damage = new AttributeInstance(data.getDamage());
-            data.getAttributes().forEach(itemStats::setAttribute);
-        } else {
-            this.damage = new AttributeInstance(0);
-        }
-        this.damage.setItemQuality(itemQuality);
-        this.itemStats.setItemQuality(itemQuality);
-
-        EnchantsDataType.EnchantData[] enchantData = PdcUtil.getOrDefault(pdc, ArcadiaTag.ITEM_ENCHANTS, new EnchantsDataType.EnchantData[0]);
-        for (EnchantsDataType.EnchantData data : enchantData) {
-            enchants.put(data.enchantType(), data.level());
-        }
     }
 
     public @NotNull UUID getUuid() {
         return uuid;
-    }
-
-    public AttributeInstance getDamage() {
-        return damage;
-    }
-
-    public @NotNull ItemStats getItemStats() {
-        return itemStats;
     }
 
     public double getItemQuality() {
@@ -80,8 +34,6 @@ public class ArcadiaItemMeta {
 
     public void setItemQuality(double newAmount) {
         this.itemQuality = Math.min(1, newAmount);
-        this.damage.setItemQuality(itemQuality);
-        this.itemStats.setItemQuality(itemQuality);
     }
 
     public boolean hasEnchants() {
@@ -114,10 +66,6 @@ public class ArcadiaItemMeta {
         enchants.clear();
     }
 
-    public boolean hasRandomizedStats() {
-        return itemStats.hasRandomizedAttributes() || damage.isRandom();
-    }
-
     public void addToPdc(@NotNull PersistentDataContainer pdc) {
         if (hasEnchants()) {
             List<EnchantsDataType.EnchantData> dataList = new ArrayList<>();
@@ -125,8 +73,20 @@ public class ArcadiaItemMeta {
             PdcUtil.set(pdc, ArcadiaTag.ITEM_ENCHANTS, dataList.toArray(EnchantsDataType.EnchantData[]::new));
         }
 
-        if (itemStats.hasAttributes()) {
-            PdcUtil.set(pdc, ArcadiaTag.ITEM_QUALITY, itemQuality);
+        PdcUtil.set(pdc, ArcadiaTag.ITEM_QUALITY, itemQuality);
+    }
+
+    @Contract("_ -> new")
+    public static @NotNull ArcadiaItemMeta fromPdc(@NotNull PersistentDataContainer pdc) {
+        UUID uuid = PdcUtil.getOrDefault(pdc, ArcadiaTag.ITEM_UUID, UUID.randomUUID());
+        double itemQuality = PdcUtil.getOrDefault(pdc, ArcadiaTag.ITEM_QUALITY, 0d);
+
+        ArcadiaItemMeta itemMeta = new ArcadiaItemMeta(uuid);
+        itemMeta.itemQuality = itemQuality;
+        EnchantsDataType.EnchantData[] enchants = PdcUtil.getOrDefault(pdc, ArcadiaTag.ITEM_ENCHANTS, new EnchantsDataType.EnchantData[0]);
+        for (EnchantsDataType.EnchantData enchantData : enchants) {
+            itemMeta.enchants.put(enchantData.enchantType(), enchantData.level());
         }
+        return itemMeta;
     }
 }

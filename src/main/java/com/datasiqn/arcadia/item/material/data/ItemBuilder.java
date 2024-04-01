@@ -6,6 +6,7 @@ import com.datasiqn.arcadia.item.abilities.ItemAbility;
 import com.datasiqn.arcadia.item.components.ItemComponent;
 import com.datasiqn.arcadia.item.modifiers.ItemModifier;
 import com.datasiqn.arcadia.item.stat.AttributeRange;
+import com.datasiqn.arcadia.item.stat.ItemStats;
 import com.datasiqn.arcadia.item.type.ItemType;
 import com.datasiqn.arcadia.item.type.data.ExtraItemData;
 import com.datasiqn.arcadia.player.PlayerAttribute;
@@ -22,7 +23,7 @@ import java.util.*;
 public abstract class ItemBuilder<D extends ExtraItemData, V, T extends ItemBuilder<D, V, T>> {
     private final ItemType<D> type;
     private final D data;
-    private final Map<PlayerAttribute, AttributeRange> attributes = new HashMap<>();
+    private final ItemStats stats = new ItemStats();
     private final List<ItemModifier> modifiers = new ArrayList<>();
     private final Map<AbilityType, ItemAbility> abilities = new HashMap<>();
     private final List<ItemComponent> components = new ArrayList<>();
@@ -125,12 +126,12 @@ public abstract class ItemBuilder<D extends ExtraItemData, V, T extends ItemBuil
         return attribute(attribute, new AttributeRange(min, max));
     }
     public T attribute(PlayerAttribute attribute, AttributeRange range) {
-        this.attributes.put(attribute, range);
+        this.stats.setAttribute(attribute, range);
         return getThis();
     }
 
-    public @UnmodifiableView Map<PlayerAttribute, AttributeRange> attributes() {
-        return Collections.unmodifiableMap(attributes);
+    public ItemStats stats() {
+        return stats;
     }
 
     public T addAbility(AbilityType type, @NotNull ItemAbility ability) {
