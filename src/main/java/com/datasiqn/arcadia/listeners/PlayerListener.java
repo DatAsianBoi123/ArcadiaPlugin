@@ -115,6 +115,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerHit(@NotNull PlayerInteractEvent event) {
         if (event.getHand() != EquipmentSlot.HAND) return;
+        if (event.getAction() != Action.LEFT_CLICK_AIR && event.getAction() != Action.LEFT_CLICK_BLOCK) return;
         playerManager.getPlayerData(event.getPlayer()).tryAttack();
     }
 

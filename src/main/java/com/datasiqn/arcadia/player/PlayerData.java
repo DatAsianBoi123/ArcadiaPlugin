@@ -350,6 +350,7 @@ public class PlayerData {
         cooldown = (int) Math.round(getItemCooldown());
         if (cooldown == 0) {
             cooldown = -1;
+            player.removePotionEffect(PotionEffectType.SLOW_DIGGING);
             return;
         }
         cooldownBossBar.setVisible(true);
