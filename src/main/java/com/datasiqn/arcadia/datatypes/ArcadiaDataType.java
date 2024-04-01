@@ -1,6 +1,5 @@
 package com.datasiqn.arcadia.datatypes;
 
-import com.datasiqn.arcadia.enchants.EnchantType;
 import com.datasiqn.arcadia.item.ItemId;
 import com.datasiqn.arcadia.loottable.LootTable;
 import com.datasiqn.arcadia.upgrade.UpgradeType;
@@ -15,10 +14,6 @@ public final class ArcadiaDataType {
     private ArcadiaDataType() {}
 
     public static final PersistentDataType<String, ItemId> ITEM_ID = new ItemIdDataType();
-
-    public static final PersistentDataType<PersistentDataContainer[], EnchantsDataType.EnchantData[]> ENCHANTS = new EnchantsDataType();
-
-    public static final PersistentDataType<String, EnchantType> ENCHANT_ID = new EnumDataType<>(EnchantType.class);
 
     public static final PersistentDataType<Byte, Boolean> BOOLEAN = new BooleanDataType();
 

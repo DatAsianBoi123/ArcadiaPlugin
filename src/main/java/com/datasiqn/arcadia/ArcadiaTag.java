@@ -1,8 +1,6 @@
 package com.datasiqn.arcadia;
 
 import com.datasiqn.arcadia.datatypes.ArcadiaDataType;
-import com.datasiqn.arcadia.datatypes.EnchantsDataType;
-import com.datasiqn.arcadia.enchants.EnchantType;
 import com.datasiqn.arcadia.item.ItemId;
 import com.datasiqn.arcadia.loottable.LootTable;
 import com.datasiqn.arcadia.upgrade.UpgradeType;
@@ -17,10 +15,6 @@ public final class ArcadiaTag<T> {
     public static final ArcadiaTag<UUID> ITEM_UUID = new ArcadiaTag<>("uuid", ArcadiaDataType.UUID);
     public static final ArcadiaTag<Boolean> ITEM_MATERIAL = new ArcadiaTag<>("material", ArcadiaDataType.BOOLEAN);
     public static final ArcadiaTag<Double> ITEM_QUALITY = new ArcadiaTag<>("quality", PersistentDataType.DOUBLE);
-
-    public static final ArcadiaTag<EnchantsDataType.EnchantData[]> ITEM_ENCHANTS = new ArcadiaTag<>("enchants", ArcadiaDataType.ENCHANTS);
-    public static final ArcadiaTag<EnchantType> ENCHANT_ID = new ArcadiaTag<>("id", ArcadiaDataType.ENCHANT_ID);
-    public static final ArcadiaTag<Integer> ENCHANT_LEVEL = new ArcadiaTag<>("level", PersistentDataType.INTEGER);
 
     public static final ArcadiaTag<Double> ARROW_DAMAGE = new ArcadiaTag<>("arrow_damage", PersistentDataType.DOUBLE);
 

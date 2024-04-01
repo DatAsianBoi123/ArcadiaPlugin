@@ -1,7 +1,6 @@
 package com.datasiqn.arcadia.item;
 
 import com.datasiqn.arcadia.ArcadiaTag;
-import com.datasiqn.arcadia.datatypes.EnchantsDataType;
 import com.datasiqn.arcadia.item.material.ArcadiaMaterial;
 import com.datasiqn.arcadia.item.material.data.MaterialData;
 import com.datasiqn.arcadia.item.material.data.VanillaMaterialData;
@@ -14,15 +13,12 @@ import com.datasiqn.arcadia.util.PdcUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.*;
 
 public class ArcadiaItem implements ConfigurationSerializable {
@@ -41,11 +37,7 @@ public class ArcadiaItem implements ConfigurationSerializable {
             this.itemMeta = new ArcadiaItemMeta(UUID.randomUUID());
         } else {
             UUID uuid = UUID.randomUUID();
-            ArcadiaItemMeta meta = new ArcadiaItemMeta(uuid);
-            ArcadiaItemMeta originalMeta = original.itemMeta;
-            meta.setItemQuality(originalMeta.getItemQuality());
-            originalMeta.getEnchants().forEach(type -> meta.addEnchant(type, originalMeta.getEnchantLevel(type)));
-            this.itemMeta = meta;
+            this.itemMeta = new ArcadiaItemMeta(uuid, original.itemMeta.getItemQuality());
         }
     }
 
@@ -115,19 +107,6 @@ public class ArcadiaItem implements ConfigurationSerializable {
         List<String> lore = meta.getLore();
         if (lore == null) lore = new ArrayList<>();
 
-        if (itemMeta.hasEnchants()) {
-            meta.addEnchant(Enchantment.DURABILITY, 0, true);
-
-            List<String> enchantLore = new ArrayList<>();
-
-            itemMeta.getEnchants().forEach(type -> {
-                NumberFormat numberFormat = NumberFormat.getInstance(Locale.ENGLISH);
-                enchantLore.add(ChatColor.BLUE + type.getEnchantment().getName() + " " + numberFormat.format(itemMeta.getEnchantLevel(type)));
-            });
-            enchantLore.sort(Comparator.naturalOrder());
-            lore.add(0, " ");
-            lore.add(0, String.join(", ", enchantLore));
-        }
         ItemStats itemStats = data.getStats();
         double itemQuality = itemMeta.getItemQuality();
         double damage = data.getDamage().get(itemQuality);
@@ -159,26 +138,6 @@ public class ArcadiaItem implements ConfigurationSerializable {
         PdcUtil.set(meta.getPersistentDataContainer(), ArcadiaTag.ITEM_ID, getId());
         List<String> lore = meta.getLore();
         if (lore == null) lore = new ArrayList<>();
-
-        if (itemMeta.hasEnchants()) {
-            meta.addEnchant(Enchantment.DURABILITY, 0, true);
-
-            List<String> enchantLore = new ArrayList<>();
-            List<EnchantsDataType.EnchantData> enchantData = new ArrayList<>();
-
-            itemMeta.getEnchants().forEach(type -> {
-                NumberFormat numberFormat = NumberFormat.getInstance(Locale.ENGLISH);
-                int level = itemMeta.getEnchantLevel(type);
-                enchantLore.add(ChatColor.BLUE + type.getEnchantment().getName() + " " + numberFormat.format(level));
-                enchantData.add(new EnchantsDataType.EnchantData(type, level));
-            });
-            enchantLore.sort(Comparator.naturalOrder());
-            lore.add(0, " ");
-            lore.add(0, String.join(", ", enchantLore));
-
-            PersistentDataContainer pdc = meta.getPersistentDataContainer();
-            PdcUtil.set(pdc, ArcadiaTag.ITEM_ENCHANTS, enchantData.toArray(EnchantsDataType.EnchantData[]::new));
-        }
 
         ItemStats stats = data.getStats();
         if (stats.hasAttributes()) {

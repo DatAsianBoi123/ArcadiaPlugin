@@ -1,7 +1,6 @@
 package com.datasiqn.arcadia.commands.argument;
 
 import com.datasiqn.arcadia.dungeon.DungeonInstance;
-import com.datasiqn.arcadia.enchants.EnchantType;
 import com.datasiqn.arcadia.entities.EntityType;
 import com.datasiqn.arcadia.item.material.ArcadiaMaterial;
 import com.datasiqn.arcadia.loottable.LootTable;
@@ -21,8 +20,6 @@ public final class ArcadiaArgumentType {
     public static final ArgumentType<PlayerAttribute> PLAYER_ATTRIBUTE = new ArgumentType.EnumArgumentType<>(PlayerAttribute.class, "attribute");
 
     public static final ArgumentType<ArcadiaMaterial> ITEM = new ArgumentType.EnumArgumentType<>(ArcadiaMaterial.class, "item");
-
-    public static final ArgumentType<EnchantType> ENCHANT = new ArgumentType.EnumArgumentType<>(EnchantType.class, "enchant");
 
     public static final ArgumentType<LootTable> LOOT_TABLE = new ArgumentType.EnumArgumentType<>(LootTable.class, "loot table");
 

@@ -2,7 +2,6 @@ package com.datasiqn.arcadia.menu.handlers;
 
 import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.ArcadiaTag;
-import com.datasiqn.arcadia.enchants.EnchantType;
 import com.datasiqn.arcadia.item.ArcadiaItem;
 import com.datasiqn.arcadia.item.material.ArcadiaMaterial;
 import com.datasiqn.arcadia.item.meta.ArcadiaItemMeta;
@@ -132,26 +131,8 @@ public class AnvilMenuHandler extends MenuHandler {
         ArcadiaItemMeta originalMeta = originalArcadiaItem.getItemMeta();
         ArcadiaItemMeta addedMeta = addedArcadiaItem.getItemMeta();
         if (addedArcadiaItem.getMaterial() == ArcadiaMaterial.ENCHANTED_BOOK || originalArcadiaItem.isSimilar(addedArcadiaItem)) {
-            boolean canAddEnchants = !originalArcadiaItem.getItemMeta().hasEnchants() && !addedArcadiaItem.getItemMeta().hasEnchants();
-            for (EnchantType enchantType : addedMeta.getEnchants()) {
-                int level = addedMeta.getEnchantLevel(enchantType);
-                boolean canEnchant = enchantType.getEnchantment().canEnchant(originalArcadiaItem);
-                if (canEnchant) canAddEnchants = true;
-                int originalEnchant = originalMeta.getEnchantLevel(enchantType);
-                int combinedLevel = Math.max(level, originalEnchant);
-                if (level == originalEnchant) combinedLevel++;
-                if (originalArcadiaItem.getMaterial() == ArcadiaMaterial.ENCHANTED_BOOK || canEnchant) originalMeta.addEnchant(enchantType, combinedLevel);
-            }
-
-            if (!canAddEnchants) {
-                inventory.setItem(31, MISSING_RECIPE);
-                return;
-            }
-
-            if (originalArcadiaItem.isSimilar(addedArcadiaItem)) {
-                double newBonus = originalMeta.getItemQuality() + addedMeta.getItemQuality();
-                originalMeta.setItemQuality(newBonus);
-            }
+            double newBonus = originalMeta.getItemQuality() + addedMeta.getItemQuality();
+            originalMeta.setItemQuality(newBonus);
         }
 
         if (addedArcadiaItem.getMaterial() == ArcadiaMaterial.SPACE_REWRITER) {

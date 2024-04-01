@@ -161,7 +161,6 @@ public final class Arcadia extends JavaPlugin {
         manager.register(ArcadiaArgumentType.PLAYER);
         manager.register(ArcadiaArgumentType.PLAYER_ATTRIBUTE);
         manager.register(ArcadiaArgumentType.ITEM);
-        manager.register(ArcadiaArgumentType.ENCHANT);
         manager.register(ArcadiaArgumentType.LOOT_TABLE);
         manager.register(ArcadiaArgumentType.RECIPE);
         manager.register(ArcadiaArgumentType.UPGRADE);
@@ -181,7 +180,6 @@ public final class Arcadia extends JavaPlugin {
         commandManager.registerCommand(new CommandViewRecipe());
         commandManager.registerCommand(new CommandViewUpgrade());
         commandManager.registerCommand(new CommandLoot());
-        commandManager.registerCommand(new CommandEnchant(this).getCommand());
         commandManager.registerCommand(new CommandDungeons(this).getCommand());
         commandManager.registerCommand(new CommandLobby(this));
         commandManager.registerCommand(new CommandSpawn());
