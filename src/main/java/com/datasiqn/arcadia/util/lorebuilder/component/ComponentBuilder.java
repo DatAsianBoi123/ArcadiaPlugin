@@ -1,6 +1,6 @@
 package com.datasiqn.arcadia.util.lorebuilder.component;
 
-import com.datasiqn.arcadia.player.PlayerAttribute;
+import com.datasiqn.arcadia.player.AttributeFormat;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,11 +19,11 @@ public class ComponentBuilder {
         return append(TextLoreComponent.text(text, color));
     }
 
-    public ComponentBuilder attribute(PlayerAttribute attribute) {
-        return append(AttributeLoreComponent.attribute(attribute));
+    public ComponentBuilder attribute(AttributeFormat format) {
+        return append(AttributeLoreComponent.attribute(format));
     }
 
-    public ComponentBuilder stat(PlayerAttribute attribute, double value) {
+    public ComponentBuilder stat(AttributeFormat attribute, double value) {
         return append(StatLoreComponent.stat(attribute, value));
     }
 

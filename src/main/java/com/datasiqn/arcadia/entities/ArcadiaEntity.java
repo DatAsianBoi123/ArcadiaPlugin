@@ -1,8 +1,8 @@
 package com.datasiqn.arcadia.entities;
 
 import com.datasiqn.arcadia.dungeon.DungeonPlayer;
-import com.datasiqn.arcadia.item.stat.StatIcon;
 import com.datasiqn.arcadia.loottable.LootTable;
+import com.datasiqn.arcadia.player.AttributeFormats;
 import com.datasiqn.arcadia.upgrade.actions.DamageEnemyAction;
 import com.datasiqn.arcadia.upgrade.actions.KillEnemyAction;
 import com.datasiqn.schedulebuilder.ScheduleBuilder;
@@ -114,7 +114,7 @@ public abstract class ArcadiaEntity extends PathfinderMob {
     }
 
     protected final void updateName() {
-        setCustomName(Component.literal(ChatColor.GREEN + customName + " " + ChatColor.RED + formatDouble(health) + ChatColor.DARK_GRAY + "/" + ChatColor.RED + formatDouble(maxHealth) + StatIcon.HEALTH));
+        setCustomName(Component.literal(ChatColor.GREEN + customName + " " + ChatColor.RED + formatDouble(health) + ChatColor.DARK_GRAY + "/" + ChatColor.RED + formatDouble(maxHealth) + AttributeFormats.HEALTH.icon()));
     }
 
     @Override

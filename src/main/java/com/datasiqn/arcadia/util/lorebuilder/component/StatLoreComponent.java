@@ -1,25 +1,25 @@
 package com.datasiqn.arcadia.util.lorebuilder.component;
 
-import com.datasiqn.arcadia.player.PlayerAttribute;
+import com.datasiqn.arcadia.player.AttributeFormat;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 public class StatLoreComponent implements LoreComponent {
-    private final PlayerAttribute attribute;
+    private final AttributeFormat attributeFormat;
     private final double value;
 
-    private StatLoreComponent(PlayerAttribute attribute, double value) {
-        this.attribute = attribute;
+    private StatLoreComponent(AttributeFormat attributeFormat, double value) {
+        this.attributeFormat = attributeFormat;
         this.value = value;
     }
 
     @Override
     public @NotNull String toString() {
-        return attribute.getColor() + String.valueOf(value) + attribute.getIcon();
+        return attributeFormat.format(value);
     }
 
     @Contract(value = "_, _ -> new", pure = true)
-    public static @NotNull StatLoreComponent stat(PlayerAttribute attribute, double value) {
+    public static @NotNull StatLoreComponent stat(AttributeFormat attribute, double value) {
         return new StatLoreComponent(attribute, value);
     }
 }

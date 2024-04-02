@@ -7,7 +7,6 @@ import com.datasiqn.arcadia.amulet.PowerStone;
 import com.datasiqn.arcadia.dungeon.DungeonPlayer;
 import com.datasiqn.arcadia.item.ArcadiaItem;
 import com.datasiqn.arcadia.item.stat.ItemStats;
-import com.datasiqn.arcadia.item.stat.StatIcon;
 import com.datasiqn.arcadia.upgrade.actions.UpdateAttributesAction;
 import com.datasiqn.resultapi.Result;
 import com.datasiqn.schedulebuilder.ScheduleBuilder;
@@ -200,7 +199,7 @@ public class PlayerData {
         sender.sendDebugMessage("Raw damage dealt: " + ChatColor.RED + rawDamage);
         if (event.getDamage() != event.getFinalDamage()) this.sender.sendDebugMessage(ChatColor.RED + "Damage and raw damage do not match!");
         DecimalFormat format = new DecimalFormat("#.##");
-        final String sDefense = format.format(DamageHelper.getDamageReduction(getAttribute(PlayerAttribute.DEFENSE)) * 100) + "% (" + getAttribute(PlayerAttribute.DEFENSE) + StatIcon.DEFENSE + ")";
+        String sDefense = format.format(DamageHelper.getDamageReduction(getAttribute(PlayerAttribute.DEFENSE)) * 100) + "% (" + getAttribute(PlayerAttribute.DEFENSE) + AttributeFormats.DEFENSE.icon() + ")";
         if (trueDamage) {
             sender.sendDebugMessage("Damage reduction (ignored, true damage): " + ChatColor.GREEN + sDefense);
         } else {
@@ -247,16 +246,16 @@ public class PlayerData {
 
     public void updateActionbar() {
         DecimalFormat format = new DecimalFormat("#");
-        String displayHealth = formatDouble(health, format) + "/" + formatDouble(getAttribute(PlayerAttribute.MAX_HEALTH), format) + PlayerAttribute.MAX_HEALTH.getIcon();
-        String displayDefense = formatDouble(getAttribute(PlayerAttribute.DEFENSE), format) + PlayerAttribute.DEFENSE.getIcon();
-        String displayStrength = formatDouble(getAttribute(PlayerAttribute.STRENGTH), format) + PlayerAttribute.STRENGTH.getIcon();
-        String displayHunger = formatDouble(hunger, format) + "/" + formatDouble(getAttribute(PlayerAttribute.MAX_HUNGER), format) + PlayerAttribute.MAX_HUNGER.getIcon();
+        String displayHealth = formatDouble(health, format) + "/" + formatDouble(getAttribute(PlayerAttribute.MAX_HEALTH), format) + AttributeFormats.HEALTH.icon();
+        String displayDefense = formatDouble(getAttribute(PlayerAttribute.DEFENSE), format) + AttributeFormats.DEFENSE.icon();
+        String displayStrength = formatDouble(getAttribute(PlayerAttribute.STRENGTH), format) + AttributeFormats.STRENGTH.icon();
+        String displayHunger = formatDouble(hunger, format) + "/" + formatDouble(getAttribute(PlayerAttribute.MAX_HUNGER), format) + AttributeFormats.HUNGER.icon();
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
                 new ComponentBuilder()
-                        .append(displayHealth + " ").color(PlayerAttribute.MAX_HEALTH.getColor())
-                        .append(displayDefense + " ").color(PlayerAttribute.DEFENSE.getColor())
-                        .append(displayStrength + " ").color(PlayerAttribute.STRENGTH.getColor())
-                        .append(displayHunger).color(PlayerAttribute.MAX_HUNGER.getColor())
+                        .append(displayHealth + " ").color(AttributeFormats.HEALTH.color())
+                        .append(displayDefense + " ").color(AttributeFormats.DEFENSE.color())
+                        .append(displayStrength + " ").color(AttributeFormats.STRENGTH.color())
+                        .append(displayHunger).color(AttributeFormats.HUNGER.color())
                         .create());
     }
 

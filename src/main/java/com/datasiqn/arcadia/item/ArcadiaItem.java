@@ -7,7 +7,7 @@ import com.datasiqn.arcadia.item.material.data.VanillaMaterialData;
 import com.datasiqn.arcadia.item.meta.ArcadiaItemMeta;
 import com.datasiqn.arcadia.item.stat.AttributeRange;
 import com.datasiqn.arcadia.item.stat.ItemStats;
-import com.datasiqn.arcadia.item.stat.StatIcon;
+import com.datasiqn.arcadia.player.AttributeFormats;
 import com.datasiqn.arcadia.player.PlayerAttribute;
 import com.datasiqn.arcadia.util.PdcUtil;
 import org.bukkit.ChatColor;
@@ -113,7 +113,7 @@ public class ArcadiaItem implements ConfigurationSerializable {
         if (itemStats.hasAttributes() || damage != 0) {
             lore.addAll(0, itemStats.asLore(itemQuality));
             lore.add(0, "");
-            lore.add(0, ChatColor.RED + ItemStats.DECIMAL_FORMAT.format(damage) + StatIcon.DAMAGE + ChatColor.GRAY + " Damage");
+            lore.add(0, AttributeFormats.DAMAGE.format(damage) + ChatColor.GRAY + " Damage");
             if (data.getStats().hasRandomizedAttributes() || data.getDamage().hasRange()) {
                 DecimalFormat format = new DecimalFormat("#");
                 lore.add(0, ChatColor.DARK_GRAY + "Item Quality: " + (itemQuality >= 1 ? ChatColor.GOLD : ChatColor.DARK_PURPLE) + format.format(itemQuality * 100) + "%");
@@ -145,12 +145,7 @@ public class ArcadiaItem implements ConfigurationSerializable {
             for (PlayerAttribute attribute : PlayerAttribute.values()) {
                 AttributeRange attributeRange = stats.getAttributeRange(attribute);
                 if (attributeRange == null) continue;
-                DecimalFormat format = new DecimalFormat("#.##");
-                if (Objects.equals(attributeRange.min(), attributeRange.max())) {
-                    statsLore.add(ChatColor.GRAY + attribute.toString() + ": +" + attribute.getColor() + format.format(attributeRange.min()) + attribute.getIcon());
-                } else {
-                    statsLore.add(ChatColor.GRAY + attribute.toString() + ": +" + attribute.getColor() + format.format(attributeRange.min()) + "-" + format.format(attributeRange.max()) + attribute.getIcon());
-                }
+                statsLore.add(ChatColor.GRAY + attribute.toString() + ": " + attributeRange.getFormatted(AttributeRange.UNKNOWN_ITEM_QUALITY));
             }
             statsLore.add(" ");
             lore.addAll(0, statsLore);

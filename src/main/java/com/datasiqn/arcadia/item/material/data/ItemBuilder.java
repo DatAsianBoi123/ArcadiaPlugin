@@ -9,6 +9,7 @@ import com.datasiqn.arcadia.item.stat.AttributeRange;
 import com.datasiqn.arcadia.item.stat.ItemStats;
 import com.datasiqn.arcadia.item.type.ItemType;
 import com.datasiqn.arcadia.item.type.data.ExtraItemData;
+import com.datasiqn.arcadia.player.AttributeFormats;
 import com.datasiqn.arcadia.player.PlayerAttribute;
 import com.datasiqn.arcadia.util.lorebuilder.Lore;
 import org.bukkit.Material;
@@ -31,7 +32,7 @@ public abstract class ItemBuilder<D extends ExtraItemData, V, T extends ItemBuil
     private String name;
     private Lore lore = Lore.EMPTY;
     private Material material = Material.STONE;
-    private AttributeRange damage = new AttributeRange(0, 0);
+    private AttributeRange damage = new AttributeRange(AttributeFormats.DAMAGE, 0, 0);
     private ItemRarity rarity = ItemRarity.COMMON;
     private boolean enchantGlint;
     private boolean stackable = true;
@@ -87,10 +88,10 @@ public abstract class ItemBuilder<D extends ExtraItemData, V, T extends ItemBuil
     }
 
     public T damage(double damage) {
-        return damage(new AttributeRange(damage, damage));
+        return damage(new AttributeRange(AttributeFormats.DAMAGE, damage, damage));
     }
     public T damage(double min, double max) {
-        return damage(new AttributeRange(min, max));
+        return damage(new AttributeRange(AttributeFormats.DAMAGE, min, max));
     }
     public T damage(AttributeRange damage) {
         this.damage = damage;
@@ -120,10 +121,10 @@ public abstract class ItemBuilder<D extends ExtraItemData, V, T extends ItemBuil
     }
 
     public T attribute(PlayerAttribute attribute, double value) {
-        return attribute(attribute, new AttributeRange(value, value));
+        return attribute(attribute, new AttributeRange(attribute.getFormat(), value, value));
     }
     public T attribute(PlayerAttribute attribute, double min, double max) {
-        return attribute(attribute, new AttributeRange(min, max));
+        return attribute(attribute, new AttributeRange(attribute.getFormat(), min, max));
     }
     public T attribute(PlayerAttribute attribute, AttributeRange range) {
         this.stats.setAttribute(attribute, range);

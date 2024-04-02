@@ -1,23 +1,23 @@
 package com.datasiqn.arcadia.util.lorebuilder.component;
 
-import com.datasiqn.arcadia.player.PlayerAttribute;
+import com.datasiqn.arcadia.player.AttributeFormat;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 public class AttributeLoreComponent implements LoreComponent {
-    private final PlayerAttribute attribute;
+    private final AttributeFormat attributeFormat;
 
-    private AttributeLoreComponent(PlayerAttribute attribute) {
-        this.attribute = attribute;
+    private AttributeLoreComponent(AttributeFormat attributeFormat) {
+        this.attributeFormat = attributeFormat;
     }
 
     @Override
     public @NotNull String toString() {
-        return attribute.getColor() + attribute.toString() + attribute.getIcon();
+        return attributeFormat.color() + attributeFormat.displayName() + attributeFormat.icon();
     }
 
     @Contract("_ -> new")
-    public static @NotNull AttributeLoreComponent attribute(PlayerAttribute attribute) {
+    public static @NotNull AttributeLoreComponent attribute(AttributeFormat attribute) {
         return new AttributeLoreComponent(attribute);
     }
 }

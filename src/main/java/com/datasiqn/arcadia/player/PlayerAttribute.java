@@ -1,35 +1,24 @@
 package com.datasiqn.arcadia.player;
 
-import com.datasiqn.arcadia.item.stat.StatIcon;
-import net.md_5.bungee.api.ChatColor;
-
 public enum PlayerAttribute {
-    MAX_HEALTH("Health", ChatColor.RED, StatIcon.HEALTH, 10),
-    DEFENSE("Defense", ChatColor.GREEN, StatIcon.DEFENSE, 0),
-    STRENGTH("Strength", ChatColor.DARK_RED, StatIcon.STRENGTH, 0),
-    ATTACK_SPEED("Attack Speed", ChatColor.YELLOW, StatIcon.ATTACK_SPEED, 0),
-    MAX_HUNGER("Max Hunger", ChatColor.of("#743600"), StatIcon.HUNGER, 100),
-    SPEED("Speed", ChatColor.WHITE, StatIcon.SPEED, 1),
+    MAX_HEALTH(AttributeFormats.HEALTH, 10),
+    DEFENSE(AttributeFormats.DEFENSE, 0),
+    STRENGTH(AttributeFormats.STRENGTH, 0),
+    ATTACK_SPEED(AttributeFormats.ATTACK_SPEED, 0),
+    MAX_HUNGER(AttributeFormats.HUNGER, 100),
+    SPEED(AttributeFormats.SPEED, 1),
     ;
 
-    private final String displayName;
+    private final AttributeFormat format;
     private final double defaultValue;
-    private final ChatColor color;
-    private final String icon;
 
-    PlayerAttribute(String displayName, ChatColor color, String icon, double defaultValue) {
-        this.displayName = displayName;
-        this.color = color;
-        this.icon = icon;
+    PlayerAttribute(AttributeFormat format, double defaultValue) {
+        this.format = format;
         this.defaultValue = defaultValue;
     }
 
-    public ChatColor getColor() {
-        return color;
-    }
-
-    public String getIcon() {
-        return icon;
+    public AttributeFormat getFormat() {
+        return format;
     }
 
     public double getDefaultValue() {
@@ -38,6 +27,6 @@ public enum PlayerAttribute {
 
     @Override
     public String toString() {
-        return displayName;
+        return format.displayName();
     }
 }
