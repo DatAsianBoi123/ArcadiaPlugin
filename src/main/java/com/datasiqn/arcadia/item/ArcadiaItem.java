@@ -15,6 +15,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,15 +31,9 @@ public class ArcadiaItem implements ConfigurationSerializable {
 
     public ArcadiaItem(@NotNull ArcadiaItem original) {
         this.data = original.data;
+        this.itemMeta = new ArcadiaItemMeta(UUID.randomUUID(), original.itemMeta.getItemQuality());
         this.material = original.material;
         this.amount = original.amount;
-
-        if (original.material == null) {
-            this.itemMeta = new ArcadiaItemMeta(UUID.randomUUID());
-        } else {
-            UUID uuid = UUID.randomUUID();
-            this.itemMeta = new ArcadiaItemMeta(uuid, original.itemMeta.getItemQuality());
-        }
     }
 
     public ArcadiaItem(@NotNull Material material) {
@@ -59,33 +54,20 @@ public class ArcadiaItem implements ConfigurationSerializable {
     }
 
     public ArcadiaItem(@NotNull ItemStack itemStack) {
+        ItemMeta meta = itemStack.getItemMeta();
+
         this.amount = itemStack.getAmount();
         ArcadiaMaterial arcadiaMaterial = ArcadiaMaterial.fromItemStack(itemStack);
         if (arcadiaMaterial == null) {
-            MaterialData<?> data;
-            try {
-                arcadiaMaterial = ArcadiaMaterial.valueOf(itemStack.getType().name());
-                data = arcadiaMaterial.getData();
-            } catch (IllegalArgumentException ignored) {
-                data = new VanillaMaterialData(itemStack.getType());
-            }
-            this.data = data;
-            this.material = arcadiaMaterial;
-            if (arcadiaMaterial == null) {
-                this.itemMeta = new ArcadiaItemMeta(UUID.randomUUID());
-            } else {
-                UUID uuid = UUID.randomUUID();
-                this.itemMeta = new ArcadiaItemMeta(uuid);
-            }
+            this.data = new VanillaMaterialData(itemStack.getType());
+            this.itemMeta = meta == null ? new ArcadiaItemMeta(UUID.randomUUID()) : ArcadiaItemMeta.fromPdc(meta.getPersistentDataContainer());
             return;
         }
         this.material = arcadiaMaterial;
         this.data = arcadiaMaterial.getData();
         if (!data.isStackable()) this.amount = 1;
-        ItemMeta meta = itemStack.getItemMeta();
         if (meta == null) {
-            UUID uuid = UUID.randomUUID();
-            this.itemMeta = new ArcadiaItemMeta(uuid);
+            this.itemMeta = new ArcadiaItemMeta(UUID.randomUUID());
             return;
         }
         this.itemMeta = ArcadiaItemMeta.fromPdc(meta.getPersistentDataContainer());
@@ -103,7 +85,8 @@ public class ArcadiaItem implements ConfigurationSerializable {
         ItemStack itemStack = data.toItemStack(amount, itemMeta.getUuid());
         ItemMeta meta = itemStack.getItemMeta();
         if (meta == null) return itemStack;
-        PdcUtil.set(meta.getPersistentDataContainer(), ArcadiaTag.ITEM_ID, getId());
+        PersistentDataContainer pdc = meta.getPersistentDataContainer();
+        PdcUtil.set(pdc, ArcadiaTag.ITEM_ID, getId());
         List<String> lore = meta.getLore();
         if (lore == null) lore = new ArrayList<>();
 
@@ -122,7 +105,7 @@ public class ArcadiaItem implements ConfigurationSerializable {
             }
         }
 
-        itemMeta.addToPdc(meta.getPersistentDataContainer());
+        if (!data.isStackable()) PdcUtil.set(pdc, ArcadiaTag.ITEM_QUALITY, itemMeta.getItemQuality());
 
         meta.setLore(lore);
         itemStack.setItemMeta(meta);

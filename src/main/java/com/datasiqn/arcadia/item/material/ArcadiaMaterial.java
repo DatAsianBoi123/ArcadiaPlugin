@@ -326,6 +326,10 @@ public enum ArcadiaMaterial {
     }
 
     public static @Nullable ArcadiaMaterial fromItemStack(@NotNull ItemStack itemStack) {
+        try {
+            return valueOf(itemStack.getType().name());
+        } catch (IllegalArgumentException ignored) { }
+
         ItemMeta meta = itemStack.getItemMeta();
         if (meta == null) return null;
 

@@ -34,14 +34,11 @@ public class ArcadiaItemMeta {
         this.itemQuality = Math.min(1, newAmount);
     }
 
-    public void addToPdc(@NotNull PersistentDataContainer pdc) {
-        PdcUtil.set(pdc, ArcadiaTag.ITEM_QUALITY, itemQuality);
-    }
-
     @Contract("_ -> new")
     public static @NotNull ArcadiaItemMeta fromPdc(@NotNull PersistentDataContainer pdc) {
         UUID uuid = PdcUtil.getOrDefault(pdc, ArcadiaTag.ITEM_UUID, UUID.randomUUID());
-        double itemQuality = PdcUtil.getOrDefault(pdc, ArcadiaTag.ITEM_QUALITY, 0d);
+        Double itemQuality = PdcUtil.get(pdc, ArcadiaTag.ITEM_QUALITY);
+        if (itemQuality == null) return new ArcadiaItemMeta(uuid);
         return new ArcadiaItemMeta(uuid, itemQuality);
     }
 }
