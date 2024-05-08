@@ -32,6 +32,13 @@ public enum UpgradeType {
             .material(Material.LEATHER_BOOTS)
             .rarity(ItemRarity.COMMON)
             .build(), new SneakerListener()),
+    COFFEE(UpgradeData.builder()
+            .name("Coffee")
+            .lore(Lore.of("Increases attack speed"))
+            .material(Material.POTION)
+            .rarity(ItemRarity.COMMON)
+            .addModifier(new PotionModifier(Color.fromRGB(63, 29, 11)))
+            .build(), new CoffeeListener()),
     //</editor-fold>
 
     //<editor-fold desc="Rare Upgrades">
@@ -48,6 +55,12 @@ public enum UpgradeType {
             .rarity(ItemRarity.RARE)
             .addModifier(new PotionModifier(Color.BLUE))
             .build(), new LightningBottleListener()),
+    ROLLER_SKATES(UpgradeData.builder()
+            .name("Roller Skates")
+            .lore(Lore.of("Hitting an enemy while sprinting deals extra damage"))
+            .material(Material.IRON_BOOTS)
+            .rarity(ItemRarity.RARE)
+            .build(), new RollerSkatesListener()),
     //</editor-fold>
 
     //<editor-fold desc="Legendary Upgrades">
