@@ -1,13 +1,19 @@
 package com.datasiqn.arcadia.entities;
 
 import com.datasiqn.arcadia.dungeon.DungeonPlayer;
+import com.datasiqn.arcadia.effect.ActiveEffect;
+import com.datasiqn.arcadia.effect.ArcadiaEffectType;
 import com.datasiqn.arcadia.loottable.LootTable;
 import com.datasiqn.arcadia.player.AttributeFormats;
+import com.datasiqn.arcadia.player.PlayerData;
 import com.datasiqn.arcadia.upgrade.actions.DamageEnemyAction;
 import com.datasiqn.arcadia.upgrade.actions.KillEnemyAction;
 import com.datasiqn.schedulebuilder.ScheduleBuilder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.protocol.game.ClientboundDamageEventPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
@@ -33,14 +39,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public abstract class ArcadiaEntity extends PathfinderMob {
     protected final Random rand = new Random();
     protected final com.datasiqn.arcadia.Arcadia plugin;
+    protected final LinkedHashMap<ArcadiaEffectType, ActiveEffect> activeArcadiaEffects = new LinkedHashMap<>();
     protected final Set<String> marks = new HashSet<>();
     protected final World world;
     protected final String customName;
@@ -111,12 +115,41 @@ public abstract class ArcadiaEntity extends PathfinderMob {
         return marks.contains(mark);
     }
 
+    public boolean addArcadiaEffect(ArcadiaEffectType type, long duration, @Nullable PlayerData effector) {
+        ActiveEffect previousValue = activeArcadiaEffects.putIfAbsent(type, type.bind(this, effector, duration, plugin));
+        updateName();
+        return previousValue == null;
+    }
+
+    public void removeArcadiaEffect(ArcadiaEffectType type) {
+        ActiveEffect effect = activeArcadiaEffects.remove(type);
+        if (effect == null) return;
+        effect.end();
+        updateName();
+    }
+
+    public void clearArcadiaEffects() {
+        for (ActiveEffect effect : activeArcadiaEffects.values()) effect.end();
+        activeArcadiaEffects.clear();
+        updateName();
+    }
+
     public Arcadia arcadia() {
         return arcadia;
     }
 
     protected final void updateName() {
-        setCustomName(Component.literal(ChatColor.GREEN + customName + " " + ChatColor.RED + formatDouble(health) + ChatColor.DARK_GRAY + "/" + ChatColor.RED + formatDouble(maxHealth) + AttributeFormats.HEALTH.icon()));
+        MutableComponent effectsComponent = activeArcadiaEffects.values().stream()
+                .map(effect -> Component.literal(effect.getEffect().getColor() + effect.getEffect().getIcon()))
+                .reduce(Component.empty(), (left, right) -> left.append(ChatColor.RESET.toString()).append(right).append(" " + ChatColor.RESET));
+        setCustomName(effectsComponent.append(ChatColor.RESET + "" + ChatColor.GREEN + customName + " " + ChatColor.RED + formatDouble(health) + ChatColor.DARK_GRAY + "/" + ChatColor.RED + formatDouble(maxHealth) + AttributeFormats.HEALTH.icon()));
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+
+        if (activeArcadiaEffects.values().removeIf(ActiveEffect::tick)) updateName();
     }
 
     @Override
