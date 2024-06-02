@@ -34,11 +34,17 @@ public enum UpgradeType {
             .build(), new SneakerListener()),
     COFFEE(UpgradeData.builder()
             .name("Coffee")
-            .lore(Lore.of("Increases attack speed"))
+            .lore(Lore.of("Slightly increases attack speed"))
             .material(Material.POTION)
             .rarity(ItemRarity.COMMON)
             .addModifier(new PotionModifier(Color.fromRGB(63, 29, 11)))
             .build(), new CoffeeListener()),
+    FLAMETHROWER(UpgradeData.builder()
+            .name("Flamethrower")
+            .lore(Lore.of("Chance on hit to light the enemy on fire"))
+            .material(Material.FLINT_AND_STEEL)
+            .rarity(ItemRarity.COMMON)
+            .build(), new FlamethrowerListener()),
     //</editor-fold>
 
     //<editor-fold desc="Rare Upgrades">
