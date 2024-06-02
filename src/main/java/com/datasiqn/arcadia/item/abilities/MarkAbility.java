@@ -27,8 +27,8 @@ public class MarkAbility extends ItemAbility {
     }
 
     @Override
-    public void execute(@NotNull AbilityExecuteContext executor) {
-        Player player = executor.playerData().getPlayer();
+    public void execute(@NotNull AbilityExecuteContext context) {
+        Player player = context.playerData().getPlayer();
         Location location = player.getEyeLocation();
         Vector direction = location.getDirection();
         ItemDisplay itemDisplay = player.getWorld().spawn(location, ItemDisplay.class, display -> {

@@ -12,9 +12,9 @@ public class LastHopeAbility extends ItemAbility {
     }
 
     @Override
-    public void execute(@NotNull AbilityExecuteContext executor) {
-        PlayerData playerData = executor.playerData();
-        ArcadiaSender<Player> player = executor.playerData().getSender();
+    public void execute(@NotNull AbilityExecuteContext context) {
+        PlayerData playerData = context.playerData();
+        ArcadiaSender<Player> player = context.playerData().getSender();
 
         playerData.heal();
         playerData.updateValues();

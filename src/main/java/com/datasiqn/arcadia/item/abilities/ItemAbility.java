@@ -26,5 +26,5 @@ public abstract class ItemAbility {
         return cooldown;
     }
 
-    public abstract void execute(@NotNull AbilityExecuteContext executor);
+    public abstract void execute(@NotNull AbilityExecuteContext context);
 }
