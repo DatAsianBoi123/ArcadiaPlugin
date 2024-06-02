@@ -1,6 +1,7 @@
 package com.datasiqn.arcadia.commands.argument;
 
 import com.datasiqn.arcadia.dungeon.DungeonInstance;
+import com.datasiqn.arcadia.effect.ArcadiaEffectType;
 import com.datasiqn.arcadia.entities.EntityType;
 import com.datasiqn.arcadia.item.material.ArcadiaMaterial;
 import com.datasiqn.arcadia.loottable.LootTable;
@@ -29,6 +30,8 @@ public final class ArcadiaArgumentType {
     public static final ArgumentType<UpgradeType> UPGRADE = new EnumArgumentType<>(UpgradeType.class, "upgrade");
 
     public static final ArgumentType<EntityType> ENTITY = new EnumArgumentType<>(EntityType.class, "entity");
+
+    public static final ArgumentType<ArcadiaEffectType> EFFECT = new EnumArgumentType<>(ArcadiaEffectType.class, "effect");
 
     public static final ArgumentType<MenuType> GUI = new EnumArgumentType<>(MenuType.class, "menu");
 

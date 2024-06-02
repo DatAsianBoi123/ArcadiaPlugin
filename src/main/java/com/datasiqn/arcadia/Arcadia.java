@@ -169,6 +169,7 @@ public final class Arcadia extends JavaPlugin {
         manager.register(ArcadiaArgumentType.GUI);
         manager.register(ArcadiaArgumentType.DUNGEON);
         manager.register(ArcadiaArgumentType.NPC);
+        manager.register(ArcadiaArgumentType.EFFECT);
     }
 
     private void registerAllCommands() {
@@ -186,6 +187,7 @@ public final class Arcadia extends JavaPlugin {
         commandManager.registerCommand(new CommandSpawn());
         commandManager.registerCommand(new CommandPlayerData(this).getCommand());
         commandManager.registerCommand(new CommandNpc(this).getCommand());
+        commandManager.registerCommand(new CommandEffect(this));
         commandManager.registerCommand(new CommandBuilder("bag")
                 .requiresPlayer()
                 .executes((context, source, arguments) -> {

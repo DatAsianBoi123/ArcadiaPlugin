@@ -46,6 +46,9 @@ permissions:
   arcadia.npc:
     description: Allows the player to manage npcs (/arcadia npc)
     default: op
+  arcadia.effect:
+    description: Allows the player to manage entity effects (/arcadia effect)
+    default: op
   arcadia.command:
     description: Allows the player to use the default arcadia command (/arcadia)
     default: true
