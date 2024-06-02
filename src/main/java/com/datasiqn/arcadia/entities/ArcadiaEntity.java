@@ -81,17 +81,17 @@ public abstract class ArcadiaEntity extends PathfinderMob {
     public void handleDamageEvent(@NotNull EntityDamageEvent event, @Nullable DungeonPlayer player) {
         double damage = event.getDamage();
         event.setDamage(0);
-        handleDamage(damage, () -> event.setDamage(getHealth() + 1), player);
+        handleDamage(damage, () -> event.setDamage(getHealth() + 1), player, true);
     }
 
-    public void damage(double amount, DamageSource source, @Nullable DungeonPlayer player) {
+    public void damage(double amount, DamageSource source, @Nullable DungeonPlayer player, boolean emitDamageEvent) {
         if (health <= 0) return;
         ((ServerLevel) level).getChunkSource().broadcastAndSend(this, new ClientboundDamageEventPacket(this, source));
         playHurtSound(source);
         handleDamage(amount, () -> {
             setHealth(0);
             die(source);
-        }, player);
+        }, player, emitDamageEvent);
     }
 
     public void summon(@NotNull Location location) {
@@ -149,9 +149,9 @@ public abstract class ArcadiaEntity extends PathfinderMob {
         return format.format(Math.ceil(d));
     }
 
-    private void handleDamage(double damage, Runnable deathRunnable, @Nullable DungeonPlayer player) {
+    private void handleDamage(double damage, Runnable deathRunnable, @Nullable DungeonPlayer player, boolean emitDamageEvent) {
         DamageEnemyAction action = new DamageEnemyAction(player, this, damage, plugin);
-        if (player != null) plugin.getUpgradeEventManager().emit(action);
+        if (player != null && emitDamageEvent) plugin.getUpgradeEventManager().emit(action);
         double finalDamage = action.getDamage();
         health = Mth.clamp(health - finalDamage, 0, maxHealth);
         if (health <= 0) {

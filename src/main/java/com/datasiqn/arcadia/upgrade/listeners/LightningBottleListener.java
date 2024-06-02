@@ -19,7 +19,7 @@ public class LightningBottleListener implements UpgradeListener {
                 if (arcadiaEntity.isDeadOrDying()) return;
                 player.getWorld().strikeLightningEffect(arcadiaEntity.getBukkitEntity().getLocation());
                 ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
-                arcadiaEntity.damage(action.getDamage() * (5 + stackSize * 2), arcadiaEntity.damageSources().playerAttack(nmsPlayer), action.getPlayer());
+                arcadiaEntity.damage(action.getDamage() * (5 + stackSize * 2), arcadiaEntity.damageSources().playerAttack(nmsPlayer), action.getPlayer(), true);
             }, 10);
         }
     }
