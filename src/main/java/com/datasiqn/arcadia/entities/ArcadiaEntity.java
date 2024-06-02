@@ -86,6 +86,8 @@ public abstract class ArcadiaEntity extends PathfinderMob {
 
     public void damage(double amount, DamageSource source, @Nullable DungeonPlayer player) {
         if (health <= 0) return;
+        ((ServerLevel) level).getChunkSource().broadcastAndSend(this, new ClientboundDamageEventPacket(this, source));
+        playHurtSound(source);
         handleDamage(amount, () -> {
             setHealth(0);
             die(source);
