@@ -15,5 +15,6 @@ An up-coming rogue-lite Minecraft plugin/server, over 1 year in the making.
 - [Risk of Rain Returns](https://store.steampowered.com/app/1337520/Risk_of_Rain_Returns/)
 - [Terraria](https://store.steampowered.com/app/105600/Terraria/)
 - [ULTRAKILL](https://store.steampowered.com/app/1229490/ULTRAKILL/)
+- [Outer Wilds](https://store.steampowered.com/app/753640/Outer_Wilds/)
 
 Have any questions? You can ask me on [Discord](https://www.discord.com). My username is `datasianboi123`
