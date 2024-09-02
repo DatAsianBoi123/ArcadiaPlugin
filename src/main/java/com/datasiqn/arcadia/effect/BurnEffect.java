@@ -1,13 +1,10 @@
 package com.datasiqn.arcadia.effect;
 
 import com.datasiqn.arcadia.Arcadia;
-import com.datasiqn.arcadia.dungeon.DungeonPlayer;
+import com.datasiqn.arcadia.damage.DamageCause;
 import com.datasiqn.arcadia.entities.ArcadiaEntity;
 import com.datasiqn.arcadia.player.PlayerData;
 import net.md_5.bungee.api.ChatColor;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.damagesource.DamageSource;
-import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 
 public class BurnEffect extends ArcadiaEffect {
     public static final long TICKS_BETWEEN_HIT = 20;
@@ -29,14 +26,13 @@ public class BurnEffect extends ArcadiaEffect {
             tickCounter--;
             return;
         }
-        DamageSource damageSource = entity.damageSources().generic();
-        DungeonPlayer dungeonPlayer = null;
+        DamageCause damageCause;
         if (effector != null) {
-            ServerPlayer nmsPlayer = ((CraftPlayer) effector.getPlayer()).getHandle();
-            damageSource = entity.damageSources().playerAttack(nmsPlayer);
-            dungeonPlayer = plugin.getDungeonManager().getDungeonPlayer(effector);
+            damageCause = DamageCause.indirect(plugin.getDungeonManager().getDungeonPlayer(effector), entity.damageSources().onFire());
+        } else {
+            damageCause = DamageCause.natural(entity.damageSources().onFire());
         }
-        entity.damage(5, damageSource, dungeonPlayer, false);
+        entity.damage(5, damageCause, false);
         tickCounter = TICKS_BETWEEN_HIT;
     }
 

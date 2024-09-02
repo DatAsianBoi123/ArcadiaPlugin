@@ -1,6 +1,6 @@
 package com.datasiqn.arcadia.entities;
 
-import com.datasiqn.arcadia.dungeon.DungeonPlayer;
+import com.datasiqn.arcadia.damage.DamageCause;
 import com.datasiqn.arcadia.effect.ActiveEffect;
 import com.datasiqn.arcadia.effect.ArcadiaEffectType;
 import com.datasiqn.arcadia.loottable.LootTable;
@@ -83,20 +83,28 @@ public abstract class ArcadiaEntity extends PathfinderMob {
         tag.put("ArcadiaData", innerTag);
     }
 
-    public void handleDamageEvent(@NotNull EntityDamageEvent event, @Nullable DungeonPlayer player) {
+    public void handleNaturalDamageEvent(@NotNull EntityDamageEvent event) {
+        double damage = event.getDamage();
+        event.setDamage(0);
+        DamageSource lastDamageSource = getLastDamageSource();
+        handleDamage(damage, () -> event.setDamage(getHealth() + 1), DamageCause.natural(lastDamageSource), true);
+    }
+
+    public void handleDamageEvent(@NotNull EntityDamageEvent event, @NotNull DamageCause player) {
         double damage = event.getDamage();
         event.setDamage(0);
         handleDamage(damage, () -> event.setDamage(getHealth() + 1), player, true);
     }
 
-    public void damage(double amount, DamageSource source, @Nullable DungeonPlayer player, boolean emitDamageEvent) {
+    public void damage(double amount, @NotNull DamageCause cause, boolean emitDamageEvent) {
         if (health <= 0) return;
-        ((ServerLevel) level).getChunkSource().broadcastAndSend(this, new ClientboundDamageEventPacket(this, source));
-        playHurtSound(source);
+        DamageSource damageSource = cause.getDamageSource(this);
+        ((ServerLevel) level).getChunkSource().broadcastAndSend(this, new ClientboundDamageEventPacket(this, damageSource));
+        playHurtSound(cause.getSoundDamageSource(this));
         handleDamage(amount, () -> {
             setHealth(0);
-            die(source);
-        }, player, emitDamageEvent);
+            die(damageSource);
+        }, cause, emitDamageEvent);
     }
 
     public void summon(@NotNull Location location) {
@@ -183,14 +191,14 @@ public abstract class ArcadiaEntity extends PathfinderMob {
         return format.format(Math.ceil(d));
     }
 
-    private void handleDamage(double damage, Runnable deathRunnable, @Nullable DungeonPlayer player, boolean emitDamageEvent) {
-        DamageEnemyAction action = new DamageEnemyAction(player, this, damage, plugin);
-        if (player != null && emitDamageEvent) plugin.getUpgradeEventManager().emit(action);
+    private void handleDamage(double damage, Runnable deathRunnable, @NotNull DamageCause cause, boolean emitDamageEvent) {
+        DamageEnemyAction action = new DamageEnemyAction(cause, this, damage, plugin);
+        if (cause.hasSource() && emitDamageEvent) plugin.getUpgradeEventManager().emit(action);
         double finalDamage = action.getDamage();
         health = Mth.clamp(health - finalDamage, 0, maxHealth);
         if (health <= 0) {
             deathRunnable.run();
-            if (player != null) plugin.getUpgradeEventManager().emit(new KillEnemyAction(player, this, plugin));
+            if (cause.hasSource()) plugin.getUpgradeEventManager().emit(new KillEnemyAction(cause.getSource(), this, plugin));
         }
         updateName();
         spawnDamageIndicator(finalDamage);

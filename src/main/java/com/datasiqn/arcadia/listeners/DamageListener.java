@@ -50,7 +50,7 @@ public class DamageListener implements Listener {
         if (cause == DamageCause.ENTITY_ATTACK || cause == DamageCause.PROJECTILE) return;
 
         if (((CraftEntity) event.getEntity()).getHandle() instanceof ArcadiaEntity entity) {
-            entity.handleDamageEvent(event, null);
+            entity.handleNaturalDamageEvent(event);
         } else if (event.getEntity() instanceof Player player) {
             playerManager.getPlayerData(player).damage(event, cause == DamageCause.FALL);
         }
@@ -80,7 +80,7 @@ public class DamageListener implements Listener {
             DungeonPlayer dungeonPlayer = plugin.getDungeonManager().getDungeonPlayer(playerData);
 
             event.setDamage(damage);
-            entity.handleDamageEvent(event, dungeonPlayer);
+            entity.handleDamageEvent(event, com.datasiqn.arcadia.damage.DamageCause.direct(dungeonPlayer));
             for (EntityDamageEvent.DamageModifier modifier : EntityDamageEvent.DamageModifier.values()) {
                 if (!event.isApplicable(modifier)) continue;
                 if (modifier == EntityDamageEvent.DamageModifier.BASE) continue;
