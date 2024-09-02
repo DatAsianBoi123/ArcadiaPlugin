@@ -92,7 +92,7 @@ public enum UpgradeType {
             .rarity(ItemRarity.MYTHIC)
             .build(), new RabbitFootListener()),
     UPGRADE_SYNTHESIZER(UpgradeData.builder()
-            .name("Item Synthesizer")
+            .name("Upgrade Synthesizer")
             .lore(Lore.of("Enemies have a chance to drop items on death"))
             .material(Material.CRAFTING_TABLE)
             .rarity(ItemRarity.MYTHIC)
