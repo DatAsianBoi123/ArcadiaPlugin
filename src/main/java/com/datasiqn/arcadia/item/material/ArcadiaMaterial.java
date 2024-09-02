@@ -299,6 +299,21 @@ public enum ArcadiaMaterial {
             .stackable(false)
             .addModifier(new SkullItemModifier("5381a2d5af55779c4dd39f403f982ac8a9ead269ca4e80501e1dcb8631c5a290"))
             .build()),
+    PHOTO_ALBUM(MaterialData.builder(ItemType.NONE)
+            .name("Photo Album")
+            .lore(new LoreBuilder()
+                    .append("Contains memories from a simpler time.")
+                    .emptyLine()
+                    .append("Don't worry...", ChatColor.WHITE, ChatColor.ITALIC)
+                    .append("Everything is going to be okay...", ChatColor.WHITE, ChatColor.ITALIC)
+                    .append("No matter what happens...", ChatColor.WHITE, ChatColor.ITALIC)
+                    .append("Promise me we’ll always be there for each other...", ChatColor.WHITE, ChatColor.ITALIC)
+                    .append("Promise me...", ChatColor.WHITE, ChatColor.ITALIC)
+                    .build())
+            .material(Material.WRITTEN_BOOK)
+            .rarity(ItemRarity.SPECIAL)
+            .stackable(false)
+            .build()),
 
     FRUITY_APPLE(MaterialData.builder(ItemType.CONSUMABLE,
             new ConsumableData(new LoreBuilder()
