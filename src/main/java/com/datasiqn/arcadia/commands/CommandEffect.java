@@ -30,7 +30,7 @@ public class CommandEffect implements AnnotationCommand {
                      @Argument(name = "effect") ArcadiaEffectType effectType,
                      @Argument(name = "duration") Duration duration) {
         PlayerData effector = source.getPlayerChecked().map(player -> plugin.getPlayerManager().getPlayerData(player)).unwrapOr(null);
-        forEachArcadiaEntity(entities.get(source), entity -> entity.addArcadiaEffect(effectType, duration.ticks(), effector));
+        forEachArcadiaEntity(entities.get(source), entity -> entity.addArcadiaEffect(effectType, duration, effector));
     }
 
     @LiteralExecutor("clear")

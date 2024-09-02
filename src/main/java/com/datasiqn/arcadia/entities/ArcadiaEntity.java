@@ -8,6 +8,7 @@ import com.datasiqn.arcadia.player.AttributeFormats;
 import com.datasiqn.arcadia.player.PlayerData;
 import com.datasiqn.arcadia.upgrade.actions.DamageEnemyAction;
 import com.datasiqn.arcadia.upgrade.actions.KillEnemyAction;
+import com.datasiqn.commandcore.argument.duration.Duration;
 import com.datasiqn.schedulebuilder.ScheduleBuilder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -115,7 +116,7 @@ public abstract class ArcadiaEntity extends PathfinderMob {
         return marks.contains(mark);
     }
 
-    public boolean addArcadiaEffect(ArcadiaEffectType type, long duration, @Nullable PlayerData effector) {
+    public boolean addArcadiaEffect(ArcadiaEffectType type, Duration duration, @Nullable PlayerData effector) {
         ActiveEffect previousValue = activeArcadiaEffects.putIfAbsent(type, type.bind(this, effector, duration, plugin));
         updateName();
         return previousValue == null;
