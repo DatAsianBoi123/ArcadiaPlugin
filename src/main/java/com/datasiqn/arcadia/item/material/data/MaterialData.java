@@ -2,7 +2,7 @@ package com.datasiqn.arcadia.item.material.data;
 
 import com.datasiqn.arcadia.ArcadiaTag;
 import com.datasiqn.arcadia.item.ItemRarity;
-import com.datasiqn.arcadia.item.abilities.AbilityType;
+import com.datasiqn.arcadia.item.abilities.AbilityActivation;
 import com.datasiqn.arcadia.item.abilities.ItemAbility;
 import com.datasiqn.arcadia.item.components.ItemComponent;
 import com.datasiqn.arcadia.item.modifiers.ItemModifier;
@@ -48,7 +48,7 @@ public class MaterialData<D extends ExtraItemData> {
     private final boolean enchantGlint;
     private final boolean stackable;
     private final ItemStats stats;
-    private final Map<AbilityType, ItemAbility> abilities;
+    private final Map<AbilityActivation, ItemAbility> abilities;
     private final List<ItemComponent> components;
 
     @Contract(pure = true)
@@ -111,7 +111,7 @@ public class MaterialData<D extends ExtraItemData> {
 
     @NotNull
     @UnmodifiableView
-    public Map<AbilityType, ItemAbility> getAbilities() {
+    public Map<AbilityActivation, ItemAbility> getAbilities() {
         return abilities;
     }
 
@@ -137,10 +137,10 @@ public class MaterialData<D extends ExtraItemData> {
             lore.add("");
         }
         if (!abilities.isEmpty()) {
-            for (Map.Entry<AbilityType, ItemAbility> entry : abilities.entrySet()) {
-                AbilityType type = entry.getKey();
+            for (Map.Entry<AbilityActivation, ItemAbility> entry : abilities.entrySet()) {
+                AbilityActivation activation = entry.getKey();
                 ItemAbility ability = entry.getValue();
-                lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "Item Ability: " + ChatColor.WHITE + ability.getName() + " " + type);
+                lore.add(ChatColor.RESET + "" + ChatColor.GOLD + "Item Ability: " + ChatColor.WHITE + ability.getName() + " " + activation);
                 ability.getDescription().addTo(lore);
                 DecimalFormat decimalFormat = new DecimalFormat("#.#");
                 lore.add(ChatColor.RESET + "" + ChatColor.DARK_GRAY + "Cooldown: " + ChatColor.GREEN + decimalFormat.format(ability.getCooldown() / 20) + "s");

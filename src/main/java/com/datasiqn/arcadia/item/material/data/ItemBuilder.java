@@ -1,7 +1,7 @@
 package com.datasiqn.arcadia.item.material.data;
 
 import com.datasiqn.arcadia.item.ItemRarity;
-import com.datasiqn.arcadia.item.abilities.AbilityType;
+import com.datasiqn.arcadia.item.abilities.AbilityActivation;
 import com.datasiqn.arcadia.item.abilities.ItemAbility;
 import com.datasiqn.arcadia.item.components.ItemComponent;
 import com.datasiqn.arcadia.item.modifiers.ItemModifier;
@@ -26,7 +26,7 @@ public abstract class ItemBuilder<D extends ExtraItemData, V, T extends ItemBuil
     private final D data;
     private final ItemStats stats = new ItemStats();
     private final List<ItemModifier> modifiers = new ArrayList<>();
-    private final Map<AbilityType, ItemAbility> abilities = new HashMap<>();
+    private final Map<AbilityActivation, ItemAbility> abilities = new HashMap<>();
     private final List<ItemComponent> components = new ArrayList<>();
 
     private String name;
@@ -135,12 +135,12 @@ public abstract class ItemBuilder<D extends ExtraItemData, V, T extends ItemBuil
         return stats;
     }
 
-    public T addAbility(AbilityType type, @NotNull ItemAbility ability) {
-        this.abilities.put(type, ability);
+    public T addAbility(AbilityActivation activation, @NotNull ItemAbility ability) {
+        this.abilities.put(activation, ability);
         return getThis();
     }
 
-    public @UnmodifiableView Map<AbilityType, ItemAbility> abilities() {
+    public @UnmodifiableView Map<AbilityActivation, ItemAbility> abilities() {
         return Collections.unmodifiableMap(abilities);
     }
 

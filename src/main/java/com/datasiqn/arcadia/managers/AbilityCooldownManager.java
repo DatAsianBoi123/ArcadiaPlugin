@@ -1,7 +1,7 @@
 package com.datasiqn.arcadia.managers;
 
 import com.datasiqn.arcadia.item.ArcadiaItem;
-import com.datasiqn.arcadia.item.abilities.AbilityType;
+import com.datasiqn.arcadia.item.abilities.AbilityActivation;
 import com.datasiqn.arcadia.item.abilities.ItemAbility;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
@@ -15,9 +15,9 @@ import java.util.UUID;
 public class AbilityCooldownManager {
     private final Map<UUID, Object2LongMap<String>> cooldowns = new HashMap<>();
 
-    public long activateAbility(@NotNull Player player, @NotNull ArcadiaItem item, @NotNull ItemAbility ability, AbilityType abilityType) {
+    public long activateAbility(@NotNull Player player, @NotNull ArcadiaItem item, @NotNull ItemAbility ability, AbilityActivation activation) {
         Object2LongMap<String> abilityCooldowns = cooldowns.computeIfAbsent(player.getUniqueId(), key -> new Object2LongOpenHashMap<>());
-        String key = item.getId().getStringId() + "-" + abilityType;
+        String key = item.getId().getStringId() + "-" + activation;
         long lastUsed = abilityCooldowns.getOrDefault(key, -1);
         long currentTime = System.currentTimeMillis();
         long cooldown = ability.getCooldown();

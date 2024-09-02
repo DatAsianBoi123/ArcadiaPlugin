@@ -96,7 +96,7 @@ public enum ArcadiaMaterial {
             .stackable(false)
             .attribute(PlayerAttribute.DEFENSE, 5)
             .attribute(PlayerAttribute.STRENGTH, 5, 10)
-            .addAbility(AbilityType.RIGHT_CLICK, new RunAwayAbility())
+            .addAbility(AbilityActivation.RIGHT_CLICK, new RunAwayAbility())
             .build()),
     BERSERK_HELMET(MaterialData.builder(ItemType.HELMET)
             .name("Berserker Helmet")
@@ -146,7 +146,7 @@ public enum ArcadiaMaterial {
             .enchantGlint(true)
             .stackable(false)
             .attribute(PlayerAttribute.STRENGTH, 200)
-            .addAbility(AbilityType.RIGHT_CLICK, new LastHopeAbility())
+            .addAbility(AbilityActivation.RIGHT_CLICK, new LastHopeAbility())
             .build()),
     EXCALIBUR(MaterialData.builder(ItemType.SWORD)
             .name("Excalibur")
@@ -179,7 +179,7 @@ public enum ArcadiaMaterial {
             .rarity(ItemRarity.LEGENDARY)
             .enchantGlint(true)
             .stackable(false)
-            .addAbility(AbilityType.LEFT_CLICK, new PullAbility())
+            .addAbility(AbilityActivation.LEFT_CLICK, new PullAbility())
             .build()),
     OBSIDIAN_KUNAI(MaterialData.builder(ItemType.SWORD)
             .name("Obsidian Kunai")
@@ -191,7 +191,7 @@ public enum ArcadiaMaterial {
             .attribute(PlayerAttribute.STRENGTH, 60, 75)
             .attribute(PlayerAttribute.SPEED, 0.1)
             .attribute(PlayerAttribute.ATTACK_SPEED, 20)
-            .addAbility(AbilityType.RIGHT_CLICK, new MarkAbility(JavaPlugin.getPlugin(Arcadia.class)))
+            .addAbility(AbilityActivation.RIGHT_CLICK, new MarkAbility(JavaPlugin.getPlugin(Arcadia.class)))
             .addComponent(new ObsidianKunaiComponent())
             .build()),
     STRANGE_JOURNAL(MaterialData.builder(ItemType.NONE)

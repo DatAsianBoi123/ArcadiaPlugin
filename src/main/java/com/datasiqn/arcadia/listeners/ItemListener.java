@@ -4,8 +4,8 @@ import com.datasiqn.arcadia.Arcadia;
 import com.datasiqn.arcadia.ArcadiaTag;
 import com.datasiqn.arcadia.dungeon.DungeonPlayer;
 import com.datasiqn.arcadia.item.ArcadiaItem;
+import com.datasiqn.arcadia.item.abilities.AbilityActivation;
 import com.datasiqn.arcadia.item.abilities.AbilityExecuteContext;
-import com.datasiqn.arcadia.item.abilities.AbilityType;
 import com.datasiqn.arcadia.item.abilities.ItemAbility;
 import com.datasiqn.arcadia.menu.handlers.BagMenuHandler;
 import com.datasiqn.arcadia.player.PlayerData;
@@ -81,15 +81,15 @@ public class ItemListener implements Listener {
         ArcadiaItem arcadiaItem = new ArcadiaItem(event.getItem());
         if (arcadiaItem.getMaterial() == null) return;
 
-        Map<AbilityType, ItemAbility> itemAbilities = arcadiaItem.getData().getAbilities();
+        Map<AbilityActivation, ItemAbility> itemAbilities = arcadiaItem.getData().getAbilities();
         if (itemAbilities.isEmpty()) return;
-        for (Map.Entry<AbilityType, ItemAbility> entry : itemAbilities.entrySet()) {
-            AbilityType type = entry.getKey();
+        for (Map.Entry<AbilityActivation, ItemAbility> entry : itemAbilities.entrySet()) {
+            AbilityActivation activation = entry.getKey();
             ItemAbility ability = entry.getValue();
-            if (!type.includesActions(event)) return;
+            if (!activation.includesActions(event)) return;
             Player player = event.getPlayer();
             PlayerData playerData = plugin.getPlayerManager().getPlayerData(player);
-            long cooldown = plugin.getCooldownManager().activateAbility(player, arcadiaItem, ability, type);
+            long cooldown = plugin.getCooldownManager().activateAbility(player, arcadiaItem, ability, activation);
             if (cooldown != -1) {
                 DecimalFormat decimalFormat = new DecimalFormat("#.#");
                 playerData.getSender().sendError("This ability is on cooldown for " + decimalFormat.format(cooldown / 1000d) + "s");
