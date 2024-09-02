@@ -12,7 +12,7 @@ import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 public class BurnEffect extends ArcadiaEffect {
     public static final long TICKS_BETWEEN_HIT = 20;
 
-    private long tickCounter = 0;
+    private long tickCounter = TICKS_BETWEEN_HIT;
 
     public BurnEffect(ArcadiaEntity entity, PlayerData effector, Arcadia plugin) {
         super(entity, effector, plugin);
