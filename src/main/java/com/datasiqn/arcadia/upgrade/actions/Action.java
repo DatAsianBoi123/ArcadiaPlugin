@@ -7,18 +7,18 @@ import com.datasiqn.arcadia.upgrade.ProcGenerator;
 import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class Action {
-    protected final DungeonPlayer playerData;
+    protected final DungeonPlayer player;
     private final Arcadia plugin;
     protected final ProcGenerator procGenerator;
 
     public Action(DungeonPlayer player, Arcadia plugin) {
-        this.playerData = player;
+        this.player = player;
         this.plugin = plugin;
-        this.procGenerator = new ProcGenerator(playerData, ThreadLocalRandom.current(), plugin);
+        this.procGenerator = new ProcGenerator(this.player, ThreadLocalRandom.current(), plugin);
     }
 
     public DungeonPlayer getPlayer() {
-        return playerData;
+        return player;
     }
 
     public ProcGenerator getProcGenerator() {
