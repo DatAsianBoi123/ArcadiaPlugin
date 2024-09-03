@@ -67,6 +67,12 @@ public enum UpgradeType {
             .material(Material.IRON_BOOTS)
             .rarity(ItemRarity.RARE)
             .build(), new RollerSkatesListener()),
+    DEFIBRILLATOR(UpgradeData.builder()
+            .name("Defibrillator")
+            .lore(Lore.of("Fatal damage no longer kills"))
+            .material(Material.ENCHANTED_BOOK)
+            .rarity(ItemRarity.RARE)
+            .build(), new DefibrillatorListener()),
     //</editor-fold>
 
     //<editor-fold desc="Legendary Upgrades">
