@@ -331,6 +331,10 @@ public class PlayerData {
         }
     }
 
+    public double getHealth() {
+        return health;
+    }
+
     public PlayerEquipment getEquipment() {
         return equipment;
     }
