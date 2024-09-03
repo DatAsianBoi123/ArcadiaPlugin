@@ -2,6 +2,7 @@ package com.datasiqn.arcadia.entities;
 
 import com.datasiqn.arcadia.damage.DamageCause;
 import com.datasiqn.arcadia.effect.ActiveEffect;
+import com.datasiqn.arcadia.effect.ArcadiaEffect;
 import com.datasiqn.arcadia.effect.ArcadiaEffectType;
 import com.datasiqn.arcadia.loottable.LootTable;
 import com.datasiqn.arcadia.player.AttributeFormats;
@@ -124,10 +125,13 @@ public abstract class ArcadiaEntity extends PathfinderMob {
         return marks.contains(mark);
     }
 
-    public boolean addArcadiaEffect(ArcadiaEffectType type, Duration duration, @Nullable PlayerData effector) {
-        ActiveEffect previousValue = activeArcadiaEffects.putIfAbsent(type, type.bind(this, effector, duration, plugin));
+    public void addArcadiaEffect(ArcadiaEffectType type, Duration duration, @Nullable PlayerData effector) {
+        activeArcadiaEffects.compute(type, (effectType, activeEffect) -> {
+            if (activeEffect == null) return type.bind(this, effector, duration, plugin);
+            activeEffect.addStack();
+            return activeEffect;
+        });
         updateName();
-        return previousValue == null;
     }
 
     public void removeArcadiaEffect(ArcadiaEffectType type) {
@@ -149,7 +153,11 @@ public abstract class ArcadiaEntity extends PathfinderMob {
 
     protected final void updateName() {
         MutableComponent effectsComponent = activeArcadiaEffects.values().stream()
-                .map(effect -> Component.literal(effect.getEffect().getColor() + effect.getEffect().getIcon()))
+                .map(effect -> {
+                    ArcadiaEffect arcadiaEffect = effect.getEffect();
+                    String stacks = effect.stacks() == 0 ? String.valueOf(effect.stacks()) : "";
+                    return Component.literal(arcadiaEffect.getColor() + stacks + arcadiaEffect.getIcon());
+                })
                 .reduce(Component.empty(), (left, right) -> left.append(ChatColor.RESET.toString()).append(right).append(" " + ChatColor.RESET));
         setCustomName(effectsComponent.append(ChatColor.RESET + "" + ChatColor.GREEN + customName + " " + ChatColor.RED + formatDouble(health) + ChatColor.DARK_GRAY + "/" + ChatColor.RED + formatDouble(maxHealth) + AttributeFormats.HEALTH.icon()));
     }

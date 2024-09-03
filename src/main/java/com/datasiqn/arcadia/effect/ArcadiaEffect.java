@@ -20,7 +20,7 @@ public abstract class ArcadiaEffect {
 
     public void begin() {}
 
-    public abstract void tick();
+    public abstract void tick(int stacks);
 
     public void end() {}
 

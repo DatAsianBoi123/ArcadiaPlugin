@@ -21,7 +21,7 @@ public class BurnEffect extends ArcadiaEffect {
     }
 
     @Override
-    public void tick() {
+    public void tick(int stacks) {
         if (tickCounter > 0) {
             tickCounter--;
             return;
