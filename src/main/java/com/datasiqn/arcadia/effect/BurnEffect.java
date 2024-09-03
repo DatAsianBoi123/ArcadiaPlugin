@@ -32,7 +32,7 @@ public class BurnEffect extends ArcadiaEffect {
         } else {
             damageCause = DamageCause.natural(entity.damageSources().onFire());
         }
-        entity.damage(5, damageCause, false);
+        entity.damage(5 * stacks, damageCause, false);
         tickCounter = TICKS_BETWEEN_HIT;
     }
 
