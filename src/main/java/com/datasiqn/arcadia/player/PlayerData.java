@@ -5,8 +5,10 @@ import com.datasiqn.arcadia.DamageHelper;
 import com.datasiqn.arcadia.amulet.Amulet;
 import com.datasiqn.arcadia.amulet.PowerStone;
 import com.datasiqn.arcadia.dungeon.DungeonPlayer;
+import com.datasiqn.arcadia.entities.ArcadiaEntity;
 import com.datasiqn.arcadia.item.ArcadiaItem;
 import com.datasiqn.arcadia.item.stat.ItemStats;
+import com.datasiqn.arcadia.upgrade.actions.PlayerDamagedAction;
 import com.datasiqn.arcadia.upgrade.actions.UpdateAttributesAction;
 import com.datasiqn.resultapi.Result;
 import com.datasiqn.schedulebuilder.ScheduleBuilder;
@@ -25,8 +27,10 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
+import org.bukkit.craftbukkit.v1_19_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.potion.PotionEffect;
@@ -180,6 +184,20 @@ public class PlayerData {
         double rawDamage = event.getDamage();
         double damage = trueDamage ? rawDamage : DamageHelper.getFinalDamageWithDefense(rawDamage, getAttribute(PlayerAttribute.DEFENSE));
         if (player.isBlocking()) damage = 0;
+
+        ArcadiaEntity damager = null;
+        if (event instanceof EntityDamageByEntityEvent byEntityEvent) {
+            if (((CraftEntity) byEntityEvent.getDamager()).getHandle() instanceof ArcadiaEntity arcadiaEntity) {
+                damager = arcadiaEntity;
+            }
+        }
+        DungeonPlayer dungeonPlayer = plugin.getDungeonManager().getDungeonPlayer(this);
+        if (dungeonPlayer != null) {
+            PlayerDamagedAction action = new PlayerDamagedAction(dungeonPlayer, damager, damage, plugin);
+            plugin.getUpgradeEventManager().emit(action);
+            damage = action.getDamage();
+        }
+
         health -= damage;
         if (health <= 0) health = 0;
         double hearts = getHearts();
