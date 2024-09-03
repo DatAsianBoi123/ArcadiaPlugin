@@ -181,6 +181,14 @@ public enum ArcadiaMaterial {
             .stackable(false)
             .addAbility(AbilityActivation.LEFT_CLICK, new PullAbility())
             .build()),
+    TP_STAFF(MaterialData.builder(ItemType.NONE)
+            .name("Teleportation Staff")
+            .material(Material.IRON_SHOVEL)
+            .rarity(ItemRarity.RARE)
+            .enchantGlint(true)
+            .stackable(false)
+            .addAbility(AbilityActivation.RIGHT_CLICK, new DashAbility())
+            .build()),
     OBSIDIAN_KUNAI(MaterialData.builder(ItemType.SWORD)
             .name("Obsidian Kunai")
             .material(Material.NETHERITE_SWORD)
